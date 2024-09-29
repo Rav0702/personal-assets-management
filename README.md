@@ -1,5 +1,28 @@
 # Team 37
 
+## Running the project
+
+### Prerequisites
+Docker and docker-compose are required to run the project.
+
+### Running the project
+
+To run the project the following steps need to be taken:
+1. Clone the repository
+2. Navigate to the `poc` directory of the project
+3. Create the `.env` file in the `poc` directory of the project with the following content:
+```
+MYSQL_DATABASE=database_name
+MYSQL_PASSWORD=database_password
+```
+4. Use maven install to build the project
+5. Run the following command in the `poc` directory of the project:
+```bash
+docker build .
+docker-compose up
+```
+To run the project, execute the following command in the `poc` directory of the project:
+
 
 
 ## Getting started
