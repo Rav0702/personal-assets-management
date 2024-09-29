@@ -26,4 +26,5 @@ cache:
 build-and-test:
   stage: test
   script:
+    - cd poc
     - 'mvn $MAVEN_CLI_OPTS verify'
