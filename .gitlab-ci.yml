@@ -1,0 +1,8 @@
+image: maven:latest
+
+build-and-test:
+  stage: build
+  script:
+    - echo "Starting the build and test"
+    - cd poc
+    - mvn verify
