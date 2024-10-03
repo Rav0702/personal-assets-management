@@ -44,6 +44,8 @@ public class AllcountUserController {
         userCredential.setUsername("username");
         userCredential.setPassword(hashedPasswordService.hash(new Password("password")));
         userCredential.setUser(allcountUser);
+
+        userCredentialRepository.save(userCredential);
         return "It works";
     }
 }
