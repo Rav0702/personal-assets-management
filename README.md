@@ -15,15 +15,16 @@ To run the project the following steps need to be taken:
 MYSQL_DATABASE=database_name
 MYSQL_PASSWORD=database_password
 ```
-4. Use maven install to build the project
-5. Run the following command in the `poc` directory of the project:
+4. Run the following command in the `poc` directory of the project:
+```bash
+docker-compose up --build
+```
+5. The project should now be running and accessible at `http://localhost:8090`
+6. If any problems occur, you try running the build command:
 ```bash
 docker build .
 docker-compose up
 ```
-To run the project, execute the following command in the `poc` directory of the project:
-
-
 
 ## Getting started
 

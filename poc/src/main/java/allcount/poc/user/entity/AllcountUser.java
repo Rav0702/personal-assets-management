@@ -1,15 +1,11 @@
 package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import allcount.poc.credential.entity.UserCredential;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Entity
 @Setter
@@ -18,8 +14,12 @@ import java.util.UUID;
 @Table(name = "allcount_user")
 public class AllcountUser extends AllcountEntity {
 
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "user_credential_id", referencedColumnName = "id")
+    private UserCredential userCredential;
+
     @Override
-    protected byte[] calculateEntityHash() {
-        return new byte[0];
+    protected String toStringForHashOnly() {
+        return "";
     }
 }

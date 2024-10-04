@@ -5,10 +5,7 @@ import allcount.poc.credential.converter.HashedPasswordAttributeConverter;
 import allcount.poc.credential.object.HashedPassword;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -18,20 +15,18 @@ import lombok.Setter;
 @Table(name = "user_credential")
 public class UserCredential extends AllcountEntity {
 
-    @Column
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password")
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "userCredential", optional = false)
     private AllcountUser user;
 
-
     @Override
-    protected byte[] calculateEntityHash() {
-        return new byte[0];
+    protected String toStringForHashOnly() {
+        return this.user.getId() + this.username;
     }
 }

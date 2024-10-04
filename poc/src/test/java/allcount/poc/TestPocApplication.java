@@ -1,5 +1,6 @@
 package allcount.poc;
 
+import allcount.poc.core.configuration.TestcontainersConfiguration;
 import org.springframework.boot.SpringApplication;
 
 public class TestPocApplication {

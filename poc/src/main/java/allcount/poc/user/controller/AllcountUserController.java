@@ -46,6 +46,6 @@ public class AllcountUserController {
         userCredential.setUser(allcountUser);
 
         userCredentialRepository.save(userCredential);
-        return "It works";
+        return "It works!!";
     }
 }
