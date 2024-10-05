@@ -1,20 +1,25 @@
 package allcount.poc.user.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import allcount.poc.core.domain.entity.AllcountEntity;
+import allcount.poc.credential.entity.UserCredential;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class AllcountUser {
-    @Id
-    @GeneratedValue
-    private UUID id;
+@Table(name = "allcount_user")
+public class AllcountUser extends AllcountEntity {
+
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "user_credential_id", referencedColumnName = "id")
+    private UserCredential userCredential;
+
+    @Override
+    protected String toStringForHashOnly() {
+        return "";
+    }
 }
