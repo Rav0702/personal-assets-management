@@ -1,7 +1,19 @@
 package allcount.poc.core.domain.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PrePersist;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,13 +26,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.UUID;
-
+/**
+ * Base class for all entities in the POC application.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -48,14 +56,24 @@ public abstract class AllcountEntity {
     protected LocalDateTime updatedTimestamp;
 
     @ToString.Exclude
-    @Column(columnDefinition="BINARY(32)", nullable = false)
+    @Column(columnDefinition = "BINARY(32)", nullable = false)
     protected byte[] entityHash;
 
+    /**
+     * Updates the entity hash before persisting the entity.
+     *
+     * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
+     */
     @PrePersist()
     protected void updateEntityHash() throws NoSuchAlgorithmException {
         this.entityHash = this.calculateEntityHash();
     }
 
+    /**
+     * Verifies the entity hash after loading the entity.
+     *
+     * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
+     */
     @PostLoad()
     protected void verifyEntityHash() throws NoSuchAlgorithmException {
         if (!Arrays.equals(this.entityHash, this.calculateEntityHash())) {
@@ -63,8 +81,19 @@ public abstract class AllcountEntity {
         }
     }
 
+    /**
+     * Returns a string representation of the entity for hashing purposes only.
+     *
+     * @return a string representation of the entity for hashing purposes only
+     */
     protected abstract String toStringForHashOnly();
 
+    /**
+     * Calculates the hash of the entity.
+     *
+     * @return the hash of the entity
+     * @throws NoSuchAlgorithmException if the SHA-256 algorithm is not available
+     */
     protected byte[] calculateEntityHash() throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance(ALGORITHM_SHA_256);
 
