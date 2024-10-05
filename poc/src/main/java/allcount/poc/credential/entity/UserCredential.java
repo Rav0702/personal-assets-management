@@ -6,6 +6,10 @@ import allcount.poc.credential.object.HashedPassword;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -13,7 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_credential")
-public class UserCredential extends AllcountEntity {
+public class UserCredential extends AllcountEntity implements UserDetails {
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -28,5 +32,10 @@ public class UserCredential extends AllcountEntity {
     @Override
     protected String toStringForHashOnly() {
         return this.user.getId() + this.username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 }
