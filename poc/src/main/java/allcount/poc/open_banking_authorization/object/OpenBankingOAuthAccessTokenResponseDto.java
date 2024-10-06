@@ -1,10 +1,15 @@
 package allcount.poc.open_banking_authorization.object;
 
+import java.io.Serializable;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
-public class OpenBankingOAuthAccessTokenResponseDto {
+@Getter
+@NoArgsConstructor
+public class OpenBankingOAuthAccessTokenResponseDto implements Serializable {
 
     private UUID id;
     private String accessToken;

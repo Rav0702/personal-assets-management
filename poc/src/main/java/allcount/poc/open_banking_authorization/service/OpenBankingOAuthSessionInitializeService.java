@@ -37,28 +37,16 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     }
 
     @Transactional
-    public String initializeOpenBankingOAuthSession(UUID userId, OpenBankingBankEnum bank) {
+    public OpenBankingOAuthSessionEntity initializeOpenBankingOAuthSession(UUID userId, OpenBankingBankEnum bank) {
         AllcountUser user = userRepository.findById(userId).orElseThrow();
         String baseUrl = bank.getBaseUri();
 
         UUID state = UUID.randomUUID();
         String codeVerifier = CodeVerifierLibrary.generateRandomCodeVerifier();
         String codeChallenge = CodeVerifierLibrary.generateCodeChallenge(codeVerifier);
+        String redirectLoginUri = generateOauthLoginUri(baseUrl, codeChallenge, state);
 
-        createOpenBankingOAuthSession(bank, codeVerifier, state, user);
-
-        return generateOauthLoginUri(baseUrl, codeChallenge, state);
-    }
-
-    private void createOpenBankingOAuthSession(OpenBankingBankEnum bank, String codeVerifier, UUID state, AllcountUser user) {
-        OpenBankingOAuthSessionEntity session = new OpenBankingOAuthSessionEntity();
-        session.setBank(bank);
-        session.setStatus(OpenBankingOAuthSessionStatusEnum.OAUTH_URI_GENERATED);
-        session.setCodeVerifier(codeVerifier);
-        session.setState(state);
-        session.setUser(user);
-
-        openBankingOAuthSessionRepository.save(session);
+        return createOpenBankingOAuthSession(bank, codeVerifier, state, user, redirectLoginUri);
     }
 
     private String generateOauthLoginUri(String baseUrl, String codeChallenge, UUID state) {
@@ -77,6 +65,18 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     private String getScope() {
         List<String> scopes = List.of(SCOPE_READ_ACCOUNTS, SCOPE_READ_TRANSACTIONS, SCOPE_OFFLINE_ACCESS);
         return String.join(" ", scopes);
+    }
+
+    private OpenBankingOAuthSessionEntity createOpenBankingOAuthSession(OpenBankingBankEnum bank, String codeVerifier, UUID state, AllcountUser user, String redirectLoginUri) {
+        OpenBankingOAuthSessionEntity session = new OpenBankingOAuthSessionEntity();
+        session.setBank(bank);
+        session.setStatus(OpenBankingOAuthSessionStatusEnum.OAUTH_URI_GENERATED);
+        session.setCodeVerifier(codeVerifier);
+        session.setRedirectLoginUri(redirectLoginUri);
+        session.setState(state);
+        session.setUser(user);
+
+        return openBankingOAuthSessionRepository.save(session);
     }
 
 }

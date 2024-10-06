@@ -15,7 +15,7 @@ public abstract class OpenBankingOAuthService {
     protected static final String BASE_URL = "https://simulator-api.db.com";
     protected static final String PARAM_CLIENT_ID = "client_id";
     protected static final String PARAM_REDIRECT_URI = "redirect_uri";
-    protected static final String REDIRECT_URI = "https://localhost:8090/v1/open-banking-authorization/code-challenge";
+    protected static final String REDIRECT_URI = "https://localhost:8090/v1/open-banking-authorization/retrieve-access-token";
 
 
     @Value("#{environment.SIMULATION_CLIENT_ID}")

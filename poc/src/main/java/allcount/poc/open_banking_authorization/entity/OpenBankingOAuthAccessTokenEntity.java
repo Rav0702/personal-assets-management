@@ -14,10 +14,10 @@ import lombok.Setter;
 @Table(name = "open_banking_access_token")
 public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
 
-    @Column(nullable=false)
+    @Column(nullable=false, columnDefinition = "TEXT")
     private String accessToken;
 
-    @Column(nullable=false)
+    @Column(nullable=false, columnDefinition = "TEXT")
     private String refreshToken;
 
     @Column(nullable=false)

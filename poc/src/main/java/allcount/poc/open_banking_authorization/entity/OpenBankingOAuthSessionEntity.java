@@ -21,14 +21,17 @@ import lombok.Setter;
 @Table(name = "open_banking_oauth_session")
 public class OpenBankingOAuthSessionEntity extends OpenBankingOAuthEntity {
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable=false, updatable = false)
     private OpenBankingOAuthSessionStatusEnum status;
 
-    @Column(nullable=false)
+    @Column(nullable=false, updatable = false)
     private String codeVerifier;
 
     @Column(nullable=false)
     private UUID state;
+
+    @Column(nullable=false, columnDefinition = "TEXT", updatable = false)
+    private String redirectLoginUri;
 
 
     @Override
