@@ -1,6 +1,7 @@
 package allcount.poc.core.test.integration;
 
 import allcount.poc.core.configuration.TestcontainersConfiguration;
+import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,5 +33,16 @@ public abstract class IntegrationTest {
     @BeforeEach
     protected void setupBaseUri() {
         RestAssured.baseURI = BASE_URI + port;
+    }
+
+    /**
+     * Create a user for testing.
+     *
+     * @return the user
+     */
+    protected AllcountUser createUserForTesting() {
+        AllcountUser user = AllcountUser.builder().build();
+
+        return userRepository.save(user);
     }
 }

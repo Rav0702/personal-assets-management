@@ -1,4 +1,4 @@
-package allcount.poc.open_banking_authorization.object;
+package allcount.poc.openbankingoauth.object;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO for the OpenBankingOAuthAccessTokenResponse.
+ */
 @Setter
 @Getter
 @NoArgsConstructor

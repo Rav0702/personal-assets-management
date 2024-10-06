@@ -1,11 +1,11 @@
-package allcount.poc.open_banking_authorization.service;
+package allcount.poc.openbankingoauth.service;
 
-import allcount.poc.open_banking_authorization.entity.OpenBankingOAuthAccessTokenEntity;
-import allcount.poc.open_banking_authorization.entity.OpenBankingOAuthSessionEntity;
-import allcount.poc.open_banking_authorization.mapper.OpenBankingOAuthAccessTokenResponseMapper;
-import allcount.poc.open_banking_authorization.object.OpenBankingOAuthSessionStatusEnum;
-import allcount.poc.open_banking_authorization.repository.OpenBankingOAuthAccessTokenRepository;
-import allcount.poc.open_banking_authorization.repository.OpenBankingOAuthSessionRepository;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
+import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
+import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRepository;
+import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.repository.AllcountUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.client.Entity;
@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service for retrieving the OpenBankingOAuthAccessTokenEntity.
+ */
 @Service
 public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuthService {
     private static final String PARAM_GRANT_TYPE = "grant_type";
@@ -27,44 +30,75 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
 
     private static final String TOKEN_URL = "/gw/oidc/token";
 
-    private transient final OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository;
-    private transient final OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper;
+    private final transient OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository;
+    private final transient OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper;
 
+    /**
+     * Constructor.
+     *
+     * @param userRepository - the AllcountUserRepository
+     * @param openBankingOAuthSessionRepository - the OpenBankingOAuthSessionRepository
+     * @param openBankingOAuthAccessTokenRepository - the OpenBankingOAuthAccessTokenRepository
+     * @param openBankingOAuthAccessTokenResponseMapper - the OpenBankingOAuthAccessTokenResponseMapper
+     */
     @Autowired
     public OpenBankingOAuthAccessTokenRetrieveService(
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
-            OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository, OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper
+            OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository,
+            OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper
     ) {
         super(userRepository, openBankingOAuthSessionRepository);
         this.openBankingOAuthAccessTokenRepository = openBankingOAuthAccessTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
     }
 
+    /**
+     * Retrieves the OpenBankingOAuthAccessTokenEntity.
+     *
+     * @param code - the code
+     * @param state - the state
+     * @return the OpenBankingOAuthAccessTokenEntity
+     * @throws JsonProcessingException - if the response cannot be processed
+     */
     @Transactional
-    public OpenBankingOAuthAccessTokenEntity retrieveOpenBankingOAuthAccessToken(String code, UUID state) throws JsonProcessingException {
+    public OpenBankingOAuthAccessTokenEntity retrieveOpenBankingOAuthAccessToken(String code, UUID state)
+            throws JsonProcessingException {
         OpenBankingOAuthSessionEntity session = openBankingOAuthSessionRepository
                 .findByStateAndStatus(state, OpenBankingOAuthSessionStatusEnum.OAUTH_URI_GENERATED)
                 .orElseThrow();
 
-        Response response = requestAccessTokensFromCode(code, session.getCodeVerifier());
+        Response response = requestAccessTokensFromCode(code, session);
 
         updateOpenBankingOAuthSessionAccessTokenReceived(session);
 
         return parseOpenBankingOAuthAccessTokenFromOpenBankingResponse(response, session);
     }
 
-
-    private Response requestAccessTokensFromCode(String code, String codeVerifier) {
-        Form form = determineAccessTokenRequestBodyForm(code, codeVerifier);
+    /**
+     * Requests the access tokens from the code.
+     *
+     * @param code - the code
+     * @param session - the OpenBankingOAuthSessionEntity
+     * @return the Response
+     */
+    private Response requestAccessTokensFromCode(String code, OpenBankingOAuthSessionEntity session) {
+        Form form = determineAccessTokenRequestBodyForm(code, session.getCodeVerifier());
 
         return client
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
-                .target(BASE_URL + TOKEN_URL)
+                .target(session.getBank().getBaseUri() + TOKEN_URL)
                 .request()
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
     }
 
+    /**
+     * Determines the access token request body form.
+     *
+     * @param code - the code
+     * @param codeVerifier - the code verifier
+     * @return the Form
+     */
     private Form determineAccessTokenRequestBodyForm(String code, String codeVerifier) {
         Form form = new Form();
         form.param(PARAM_GRANT_TYPE, GRANT_TYPE_AUTHORIZATION_CODE);
@@ -75,12 +109,25 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         return form;
     }
 
+    /**
+     * Updates the OpenBankingOAuthSessionEntity to have the access token received status.
+     *
+     * @param session - the OpenBankingOAuthSessionEntity
+     */
     private void updateOpenBankingOAuthSessionAccessTokenReceived(OpenBankingOAuthSessionEntity session) {
         session.setStatus(OpenBankingOAuthSessionStatusEnum.ACCESS_TOKEN_RECEIVED);
 
         openBankingOAuthSessionRepository.save(session);
     }
 
+    /**
+     * Parses the OpenBankingOAuthAccessTokenEntity from the OpenBanking response.
+     *
+     * @param response - the Response
+     * @param session - the OpenBankingOAuthSessionEntity
+     * @return the OpenBankingOAuthAccessTokenEntity
+     * @throws JsonProcessingException - if the response cannot be processed
+     */
     private OpenBankingOAuthAccessTokenEntity parseOpenBankingOAuthAccessTokenFromOpenBankingResponse(
             Response response,
             OpenBankingOAuthSessionEntity session

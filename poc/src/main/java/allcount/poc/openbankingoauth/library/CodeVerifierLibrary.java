@@ -1,4 +1,4 @@
-package allcount.poc.open_banking_authorization.library;
+package allcount.poc.openbankingoauth.library;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -17,7 +17,7 @@ public class CodeVerifierLibrary {
 
 
     /**
-     * Generates a random Base64 encoded code verifier
+     * Generates a random Base64 encoded code verifier.
      *
      * @return the generated code verifier
      */

@@ -1,10 +1,10 @@
-package allcount.poc.open_banking_authorization.service;
+package allcount.poc.openbankingoauth.service;
 
-import allcount.poc.open_banking_authorization.entity.OpenBankingOAuthSessionEntity;
-import allcount.poc.open_banking_authorization.library.CodeVerifierLibrary;
-import allcount.poc.open_banking_authorization.object.OpenBankingBankEnum;
-import allcount.poc.open_banking_authorization.object.OpenBankingOAuthSessionStatusEnum;
-import allcount.poc.open_banking_authorization.repository.OpenBankingOAuthSessionRepository;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.library.CodeVerifierLibrary;
+import allcount.poc.openbankingoauth.object.OpenBankingBankEnum;
+import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
+import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
 import jakarta.ws.rs.core.UriBuilder;
@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service for initializing the OpenBankingOAuthSessionEntity.
+ */
 @Service
 public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthService {
     private static final String AUTHORIZATION_URL = "/gw/oidc/authorize";
@@ -29,6 +32,12 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
     private static final String CODE_CHALLENGE_METHOD = "S256";
 
+    /**
+     * Constructor.
+     *
+     * @param userRepository - the AllcountUserRepository
+     * @param openBankingOAuthSessionRepository - the OpenBankingOAuthSessionRepository
+     */
     @Autowired
     public OpenBankingOAuthSessionInitializeService(
             AllcountUserRepository userRepository,
@@ -36,6 +45,13 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
         super(userRepository, openBankingOAuthSessionRepository);
     }
 
+    /**
+     * Initializes the OpenBankingOAuthSessionEntity.
+     *
+     * @param userId - the userId
+     * @param bank - the bank
+     * @return the OpenBankingOAuthSessionEntity
+     */
     @Transactional
     public OpenBankingOAuthSessionEntity initializeOpenBankingOAuthSession(UUID userId, OpenBankingBankEnum bank) {
         AllcountUser user = userRepository.findById(userId).orElseThrow();
@@ -49,6 +65,14 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
         return createOpenBankingOAuthSession(bank, codeVerifier, state, user, redirectLoginUri);
     }
 
+    /**
+     * Generates the OAuth login URI.
+     *
+     * @param baseUrl - the baseUrl
+     * @param codeChallenge - the codeChallenge
+     * @param state - the state
+     * @return the OAuth login URI
+     */
     private String generateOauthLoginUri(String baseUrl, String codeChallenge, UUID state) {
         return UriBuilder.fromUri(baseUrl + AUTHORIZATION_URL)
                 .queryParam(PARAM_RESPONSE_TYPE, RESPONSE_TYPE_CODE)
@@ -62,19 +86,41 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
                 .toString();
     }
 
+    /**
+     * Gets the scope. TODO: Maybe can be enum.
+     *
+     * @return the scope
+     */
     private String getScope() {
         List<String> scopes = List.of(SCOPE_READ_ACCOUNTS, SCOPE_READ_TRANSACTIONS, SCOPE_OFFLINE_ACCESS);
         return String.join(" ", scopes);
     }
 
-    private OpenBankingOAuthSessionEntity createOpenBankingOAuthSession(OpenBankingBankEnum bank, String codeVerifier, UUID state, AllcountUser user, String redirectLoginUri) {
-        OpenBankingOAuthSessionEntity session = new OpenBankingOAuthSessionEntity();
-        session.setBank(bank);
-        session.setStatus(OpenBankingOAuthSessionStatusEnum.OAUTH_URI_GENERATED);
-        session.setCodeVerifier(codeVerifier);
-        session.setRedirectLoginUri(redirectLoginUri);
-        session.setState(state);
-        session.setUser(user);
+    /**
+     * Creates the OpenBankingOAuthSessionEntity.
+     *
+     * @param bank - the bank
+     * @param codeVerifier - the codeVerifier
+     * @param state - the state
+     * @param user - the user
+     * @param redirectLoginUri - the redirectLoginUri
+     * @return the OpenBankingOAuthSessionEntity
+     */
+    private OpenBankingOAuthSessionEntity createOpenBankingOAuthSession(
+            OpenBankingBankEnum bank,
+            String codeVerifier,
+            UUID state,
+            AllcountUser user,
+            String redirectLoginUri
+    ) {
+        OpenBankingOAuthSessionEntity session = OpenBankingOAuthSessionEntity.builder()
+                .bank(bank)
+                .user(user)
+                .status(OpenBankingOAuthSessionStatusEnum.OAUTH_URI_GENERATED)
+                .codeVerifier(codeVerifier)
+                .state(state)
+                .redirectLoginUri(redirectLoginUri)
+                .build();
 
         return openBankingOAuthSessionRepository.save(session);
     }

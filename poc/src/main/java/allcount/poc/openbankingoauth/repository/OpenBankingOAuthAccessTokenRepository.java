@@ -1,8 +1,11 @@
-package allcount.poc.open_banking_authorization.repository;
+package allcount.poc.openbankingoauth.repository;
 
-import allcount.poc.open_banking_authorization.entity.OpenBankingOAuthAccessTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Repository for the OpenBankingOAuthAccessTokenEntity.
+ */
 public interface OpenBankingOAuthAccessTokenRepository extends JpaRepository<OpenBankingOAuthAccessTokenEntity, UUID> {
 }

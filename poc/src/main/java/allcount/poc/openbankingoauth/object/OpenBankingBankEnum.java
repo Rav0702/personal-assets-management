@@ -1,7 +1,10 @@
-package allcount.poc.open_banking_authorization.object;
+package allcount.poc.openbankingoauth.object;
 
 import java.util.Map;
 
+/**
+ * Enum representing the banks that are supported by the Open Banking API.
+ */
 public enum OpenBankingBankEnum {
     DEUTSCHE_BANK,
     NORIS_BANK,
