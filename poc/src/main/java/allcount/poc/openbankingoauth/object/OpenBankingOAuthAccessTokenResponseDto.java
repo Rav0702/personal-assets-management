@@ -17,7 +17,7 @@ public class OpenBankingOAuthAccessTokenResponseDto implements Serializable {
     private UUID id;
     private String accessToken;
     private String refreshToken;
-    private String tokenType;
+    private OpenBankingOAuthAccessTokenTypeEnum tokenType;
     private Long expiresIn;
     private String scope;
     private UUID userId;

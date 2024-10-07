@@ -3,6 +3,7 @@ package allcount.poc.openbankingoauth.mapper;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.object.OpenBankingOAuthAccessTokenResponseDto;
+import allcount.poc.openbankingoauth.object.OpenBankingOAuthAccessTokenTypeEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +70,7 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .expiresIn(expiresIn)
-                .tokenType(tokenType)
+                .tokenType(OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType))
                 .scope(scope)
                 .user(session.getUser())
                 .bank(session.getBank())

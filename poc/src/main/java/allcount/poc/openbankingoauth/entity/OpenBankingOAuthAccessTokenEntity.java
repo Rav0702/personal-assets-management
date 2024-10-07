@@ -1,9 +1,12 @@
 package allcount.poc.openbankingoauth.entity;
 
 import allcount.poc.openbankingoauth.object.OpenBankingBankEnum;
+import allcount.poc.openbankingoauth.object.OpenBankingOAuthAccessTokenTypeEnum;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,8 +31,9 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String refreshToken;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tokenType;
+    private OpenBankingOAuthAccessTokenTypeEnum tokenType;
 
     @Column(nullable = false)
     private Long expiresIn;
@@ -54,7 +58,7 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
             AllcountUser user,
             String accessToken,
             String refreshToken,
-            String tokenType,
+            OpenBankingOAuthAccessTokenTypeEnum tokenType,
             Long expiresIn,
             String scope
     ) {
