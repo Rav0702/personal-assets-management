@@ -1,7 +1,6 @@
 package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.credential.entity.AllcountUserDetailsEntity;
 import allcount.poc.credential.entity.UserCredential;
 import jakarta.persistence.*;
 import lombok.Getter;

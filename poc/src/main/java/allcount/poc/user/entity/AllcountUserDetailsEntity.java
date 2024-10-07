@@ -1,4 +1,4 @@
-package allcount.poc.credential.entity;
+package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
 import allcount.poc.user.entity.AllcountUser;
