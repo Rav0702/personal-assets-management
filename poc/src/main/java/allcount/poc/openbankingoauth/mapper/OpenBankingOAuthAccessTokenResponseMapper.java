@@ -59,8 +59,6 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
         JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
 
         assert jsonNode != null;
-        System.out.println(responseWithAccessToken);
-        System.out.println(jsonNode);
         String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
         String tokenType = jsonNode.get(FIELD_TOKEN_TYPE).textValue();
         Long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
