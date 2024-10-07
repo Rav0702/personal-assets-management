@@ -26,13 +26,13 @@ import lombok.Setter;
 @Table(name = "open_banking_oauth_session")
 public class OpenBankingOAuthSessionEntity extends OpenBankingOAuthEntity {
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private OpenBankingOAuthSessionStatusEnum status;
 
     @Column(nullable = false, updatable = false)
     private String codeVerifier;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private UUID state;
 
     @Column(nullable = false, columnDefinition = "TEXT", updatable = false)
@@ -41,21 +41,21 @@ public class OpenBankingOAuthSessionEntity extends OpenBankingOAuthEntity {
     /**
      * Constructor for the OpenBankingOAuthSessionEntity.
      *
-     * @param bank the bank
-     * @param user the user
-     * @param status the status
-     * @param codeVerifier the code verifier
-     * @param state the state
+     * @param bank             the bank
+     * @param user             the user
+     * @param status           the status
+     * @param codeVerifier     the code verifier
+     * @param state            the state
      * @param redirectLoginUri the redirect login uri
      */
     @Builder
     public OpenBankingOAuthSessionEntity(
-        OpenBankingBankEnum bank,
-        AllcountUser user,
-        OpenBankingOAuthSessionStatusEnum status,
-        String codeVerifier,
-        UUID state,
-        String redirectLoginUri
+            OpenBankingBankEnum bank,
+            AllcountUser user,
+            OpenBankingOAuthSessionStatusEnum status,
+            String codeVerifier,
+            UUID state,
+            String redirectLoginUri
     ) {
         super(bank, user);
         this.status = status;

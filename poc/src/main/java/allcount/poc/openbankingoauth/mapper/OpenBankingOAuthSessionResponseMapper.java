@@ -16,7 +16,8 @@ public class OpenBankingOAuthSessionResponseMapper {
      * @param openBankingOAuthSession - the OpenBankingOAuthSessionEntity
      * @return the OpenBankingOAuthSessionResponseDto
      */
-    public OpenBankingOAuthSessionResponseDto mapToOpenBankingOAuthSessionResponse(OpenBankingOAuthSessionEntity openBankingOAuthSession) {
+    public OpenBankingOAuthSessionResponseDto mapToOpenBankingOAuthSessionResponse(
+            OpenBankingOAuthSessionEntity openBankingOAuthSession) {
         OpenBankingOAuthSessionResponseDto openBankingOAuthSessionResponse = new OpenBankingOAuthSessionResponseDto();
         openBankingOAuthSessionResponse.setId(openBankingOAuthSession.getId());
         openBankingOAuthSessionResponse.setBank(openBankingOAuthSession.getBank());

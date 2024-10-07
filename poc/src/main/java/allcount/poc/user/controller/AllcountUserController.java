@@ -1,6 +1,5 @@
 package allcount.poc.user.controller;
 
-
 import allcount.poc.credential.entity.UserCredential;
 import allcount.poc.credential.object.Password;
 import allcount.poc.credential.repository.UserCredentialRepository;
@@ -27,9 +26,9 @@ public class AllcountUserController {
     /**
      * Constructor.
      *
-     * @param userRepository the repository for the AllcountUser entity.
+     * @param userRepository           the repository for the AllcountUser entity.
      * @param userCredentialRepository the repository for the UserCredential entity.
-     * @param hashedPasswordService the service for hashing passwords.
+     * @param hashedPasswordService    the service for hashing passwords.
      */
     @Autowired
     public AllcountUserController(

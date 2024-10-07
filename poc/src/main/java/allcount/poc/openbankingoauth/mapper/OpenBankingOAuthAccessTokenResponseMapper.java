@@ -26,8 +26,10 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
      * @param openBankingOAuthAccessToken - the OpenBankingOAuthAccessTokenEntity
      * @return the OpenBankingOAuthAccessTokenResponseDto
      */
-    public OpenBankingOAuthAccessTokenResponseDto mapToOpenBankingOAuthAccessTokenResponse(OpenBankingOAuthAccessTokenEntity openBankingOAuthAccessToken) {
-        OpenBankingOAuthAccessTokenResponseDto openBankingOAuthAccessTokenResponse = new OpenBankingOAuthAccessTokenResponseDto();
+    public OpenBankingOAuthAccessTokenResponseDto mapToOpenBankingOAuthAccessTokenResponse(
+            OpenBankingOAuthAccessTokenEntity openBankingOAuthAccessToken) {
+        OpenBankingOAuthAccessTokenResponseDto openBankingOAuthAccessTokenResponse =
+                new OpenBankingOAuthAccessTokenResponseDto();
         openBankingOAuthAccessTokenResponse.setId(openBankingOAuthAccessToken.getId());
         openBankingOAuthAccessTokenResponse.setAccessToken(openBankingOAuthAccessToken.getAccessToken());
         openBankingOAuthAccessTokenResponse.setRefreshToken(openBankingOAuthAccessToken.getRefreshToken());
@@ -43,7 +45,7 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
      * Maps the Response to the OpenBankingOAuthAccessTokenEntity.
      *
      * @param response - the Response
-     * @param session - the OpenBankingOAuthSessionEntity
+     * @param session  - the OpenBankingOAuthSessionEntity
      * @return the OpenBankingOAuthAccessTokenEntity
      * @throws JsonProcessingException - if the response cannot be processed
      */
@@ -57,12 +59,13 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
         JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
 
         assert jsonNode != null;
+        System.out.println(responseWithAccessToken);
+        System.out.println(jsonNode);
         String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
         String tokenType = jsonNode.get(FIELD_TOKEN_TYPE).textValue();
         Long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
         String refreshToken = jsonNode.get(FIELD_REFRESH_TOKEN).textValue();
         String scope = jsonNode.get(FIELD_SCOPE).textValue();
-
 
         return OpenBankingOAuthAccessTokenEntity.builder()
                 .accessToken(accessToken)

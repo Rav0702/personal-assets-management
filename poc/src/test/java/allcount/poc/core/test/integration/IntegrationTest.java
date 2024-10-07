@@ -5,10 +5,12 @@ import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockserver.client.MockServerClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
@@ -19,10 +21,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class IntegrationTest {
     protected static final String BASE_URI = "http://localhost:";
+    protected static final String FIELD_ID = "id";
+    protected static final String FIELD_USER_ID = "userId";
 
     @Autowired
     protected transient AllcountUserRepository userRepository;
 
+    protected transient MockServerContainer mockServerContainer = TestcontainersConfiguration.getMockServerContainer();
+    protected transient MockServerClient mockServerClient = TestcontainersConfiguration.getMockServerClient();
 
     @LocalServerPort
     protected int port;

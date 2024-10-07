@@ -14,5 +14,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "allcount.poc")
 @EntityScan(basePackages = "allcount.poc")
-public class PersistenceConfiguration {}
+public class PersistenceConfiguration {
+}
 

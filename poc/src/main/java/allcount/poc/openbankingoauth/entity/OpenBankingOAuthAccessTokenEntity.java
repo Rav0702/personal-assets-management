@@ -40,13 +40,13 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
     /**
      * Constructor.
      *
-     * @param bank - the bank
-     * @param user - the user
-     * @param accessToken - the access token
+     * @param bank         - the bank
+     * @param user         - the user
+     * @param accessToken  - the access token
      * @param refreshToken - the refresh token
-     * @param tokenType - the token type
-     * @param expiresIn - the expiration time
-     * @param scope - the scope
+     * @param tokenType    - the token type
+     * @param expiresIn    - the expiration time
+     * @param scope        - the scope
      */
     @Builder
     public OpenBankingOAuthAccessTokenEntity(

@@ -1,6 +1,6 @@
 package allcount.poc.openbankingoauth.service;
 
-
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.repository.AllcountUserRepository;
 import jakarta.ws.rs.client.Client;
@@ -19,34 +19,33 @@ import org.springframework.stereotype.Service;
 public abstract class OpenBankingOAuthService {
     protected static final String PARAM_CLIENT_ID = "client_id";
     protected static final String PARAM_REDIRECT_URI = "redirect_uri";
-    protected static final String REDIRECT_URI = "https://localhost:8090/v1/open-banking-authorization/retrieve-access-token";
+    protected static final String REDIRECT_URI =
+            "https://localhost:8090/v1/open-banking-authorization/retrieve-access-token";
 
     protected static final String ERROR_SIMULATION_CLIENT_ID_NOT_FOUND = "Simulation client ID not found";
     protected static final String PLACEHOLDER_SIMULATION_CLIENT_ID = "simulation_client_id";
-
-
-    @Value("#{environment.SIMULATION_CLIENT_ID}")
-    protected String simulationClientId;
-
+    private static final Logger LOG = Logger.getLogger(OpenBankingOAuthService.class.getName());
     protected final transient Client client;
-    protected transient NewCookie sessionId;
-
     protected final transient AllcountUserRepository userRepository;
     protected final transient OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository;
-
-    private static final Logger LOG = Logger.getLogger(OpenBankingOAuthService.class.getName());
+    protected final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
+    @Value("#{environment.SIMULATION_CLIENT_ID}")
+    protected String simulationClientId;
+    protected transient NewCookie sessionId;
 
     /**
      * Constructor.
      *
-     * @param userRepository - the AllcountUserRepository
+     * @param userRepository                    - the AllcountUserRepository
      * @param openBankingOAuthSessionRepository - the OpenBankingOAuthSessionRepository
      */
     @Autowired
     public OpenBankingOAuthService(
             AllcountUserRepository userRepository,
-            OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository
+            OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
     ) {
+        this.openBankingBankToBaseUriMapper = openBankingBankToBaseUriMapper;
         this.client = ClientBuilder.newBuilder().build().register(new LoggingFilter());
         this.userRepository = userRepository;
         this.openBankingOAuthSessionRepository = openBankingOAuthSessionRepository;

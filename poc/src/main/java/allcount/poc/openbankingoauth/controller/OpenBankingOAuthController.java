@@ -30,10 +30,10 @@ public class OpenBankingOAuthController {
     /**
      * Constructor.
      *
-     * @param openBankingOAuthSessionInitializeService - the OpenBankingOAuthSessionInitializeService
+     * @param openBankingOAuthSessionInitializeService   - the OpenBankingOAuthSessionInitializeService
      * @param openBankingOAuthAccessTokenRetrieveService - the OpenBankingOAuthAccessTokenRetrieveService
-     * @param openBankingOAuthAccessTokenResponseMapper - the OpenBankingOAuthAccessTokenResponseMapper
-     * @param openBankingOAuthSessionResponseMapper - the OpenBankingOAuthSessionResponseMapper
+     * @param openBankingOAuthAccessTokenResponseMapper  - the OpenBankingOAuthAccessTokenResponseMapper
+     * @param openBankingOAuthSessionResponseMapper      - the OpenBankingOAuthSessionResponseMapper
      */
     @Autowired
     public OpenBankingOAuthController(
@@ -52,7 +52,7 @@ public class OpenBankingOAuthController {
      * Generates the OAuth URI.
      *
      * @param userId - the userId
-     * @param bank - the bank
+     * @param bank   - the bank
      * @return the OpenBankingOAuthSessionResponseDto
      */
     @GetMapping("v1/open-banking-authorization/{userId}/initialize-session")
@@ -68,7 +68,7 @@ public class OpenBankingOAuthController {
     /**
      * Retrieves the access token.
      *
-     * @param code - the code
+     * @param code  - the code
      * @param state - the state
      * @return the OpenBankingOAuthAccessTokenResponseDto
      * @throws JsonProcessingException - if an error occurs
@@ -82,6 +82,4 @@ public class OpenBankingOAuthController {
                 openBankingOAuthAccessTokenRetrieveService.retrieveOpenBankingOAuthAccessToken(code, state)
         );
     }
-
-
 }

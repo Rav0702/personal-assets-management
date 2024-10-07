@@ -2,6 +2,7 @@ package allcount.poc.openbankingoauth.service;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.library.CodeVerifierLibrary;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.object.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
@@ -35,27 +36,29 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     /**
      * Constructor.
      *
-     * @param userRepository - the AllcountUserRepository
+     * @param userRepository                    - the AllcountUserRepository
      * @param openBankingOAuthSessionRepository - the OpenBankingOAuthSessionRepository
      */
     @Autowired
     public OpenBankingOAuthSessionInitializeService(
             AllcountUserRepository userRepository,
-            OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository) {
-        super(userRepository, openBankingOAuthSessionRepository);
+            OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
+    ) {
+        super(userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
     }
 
     /**
      * Initializes the OpenBankingOAuthSessionEntity.
      *
      * @param userId - the userId
-     * @param bank - the bank
+     * @param bank   - the bank
      * @return the OpenBankingOAuthSessionEntity
      */
     @Transactional
     public OpenBankingOAuthSessionEntity initializeOpenBankingOAuthSession(UUID userId, OpenBankingBankEnum bank) {
         AllcountUser user = userRepository.findById(userId).orElseThrow();
-        String baseUrl = bank.getBaseUri();
+        String baseUrl = openBankingBankToBaseUriMapper.getBaseUri(bank);
 
         UUID state = UUID.randomUUID();
         String codeVerifier = CodeVerifierLibrary.generateRandomCodeVerifier();
@@ -68,9 +71,9 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     /**
      * Generates the OAuth login URI.
      *
-     * @param baseUrl - the baseUrl
+     * @param baseUrl       - the baseUrl
      * @param codeChallenge - the codeChallenge
-     * @param state - the state
+     * @param state         - the state
      * @return the OAuth login URI
      */
     private String generateOauthLoginUri(String baseUrl, String codeChallenge, UUID state) {
@@ -99,10 +102,10 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     /**
      * Creates the OpenBankingOAuthSessionEntity.
      *
-     * @param bank - the bank
-     * @param codeVerifier - the codeVerifier
-     * @param state - the state
-     * @param user - the user
+     * @param bank             - the bank
+     * @param codeVerifier     - the codeVerifier
+     * @param state            - the state
+     * @param user             - the user
      * @param redirectLoginUri - the redirectLoginUri
      * @return the OpenBankingOAuthSessionEntity
      */

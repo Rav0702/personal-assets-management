@@ -14,9 +14,10 @@ public interface OpenBankingOAuthSessionRepository extends JpaRepository<OpenBan
     /**
      * Finds the OpenBankingOAuthSessionEntity by the state and status.
      *
-     * @param state - the state
+     * @param state  - the state
      * @param status - the status
      * @return the OpenBankingOAuthSessionEntity
      */
-    public Optional<OpenBankingOAuthSessionEntity> findByStateAndStatus(UUID state, OpenBankingOAuthSessionStatusEnum status);
+    Optional<OpenBankingOAuthSessionEntity> findByStateAndStatus(UUID state,
+                                                                 OpenBankingOAuthSessionStatusEnum status);
 }

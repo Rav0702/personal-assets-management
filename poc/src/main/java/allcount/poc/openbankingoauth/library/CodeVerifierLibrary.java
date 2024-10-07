@@ -15,7 +15,6 @@ public class CodeVerifierLibrary {
     public static final String ALGORITHM_SHA_256 = "SHA-256";
     public static final int OFFSET_DEFAULT = 0;
 
-
     /**
      * Generates a random Base64 encoded code verifier.
      *

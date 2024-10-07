@@ -2,6 +2,7 @@ package allcount.poc.openbankingoauth.service;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRepository;
@@ -36,9 +37,9 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
     /**
      * Constructor.
      *
-     * @param userRepository - the AllcountUserRepository
-     * @param openBankingOAuthSessionRepository - the OpenBankingOAuthSessionRepository
-     * @param openBankingOAuthAccessTokenRepository - the OpenBankingOAuthAccessTokenRepository
+     * @param userRepository                            - the AllcountUserRepository
+     * @param openBankingOAuthSessionRepository         - the OpenBankingOAuthSessionRepository
+     * @param openBankingOAuthAccessTokenRepository     - the OpenBankingOAuthAccessTokenRepository
      * @param openBankingOAuthAccessTokenResponseMapper - the OpenBankingOAuthAccessTokenResponseMapper
      */
     @Autowired
@@ -46,9 +47,10 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
             OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository,
-            OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper
+            OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
     ) {
-        super(userRepository, openBankingOAuthSessionRepository);
+        super(userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
         this.openBankingOAuthAccessTokenRepository = openBankingOAuthAccessTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
     }
@@ -56,7 +58,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
     /**
      * Retrieves the OpenBankingOAuthAccessTokenEntity.
      *
-     * @param code - the code
+     * @param code  - the code
      * @param state - the state
      * @return the OpenBankingOAuthAccessTokenEntity
      * @throws JsonProcessingException - if the response cannot be processed
@@ -78,7 +80,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
     /**
      * Requests the access tokens from the code.
      *
-     * @param code - the code
+     * @param code    - the code
      * @param session - the OpenBankingOAuthSessionEntity
      * @return the Response
      */
@@ -87,7 +89,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
 
         return client
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
-                .target(session.getBank().getBaseUri() + TOKEN_URL)
+                .target(openBankingBankToBaseUriMapper.getBaseUri(session.getBank()) + TOKEN_URL)
                 .request()
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
     }
@@ -95,7 +97,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
     /**
      * Determines the access token request body form.
      *
-     * @param code - the code
+     * @param code         - the code
      * @param codeVerifier - the code verifier
      * @return the Form
      */
@@ -124,7 +126,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
      * Parses the OpenBankingOAuthAccessTokenEntity from the OpenBanking response.
      *
      * @param response - the Response
-     * @param session - the OpenBankingOAuthSessionEntity
+     * @param session  - the OpenBankingOAuthSessionEntity
      * @return the OpenBankingOAuthAccessTokenEntity
      * @throws JsonProcessingException - if the response cannot be processed
      */
