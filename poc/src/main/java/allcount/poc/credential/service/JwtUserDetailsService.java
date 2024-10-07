@@ -1,25 +1,25 @@
 package allcount.poc.credential.service;
 
-import java.util.ArrayList;
-
 import allcount.poc.credential.entity.UserCredential;
 import allcount.poc.credential.repository.UserCredentialRepository;
-import allcount.poc.user.repository.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ *  Service for user details.
  */
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
     private final transient UserCredentialRepository userCredentialRepository;
 
+    /**
+     * Instantiates a new JwtUserDetailsService.
+     *
+     * @param userCredentialRepository the user credential repository
+     */
     @Autowired
     public JwtUserDetailsService(UserCredentialRepository userCredentialRepository) {
         this.userCredentialRepository = userCredentialRepository;

@@ -9,20 +9,20 @@ import allcount.poc.credential.models.RegistrationResponseModel;
 import allcount.poc.credential.object.Password;
 import allcount.poc.credential.service.JwtUserDetailsService;
 import allcount.poc.user.service.RegistrationService;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.UUID;
-
+/**
+ * Controller for authentication.
+ */
 @RestController
 public class AuthenticationController {
 
@@ -62,12 +62,12 @@ public class AuthenticationController {
      */
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseModel> authenticate(@RequestBody AuthenticationRequestModel request)
-            throws Exception {
+        throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()));
+                new UsernamePasswordAuthenticationToken(
+                    request.getUsername(),
+                    request.getPassword()));
 
         } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", e);
@@ -90,12 +90,12 @@ public class AuthenticationController {
         try {
             Password password = new Password(request.getPassword());
             UUID registeredUserId = registrationService.registerUser(
-                    request.getEmail(),
-                    password,
-                    request.getUsername(),
-                    request.getFirstName(),
-                    request.getLastName()
-                    );
+                request.getEmail(),
+                password,
+                request.getUsername(),
+                request.getFirstName(),
+                request.getLastName()
+            );
             RegistrationResponseModel response = new RegistrationResponseModel(registeredUserId);
             return ResponseEntity.ok(response);
 

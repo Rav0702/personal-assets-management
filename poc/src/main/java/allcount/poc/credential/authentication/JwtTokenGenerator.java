@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +28,11 @@ public class JwtTokenGenerator {
      */
     private final transient TimeProvider timeProvider;
 
+    /**
+     * Instantiates a new Jwt token generator.
+     *
+     * @param timeProvider the time provider
+     */
     @Autowired
     public JwtTokenGenerator(TimeProvider timeProvider) {
         this.timeProvider = timeProvider;

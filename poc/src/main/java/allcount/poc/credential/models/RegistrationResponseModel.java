@@ -1,10 +1,10 @@
 package allcount.poc.credential.models;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
 
 /**
  * Model representing a registration response.

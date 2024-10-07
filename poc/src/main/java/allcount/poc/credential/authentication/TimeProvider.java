@@ -1,9 +1,8 @@
 package allcount.poc.credential.authentication;
 
-import org.springframework.context.annotation.Bean;
+import java.time.Instant;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 
 /**
  * Provides the current time.

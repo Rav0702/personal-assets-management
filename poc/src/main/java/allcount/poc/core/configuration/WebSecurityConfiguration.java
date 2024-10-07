@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Configuration for the web security.
@@ -48,19 +47,4 @@ public class WebSecurityConfiguration {
 
         return http.getOrBuild();
     }
-
-//    @Bean
-//    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests((authz) -> authz
-//                        .requestMatchers("/register", "/authenticate").permitAll()
-//                        .anyRequest().authenticated())
-//                .sessionManagement((sessionManagement) -> sessionManagement
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//
-//        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.getOrBuild();
-//    }
 }
-

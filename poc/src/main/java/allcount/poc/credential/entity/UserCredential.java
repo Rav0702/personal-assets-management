@@ -4,19 +4,19 @@ import allcount.poc.core.domain.entity.AllcountEntity;
 import allcount.poc.credential.converter.HashedPasswordAttributeConverter;
 import allcount.poc.credential.object.HashedPassword;
 import allcount.poc.user.entity.AllcountUser;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 /**
  * Entity for the user credential.
@@ -52,5 +52,10 @@ public class UserCredential extends AllcountEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return password.toString();
     }
 }

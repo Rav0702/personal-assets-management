@@ -1,14 +1,21 @@
 package allcount.poc.user.repository;
 
-import allcount.poc.credential.entity.UserCredential;
 import allcount.poc.user.entity.AllcountUserDetailsEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Repository for the UserDetails entity.
+ */
 public interface UserDetailsRepository extends JpaRepository<AllcountUserDetailsEntity, UUID> {
 
+    /**
+     * Find user by username.
+     *
+     * @param username username
+     * @return user
+     */
     Optional<AllcountUserDetailsEntity> findByUsername(String username); //
 
 }
