@@ -10,6 +10,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Base class for integration tests.
+ */
 @Testcontainers
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -19,9 +22,13 @@ public abstract class IntegrationTest {
     @Autowired
     protected transient AllcountUserRepository userRepository;
 
+
     @LocalServerPort
     protected int port;
 
+    /**
+     * Set up the base URI.
+     */
     @BeforeEach
     protected void setupBaseUri() {
         RestAssured.baseURI = BASE_URI + port;
