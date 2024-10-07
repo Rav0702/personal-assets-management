@@ -13,9 +13,7 @@ public class TimeProvider {
     /**
      * Instantiates a new Time provider.
      */
-    public TimeProvider() {
-        super();
-    }
+    public TimeProvider() {}
 
     /**
      * Get the current time.

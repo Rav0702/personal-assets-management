@@ -10,9 +10,7 @@ import allcount.poc.user.entity.AllcountUserDetailsEntity;
 import allcount.poc.user.repository.AllcountUserRepository;
 import allcount.poc.user.repository.UserDetailsRepository;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 
 /**
@@ -28,9 +26,6 @@ public class RegistrationService {
 
     private static final String apiPrefix = "http://localhost:";
     private static final String userPath = "/api/user";
-
-    @Autowired
-    private transient RestTemplate restTemplate;
 
     /**
      * Instantiates a new RegistrationService.
@@ -107,6 +102,6 @@ public class RegistrationService {
      * @return true if the username is not taken
      */
     public boolean checkDuplicateUsername(String userName) {
-        return userDetailsRepository.findByUsername(userName).isEmpty();
+        return userCredentialRepository.findByUsername(userName).isEmpty();
     }
 }

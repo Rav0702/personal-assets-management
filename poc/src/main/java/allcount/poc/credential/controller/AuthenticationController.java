@@ -58,24 +58,24 @@ public class AuthenticationController {
      *
      * @param request The login model
      * @return JWT token if the login is successful
-     * @throws Exception if the user does not exist or the password is incorrect
      */
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseModel> authenticate(@RequestBody AuthenticationRequestModel request)
-        throws Exception {
+    public ResponseEntity<AuthenticationResponseModel> authenticate(@RequestBody AuthenticationRequestModel request) {
         try {
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     request.getUsername(),
                     request.getPassword()));
 
+            final UserCredential userCredential = jwtUserDetailsService.loadUserByUsername(request.getUsername());
+            final String jwtToken = jwtTokenGenerator.generateToken(userCredential);
+            return ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
+
         } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", e);
         }
 
-        final UserCredential userCredential = jwtUserDetailsService.loadUserByUsername(request.getUsername());
-        final String jwtToken = jwtTokenGenerator.generateToken(userCredential);
-        return ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
+
     }
 
     /**
@@ -83,10 +83,9 @@ public class AuthenticationController {
      *
      * @param request The registration model
      * @return the user id of the registered user
-     * @throws Exception if a user with this netid already exists
      */
     @PostMapping("/register")
-    public ResponseEntity<RegistrationResponseModel> register(@RequestBody RegistrationRequestModel request) throws Exception {
+    public ResponseEntity<RegistrationResponseModel> register(@RequestBody RegistrationRequestModel request) {
         try {
             Password password = new Password(request.getPassword());
             UUID registeredUserId = registrationService.registerUser(

@@ -1,15 +1,17 @@
 package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Entity representing user details.
@@ -20,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_details")
-public class AllcountUserDetailsEntity extends AllcountEntity {
+public class AllcountUserDetailsEntity extends AllcountEntity implements UserDetails {
 
     @Column(name = "email")
     private String email;
@@ -31,11 +33,26 @@ public class AllcountUserDetailsEntity extends AllcountEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToOne(mappedBy = "userCredential", optional = false)
+    @OneToOne(mappedBy = "userDetails", optional = false)
     private AllcountUser user;
 
     @Override
     protected String toStringForHashOnly() {
         return "";
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
     }
 }
