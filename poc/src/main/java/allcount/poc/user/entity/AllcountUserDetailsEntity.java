@@ -5,13 +5,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Entity representing user details.
@@ -22,7 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_details")
-public class AllcountUserDetailsEntity extends AllcountEntity implements UserDetails {
+public class AllcountUserDetailsEntity extends AllcountEntity {
 
     @Column(name = "email")
     private String email;
@@ -39,20 +36,5 @@ public class AllcountUserDetailsEntity extends AllcountEntity implements UserDet
     @Override
     protected String toStringForHashOnly() {
         return "";
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
     }
 }

@@ -2,7 +2,10 @@ package allcount.poc.credential.service;
 
 import allcount.poc.credential.entity.UserCredential;
 import allcount.poc.credential.repository.UserCredentialRepository;
+import allcount.poc.user.entity.AllcountUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
-
     private final transient UserCredentialRepository userCredentialRepository;
 
     /**
@@ -26,19 +28,16 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Loads user information required for authentication from the DB.
+     * Load user by username.
      *
-     * @param username The username of the user we want to authenticate
-     * @return The authentication user information of that user
-     * @throws UsernameNotFoundException Username was not found
+     * @param username the username
+     * @return the user details
      */
-    public UserCredential loadUserByUsername(String username) throws UsernameNotFoundException {
-        var optionalUser = userCredentialRepository.findByUsername(username);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserCredential userCredential = userCredentialRepository.findByUsername(username).orElseThrow();
+        AllcountUser user = userCredential.getUser();
 
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User does not exist");
-        }
-
-        return optionalUser.get();
+        return new User(user.getUsername(), user.getPassword(), user.getAuthorities());
     }
 }

@@ -9,13 +9,10 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 
 /**
@@ -27,9 +24,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_credential")
-public class UserCredential extends AllcountEntity implements UserDetails {
+public class UserCredential extends AllcountEntity {
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "password")
@@ -47,15 +44,5 @@ public class UserCredential extends AllcountEntity implements UserDetails {
     @Override
     protected String toStringForHashOnly() {
         return this.user.getId() + this.username;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return password.toString();
     }
 }
