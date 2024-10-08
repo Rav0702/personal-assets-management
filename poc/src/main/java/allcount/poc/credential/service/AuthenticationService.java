@@ -1,6 +1,6 @@
 package allcount.poc.credential.service;
 
-import allcount.poc.credential.authentication.JwtTokenGenerator;
+import allcount.poc.core.configuration.JwtTokenUtil;
 import allcount.poc.credential.models.AuthenticationRequestModel;
 import allcount.poc.credential.models.AuthenticationResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +18,22 @@ public class AuthenticationService {
 
     private final transient AuthenticationManager authenticationManager;
     private final transient JwtUserDetailsService jwtUserDetailsService;
-    private final transient JwtTokenGenerator jwtTokenGenerator;
+    private final transient JwtTokenUtil jwtTokenUtil;
 
     /**
      * Instantiates a new Authentication service.
      *
      * @param authenticationManager the authentication manager
      * @param jwtUserDetailsService the jwt user details service
-     * @param jwtTokenGenerator the jwt token generator
+     * @param jwtTokenUtil the jwt token generator
      */
     @Autowired
     public AuthenticationService(AuthenticationManager authenticationManager,
-                                 JwtUserDetailsService jwtUserDetailsService, JwtTokenGenerator jwtTokenGenerator) {
+                                 JwtUserDetailsService jwtUserDetailsService,
+                                 JwtTokenUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUserDetailsService = jwtUserDetailsService;
-        this.jwtTokenGenerator = jwtTokenGenerator;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     /**
@@ -48,7 +49,7 @@ public class AuthenticationService {
         );
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
-        final String jwtToken = jwtTokenGenerator.generateToken(userDetails);
+        final String jwtToken = jwtTokenUtil.generateToken(userDetails);
 
         return new AuthenticationResponseModel(jwtToken);
     }

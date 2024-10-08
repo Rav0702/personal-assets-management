@@ -1,5 +1,6 @@
 package allcount.poc.core.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 /**
  * Configuration for the web security.
@@ -17,6 +20,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Order(SecurityProperties.BASIC_AUTH_ORDER)
 @EnableWebSecurity
 public class WebSecurityConfiguration {
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
     /**
      * Bean for the security filter chain.
@@ -28,11 +34,15 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz) -> authz
-                        .anyRequest().permitAll())
-                .sessionManagement((sessionManagement) -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            .authorizeHttpRequests((authz) -> authz
+            .requestMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated())
+            .sessionManagement((sessionManagement) -> sessionManagement
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.getOrBuild();
     }
+
 }
