@@ -14,6 +14,7 @@ To run the project the following steps need to be taken:
 ```
 MYSQL_DATABASE=database_name
 MYSQL_PASSWORD=database_password
+SIMULATION_CLIENT_ID=Simulation client ID of an app from https://developer.db.com/dashboard/developerapps
 ```
 4. Run the following command in the `poc` directory of the project:
 ```bash
@@ -25,6 +26,37 @@ docker-compose up --build
 docker build .
 docker-compose up
 ```
+
+## OAuth2 Authorization Flow.
+
+In this project we are using the Authorization Code Flow with PKCE. Configured for the [Deutsche Bank API](https://developer.db.com)
+Prerequisites are as follows:
+1. You have an Simulation Client created in the [My Apps Dashboard](https://developer.db.com/dashboard/developerapps) with
+Datasource being `Client Account Data`, App Type `Public`,
+Grant type `Authorization Code` with `Enforce PKCE`, Redirect URI being `https://localhost:8090/v1/open-banking-authorization/retrieve-access-token`,
+2. You have a Test User created in the [Test Users Dashboard](https://developer.db.com/dashboard/testusers) with the Simulation Client created in the previous step.
+
+The flow is as follows:
+
+1. The POC application generates code verifier and code challenge.
+2. The POC application sends a request to the Deutsche Bank API Program authorisation service
+3. The user is redirected to the Deutsche Bank API Program authorisation service
+4. The user logs in and authorises the POC application
+5. The Deutsche Bank API Program authorisation service redirects the user back to the POC application with an authorization code
+6. The POC application sends a request to the Deutsche Bank API Program to retrieve the access token using the authorization code and the code verifier
+7. The Deutsche Bank API Program responds with the access token.
+
+Since the POC application contains only the backend project the flow is implemented to be utilized with the browser handling the redirections.
+
+1. The user calls `v1/open-banking-authorization/{userId}/initialize-session` endpoint with queryParam bank being the bank they want to use
+   (can be DEUTSCHE_BANK, NORIS_BANK, POST_BANK)
+2. The response contains the url that can be copied and pasted into the browser
+3. The user is redirected to the Deutsche Bank API Program authorisation service and can log in using the credentials (FKN and PIN) of Test Users 
+that were provided in [Deutche Bank API program Dashboard](https://developer.db.com/dashboard/testusers)
+4. The browser is then redirected back to the POC application with the authorization code 
+5. Since the POC application is running on localhost, the browser will not be able to redirect back to the POC application using https,
+so the url needs to be copied and pasted into postman or curl to send the request to the POC application using http instead of https
+6. The POC application sends a request to the Deutsche Bank API Program to retrieve the access token using the authorization code and the code verifier
 
 ## Getting started
 

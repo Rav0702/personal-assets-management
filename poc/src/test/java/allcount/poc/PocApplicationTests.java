@@ -9,5 +9,6 @@ import org.springframework.context.annotation.Import;
 @SpringBootTest
 class PocApplicationTests {
     @Test
-    void contextLoads() {}
+    void contextLoads() {
+    }
 }

@@ -1,7 +1,7 @@
 package allcount.poc.user.integration;
 
-import allcount.poc.core.test.integration.IntegrationTest;
 import static io.restassured.RestAssured.given;
+import allcount.poc.core.test.integration.IntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
