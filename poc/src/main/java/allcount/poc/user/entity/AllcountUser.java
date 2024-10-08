@@ -2,12 +2,18 @@ package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
 import allcount.poc.credential.entity.UserCredential;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +24,8 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
+@Builder(toBuilder = true)
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "allcount_user")
 public class AllcountUser extends AllcountEntity {
@@ -25,6 +33,14 @@ public class AllcountUser extends AllcountEntity {
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "user_credential_id", referencedColumnName = "id")
     private UserCredential userCredential;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private Set<OpenBankingOAuthSessionEntity> openBankingOAuthSessions;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private Set<OpenBankingOAuthAccessTokenEntity> openBankingOAuthAccessTokens;
 
     /**
      * Returns a string representation of the object for hashing purposes.
