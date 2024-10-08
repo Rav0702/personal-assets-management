@@ -4,7 +4,7 @@ import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRepository;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.repository.AllcountUserRepository;

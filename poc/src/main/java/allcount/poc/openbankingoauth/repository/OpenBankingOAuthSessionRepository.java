@@ -1,7 +1,7 @@
 package allcount.poc.openbankingoauth.repository;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;

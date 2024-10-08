@@ -1,4 +1,4 @@
-package allcount.poc.openbankingoauth.object;
+package allcount.poc.openbankingoauth.object.enums;
 
 /**
  * Enum for the OpenBankingOAuthSession status.

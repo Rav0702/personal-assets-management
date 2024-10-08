@@ -1,7 +1,7 @@
 package allcount.poc.openbankingoauth.mapper;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionResponseDto;
+import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthSessionResponseDto;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,14 +18,14 @@ public class OpenBankingOAuthSessionResponseMapper {
      */
     public OpenBankingOAuthSessionResponseDto mapToOpenBankingOAuthSessionResponse(
             OpenBankingOAuthSessionEntity openBankingOAuthSession) {
-        OpenBankingOAuthSessionResponseDto openBankingOAuthSessionResponse = new OpenBankingOAuthSessionResponseDto();
-        openBankingOAuthSessionResponse.setId(openBankingOAuthSession.getId());
-        openBankingOAuthSessionResponse.setBank(openBankingOAuthSession.getBank());
-        openBankingOAuthSessionResponse.setUserId(openBankingOAuthSession.getUser().getId());
-        openBankingOAuthSessionResponse.setStatus(openBankingOAuthSession.getStatus());
-        openBankingOAuthSessionResponse.setRedirectLoginUri(openBankingOAuthSession.getRedirectLoginUri());
-        openBankingOAuthSessionResponse.setState(openBankingOAuthSession.getState());
-        openBankingOAuthSessionResponse.setCodeVerifier(openBankingOAuthSession.getCodeVerifier());
-        return openBankingOAuthSessionResponse;
+        return  OpenBankingOAuthSessionResponseDto.builder()
+                .id(openBankingOAuthSession.getId())
+                .userId(openBankingOAuthSession.getUser().getId())
+                .bank(openBankingOAuthSession.getBank())
+                .status(openBankingOAuthSession.getStatus())
+                .redirectLoginUri(openBankingOAuthSession.getRedirectLoginUri())
+                .codeVerifier(openBankingOAuthSession.getCodeVerifier())
+                .state(openBankingOAuthSession.getState())
+                .build();
     }
 }

@@ -1,4 +1,4 @@
-package allcount.poc.openbankingoauth.object;
+package allcount.poc.openbankingoauth.object.enums;
 
 /**
  * Enum representing the banks that are supported by the Open Banking API.

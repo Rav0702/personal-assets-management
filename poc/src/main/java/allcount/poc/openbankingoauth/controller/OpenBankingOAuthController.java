@@ -2,9 +2,9 @@ package allcount.poc.openbankingoauth.controller;
 
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthSessionResponseMapper;
-import allcount.poc.openbankingoauth.object.OpenBankingBankEnum;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthAccessTokenResponseDto;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionResponseDto;
+import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthAccessTokenResponseDto;
+import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthSessionResponseDto;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.service.OpenBankingOAuthAccessTokenRetrieveService;
 import allcount.poc.openbankingoauth.service.OpenBankingOAuthSessionInitializeService;
 import com.fasterxml.jackson.core.JsonProcessingException;

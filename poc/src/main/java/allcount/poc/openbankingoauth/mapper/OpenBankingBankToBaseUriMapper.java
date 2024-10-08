@@ -1,6 +1,6 @@
 package allcount.poc.openbankingoauth.mapper;
 
-import allcount.poc.openbankingoauth.object.OpenBankingBankEnum;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package allcount.poc.openbankingoauth.entity;
 
-import allcount.poc.openbankingoauth.object.OpenBankingBankEnum;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthSessionStatusEnum;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -2,8 +2,8 @@ package allcount.poc.openbankingoauth.mapper;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthAccessTokenResponseDto;
-import allcount.poc.openbankingoauth.object.OpenBankingOAuthAccessTokenTypeEnum;
+import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthAccessTokenResponseDto;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthAccessTokenTypeEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,17 +29,17 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
      */
     public OpenBankingOAuthAccessTokenResponseDto mapToOpenBankingOAuthAccessTokenResponse(
             OpenBankingOAuthAccessTokenEntity openBankingOAuthAccessToken) {
-        OpenBankingOAuthAccessTokenResponseDto openBankingOAuthAccessTokenResponse =
-                new OpenBankingOAuthAccessTokenResponseDto();
-        openBankingOAuthAccessTokenResponse.setId(openBankingOAuthAccessToken.getId());
-        openBankingOAuthAccessTokenResponse.setAccessToken(openBankingOAuthAccessToken.getAccessToken());
-        openBankingOAuthAccessTokenResponse.setRefreshToken(openBankingOAuthAccessToken.getRefreshToken());
-        openBankingOAuthAccessTokenResponse.setExpiresIn(openBankingOAuthAccessToken.getExpiresIn());
-        openBankingOAuthAccessTokenResponse.setTokenType(openBankingOAuthAccessToken.getTokenType());
-        openBankingOAuthAccessTokenResponse.setScope(openBankingOAuthAccessToken.getScope());
-        openBankingOAuthAccessTokenResponse.setUserId(openBankingOAuthAccessToken.getUser().getId());
-        openBankingOAuthAccessTokenResponse.setBank(openBankingOAuthAccessToken.getBank());
-        return openBankingOAuthAccessTokenResponse;
+
+        return OpenBankingOAuthAccessTokenResponseDto.builder()
+                .id(openBankingOAuthAccessToken.getId())
+                .userId(openBankingOAuthAccessToken.getUser().getId())
+                .bank(openBankingOAuthAccessToken.getBank())
+                .accessToken(openBankingOAuthAccessToken.getAccessToken())
+                .refreshToken(openBankingOAuthAccessToken.getRefreshToken())
+                .tokenType(openBankingOAuthAccessToken.getTokenType())
+                .expiresIn(openBankingOAuthAccessToken.getExpiresIn())
+                .scope(openBankingOAuthAccessToken.getScope())
+                .build();
     }
 
     /**
