@@ -1,9 +1,8 @@
-package allcount.poc.credential.entity;
+package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.credential.converter.HashedPasswordAttributeConverter;
-import allcount.poc.credential.object.HashedPassword;
-import allcount.poc.user.entity.AllcountUser;
+import allcount.poc.user.converter.HashedPasswordAttributeConverter;
+import allcount.poc.user.object.HashedPassword;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -13,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 /**
  * Entity for the user credential.
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Table(name = "user_credential")
 public class UserCredential extends AllcountEntity {
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "password")

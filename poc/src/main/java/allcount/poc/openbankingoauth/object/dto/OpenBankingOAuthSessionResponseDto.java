@@ -23,13 +23,13 @@ public class OpenBankingOAuthSessionResponseDto extends OpenBankingOAuthDto {
     /**
      * Constructor.
      *
-     * @param id - the id
-     * @param userId - the userId
-     * @param bank - the bank
-     * @param status - the status
+     * @param id               - the id
+     * @param userId           - the userId
+     * @param bank             - the bank
+     * @param status           - the status
      * @param redirectLoginUri - the redirectLoginUri
-     * @param codeVerifier - the codeVerifier
-     * @param state - the state
+     * @param codeVerifier     - the codeVerifier
+     * @param state            - the state
      */
     @Builder(toBuilder = true)
     public OpenBankingOAuthSessionResponseDto(

@@ -1,26 +1,23 @@
-package allcount.poc.credential.service;
+package allcount.poc.user.service;
 
-import allcount.poc.credential.object.HashedPassword;
-import allcount.poc.credential.object.Password;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+import allcount.poc.user.object.HashedPassword;
+import allcount.poc.user.object.Password;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Service for hashing passwords.
  */
-@Service
+
 public class HashedPasswordService {
 
-    private final transient BCryptPasswordEncoder encoder;
+    private final transient PasswordEncoder encoder;
 
     /**
      * Constructor.
      *
      * @param encoder the encoder for the password.
      */
-    @Autowired
-    public HashedPasswordService(final BCryptPasswordEncoder encoder) {
+    public HashedPasswordService(final PasswordEncoder encoder) {
         this.encoder = encoder;
     }
 

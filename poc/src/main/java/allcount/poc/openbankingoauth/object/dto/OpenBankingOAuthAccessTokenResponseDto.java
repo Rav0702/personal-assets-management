@@ -24,14 +24,14 @@ public class OpenBankingOAuthAccessTokenResponseDto extends OpenBankingOAuthDto 
     /**
      * Constructor.
      *
-     * @param id - the id
-     * @param userId - the userId
-     * @param bank - the bank
-     * @param accessToken - the accessToken
+     * @param id           - the id
+     * @param userId       - the userId
+     * @param bank         - the bank
+     * @param accessToken  - the accessToken
      * @param refreshToken - the refreshToken
-     * @param tokenType - the tokenType
-     * @param expiresIn - the expiresIn
-     * @param scope - the scope
+     * @param tokenType    - the tokenType
+     * @param expiresIn    - the expiresIn
+     * @param scope        - the scope
      */
     @Builder(toBuilder = true)
     public OpenBankingOAuthAccessTokenResponseDto(
