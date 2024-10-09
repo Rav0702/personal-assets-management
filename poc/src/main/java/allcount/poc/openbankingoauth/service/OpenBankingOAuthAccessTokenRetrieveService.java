@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.UUID;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,13 +45,14 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
      */
     @Autowired
     public OpenBankingOAuthAccessTokenRetrieveService(
+            UserDetailsService userDetailsService,
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
             OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
     ) {
-        super(userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
+        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
         this.openBankingOAuthAccessTokenRepository = openBankingOAuthAccessTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
     }

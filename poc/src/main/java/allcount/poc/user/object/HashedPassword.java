@@ -1,4 +1,4 @@
-package allcount.poc.credential.object;
+package allcount.poc.user.object;
 
 import lombok.EqualsAndHashCode;
 

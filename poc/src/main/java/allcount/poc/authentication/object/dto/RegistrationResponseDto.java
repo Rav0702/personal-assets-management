@@ -1,4 +1,4 @@
-package allcount.poc.credential.models;
+package allcount.poc.authentication.object.dto;
 
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationResponseModel {
+public class RegistrationResponseDto {
     private UUID userId;
 }

@@ -1,16 +1,14 @@
-package allcount.poc.user.service;
+package allcount.poc.authentication.service;
 
-import allcount.poc.credential.entity.UserCredential;
-import allcount.poc.credential.models.RegistrationRequestModel;
-import allcount.poc.credential.models.RegistrationResponseModel;
-import allcount.poc.credential.object.HashedPassword;
-import allcount.poc.credential.object.Password;
-import allcount.poc.credential.repository.UserCredentialRepository;
-import allcount.poc.credential.service.HashedPasswordService;
+import allcount.poc.authentication.object.dto.RegistrationRequestDto;
+import allcount.poc.authentication.object.dto.RegistrationResponseDto;
 import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.entity.AllcountUserDetailsEntity;
+import allcount.poc.user.entity.UserCredential;
+import allcount.poc.user.object.HashedPassword;
+import allcount.poc.user.object.Password;
 import allcount.poc.user.repository.AllcountUserRepository;
-import allcount.poc.user.repository.UserDetailsRepository;
+import allcount.poc.user.service.HashedPasswordService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RegistrationService {
     private final transient AllcountUserRepository allcountUserRepository;
-    private final UserCredentialRepository userCredentialRepository;
-    private final UserDetailsRepository userDetailsRepository;
 
     private final transient HashedPasswordService hashedPasswordService;
 
@@ -31,16 +27,13 @@ public class RegistrationService {
      *
      * @param allcountUserRepository the allcount user repository
      * @param hashedPasswordService  the hashed password service
-     * @param userCredentialRepository the user credential repository
-     * @param userDetailsRepository the user details repository
      */
-    public RegistrationService(AllcountUserRepository allcountUserRepository,
-                               HashedPasswordService hashedPasswordService,
-                               UserCredentialRepository userCredentialRepository, UserDetailsRepository userDetailsRepository) {
+    public RegistrationService(
+            AllcountUserRepository allcountUserRepository,
+            HashedPasswordService hashedPasswordService
+    ) {
         this.allcountUserRepository = allcountUserRepository;
         this.hashedPasswordService = hashedPasswordService;
-        this.userCredentialRepository = userCredentialRepository;
-        this.userDetailsRepository = userDetailsRepository;
     }
 
     /**
@@ -49,14 +42,14 @@ public class RegistrationService {
      * @return the id of the new user
      */
     @Transactional
-    public RegistrationResponseModel registerUser(RegistrationRequestModel registrationRequest) {
+    public RegistrationResponseDto registerUser(RegistrationRequestDto registrationRequest) {
         AllcountUser user = new AllcountUser();
         user.setUserDetails(createAllcountUserDetails(user, registrationRequest));
         user.setUserCredential(createAllcountUserCredential(user, registrationRequest));
 
         allcountUserRepository.save(user);
 
-        return new RegistrationResponseModel(user.getId());
+        return new RegistrationResponseDto(user.getId());
     }
 
     /**
@@ -64,14 +57,15 @@ public class RegistrationService {
      *
      * @param registrationRequest the registration request
      */
-    private AllcountUserDetailsEntity createAllcountUserDetails(AllcountUser user, RegistrationRequestModel registrationRequest) {
+    private AllcountUserDetailsEntity createAllcountUserDetails(AllcountUser user,
+                                                                RegistrationRequestDto registrationRequest) {
         AllcountUserDetailsEntity allcountUserDetailsEntity = new AllcountUserDetailsEntity();
         allcountUserDetailsEntity.setEmail(registrationRequest.getEmail());
         allcountUserDetailsEntity.setFirstName(registrationRequest.getFirstName());
         allcountUserDetailsEntity.setLastName(registrationRequest.getLastName());
         allcountUserDetailsEntity.setUser(user);
 
-        return userDetailsRepository.save(allcountUserDetailsEntity);
+        return allcountUserDetailsEntity;
     }
 
     /**
@@ -79,7 +73,7 @@ public class RegistrationService {
      *
      * @param registrationRequest the registration request
      */
-    private UserCredential createAllcountUserCredential(AllcountUser user, RegistrationRequestModel registrationRequest) {
+    private UserCredential createAllcountUserCredential(AllcountUser user, RegistrationRequestDto registrationRequest) {
         UserCredential userCredential = new UserCredential();
         HashedPassword hashedPassword = hashedPasswordService.hash(new Password(registrationRequest.getPassword()));
         userCredential.setUsername(registrationRequest.getUsername());
@@ -87,15 +81,5 @@ public class RegistrationService {
         userCredential.setUser(user);
 
         return userCredential;
-    }
-
-    /**
-     * Checks if the username is already taken.
-     *
-     * @param userName username
-     * @return true if the username is not taken
-     */
-    public boolean checkDuplicateUsername(String userName) {
-        return userCredentialRepository.findByUsername(userName).isEmpty();
     }
 }

@@ -1,5 +1,6 @@
 package allcount.poc.openbankingoauth.service;
 
+import allcount.poc.core.service.AllcountService;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.repository.AllcountUserRepository;
@@ -10,13 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 /**
  * Abstract class for OpenBankingOAuthService.
  */
 @Service
-public abstract class OpenBankingOAuthService {
+public abstract class OpenBankingOAuthService extends AllcountService {
     protected static final String PARAM_CLIENT_ID = "client_id";
     protected static final String PARAM_REDIRECT_URI = "redirect_uri";
     protected static final String REDIRECT_URI =
@@ -41,10 +43,12 @@ public abstract class OpenBankingOAuthService {
      */
     @Autowired
     public OpenBankingOAuthService(
+            UserDetailsService userDetailsService,
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
     ) {
+        super(userDetailsService);
         this.openBankingBankToBaseUriMapper = openBankingBankToBaseUriMapper;
         this.client = ClientBuilder.newBuilder().build().register(new LoggingFilter());
         this.userRepository = userRepository;

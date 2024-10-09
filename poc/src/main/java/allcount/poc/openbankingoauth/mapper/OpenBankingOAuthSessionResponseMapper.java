@@ -18,7 +18,7 @@ public class OpenBankingOAuthSessionResponseMapper {
      */
     public OpenBankingOAuthSessionResponseDto mapToOpenBankingOAuthSessionResponse(
             OpenBankingOAuthSessionEntity openBankingOAuthSession) {
-        return  OpenBankingOAuthSessionResponseDto.builder()
+        return OpenBankingOAuthSessionResponseDto.builder()
                 .id(openBankingOAuthSession.getId())
                 .userId(openBankingOAuthSession.getUser().getId())
                 .bank(openBankingOAuthSession.getBank())

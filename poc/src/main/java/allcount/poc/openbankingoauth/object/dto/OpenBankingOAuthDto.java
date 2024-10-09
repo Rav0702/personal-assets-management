@@ -22,9 +22,9 @@ public class OpenBankingOAuthDto extends AllcountDto {
     /**
      * Constructor.
      *
-     * @param id - the id
+     * @param id     - the id
      * @param userId - the userId
-     * @param bank - the bank
+     * @param bank   - the bank
      */
     public OpenBankingOAuthDto(UUID id, UUID userId, OpenBankingBankEnum bank) {
         super(id);

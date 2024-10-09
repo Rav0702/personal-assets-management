@@ -1,4 +1,4 @@
-package allcount.poc.credential.models;
+package allcount.poc.authentication.object.dto;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  */
 
 @Data
-public class RegistrationRequestModel {
+public class RegistrationRequestDto {
 
     private String username;
     private String password;

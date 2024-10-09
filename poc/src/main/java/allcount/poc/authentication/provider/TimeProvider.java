@@ -1,4 +1,4 @@
-package allcount.poc.credential.authentication;
+package allcount.poc.authentication.provider;
 
 import java.time.Instant;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,8 @@ public class TimeProvider {
     /**
      * Instantiates a new Time provider.
      */
-    public TimeProvider() {}
+    public TimeProvider() {
+    }
 
     /**
      * Get the current time.

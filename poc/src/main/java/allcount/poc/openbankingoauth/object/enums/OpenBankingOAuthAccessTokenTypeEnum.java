@@ -14,16 +14,6 @@ public enum OpenBankingOAuthAccessTokenTypeEnum {
     }
 
     /**
-     * Returns the OpenBankingOAuthAccessTokenType.
-     *
-     * @return the OpenBankingOAuthAccessTokenType
-     */
-    @Override
-    public String toString() {
-        return openBankingOAuthAccessTokenType;
-    }
-
-    /**
      * Returns the OpenBankingOAuthAccessTokenTypeEnum from the given string.
      *
      * @param openBankingOAuthAccessTokenType - the string
@@ -37,5 +27,15 @@ public enum OpenBankingOAuthAccessTokenTypeEnum {
         }
 
         throw new IllegalArgumentException(ERROR_UNKNOWN_ACCESS_TOKEN_TYPE + openBankingOAuthAccessTokenType);
+    }
+
+    /**
+     * Returns the OpenBankingOAuthAccessTokenType.
+     *
+     * @return the OpenBankingOAuthAccessTokenType
+     */
+    @Override
+    public String toString() {
+        return openBankingOAuthAccessTokenType;
     }
 }

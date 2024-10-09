@@ -1,9 +1,8 @@
-package allcount.poc.credential.entity;
+package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.credential.converter.HashedPasswordAttributeConverter;
-import allcount.poc.credential.object.HashedPassword;
-import allcount.poc.user.entity.AllcountUser;
+import allcount.poc.user.converter.HashedPasswordAttributeConverter;
+import allcount.poc.user.object.HashedPassword;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

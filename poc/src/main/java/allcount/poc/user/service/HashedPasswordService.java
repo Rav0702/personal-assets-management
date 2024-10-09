@@ -1,7 +1,7 @@
-package allcount.poc.credential.service;
+package allcount.poc.user.service;
 
-import allcount.poc.credential.object.HashedPassword;
-import allcount.poc.credential.object.Password;
+import allcount.poc.user.object.HashedPassword;
+import allcount.poc.user.object.Password;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**

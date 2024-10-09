@@ -1,6 +1,6 @@
-package allcount.poc.credential.converter;
+package allcount.poc.user.converter;
 
-import allcount.poc.credential.object.HashedPassword;
+import allcount.poc.user.object.HashedPassword;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

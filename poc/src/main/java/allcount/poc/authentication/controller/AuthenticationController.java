@@ -1,11 +1,11 @@
-package allcount.poc.credential.controller;
+package allcount.poc.authentication.controller;
 
-import allcount.poc.credential.models.AuthenticationRequestModel;
-import allcount.poc.credential.models.AuthenticationResponseModel;
-import allcount.poc.credential.models.RegistrationRequestModel;
-import allcount.poc.credential.models.RegistrationResponseModel;
-import allcount.poc.credential.service.AuthenticationService;
-import allcount.poc.user.service.RegistrationService;
+import allcount.poc.authentication.object.dto.AuthenticationRequestDto;
+import allcount.poc.authentication.object.dto.AuthenticationResponseDto;
+import allcount.poc.authentication.object.dto.RegistrationRequestDto;
+import allcount.poc.authentication.object.dto.RegistrationResponseDto;
+import allcount.poc.authentication.service.AuthenticationService;
+import allcount.poc.authentication.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,12 +26,12 @@ public class AuthenticationController {
      * Instantiates a new AuthenticationController.
      *
      * @param authenticationService the authentication service
-     * @param registrationService the registration service
+     * @param registrationService   the registration service
      */
     @Autowired
     public AuthenticationController(
-        AuthenticationService authenticationService,
-        RegistrationService registrationService
+            AuthenticationService authenticationService,
+            RegistrationService registrationService
     ) {
         this.authenticationService = authenticationService;
         this.registrationService = registrationService;
@@ -44,7 +44,7 @@ public class AuthenticationController {
      * @return JWT token if the login is successful
      */
     @PostMapping("/authenticate")
-    public AuthenticationResponseModel authenticate(@RequestBody AuthenticationRequestModel request) {
+    public AuthenticationResponseDto authenticate(@RequestBody AuthenticationRequestDto request) {
         return authenticationService.authenticate(request);
     }
 
@@ -55,7 +55,7 @@ public class AuthenticationController {
      * @return the user id of the registered user
      */
     @PostMapping("/register")
-    public RegistrationResponseModel register(@RequestBody RegistrationRequestModel registrationRequest) {
+    public RegistrationResponseDto register(@RequestBody RegistrationRequestDto registrationRequest) {
         return registrationService.registerUser(registrationRequest);
     }
 }

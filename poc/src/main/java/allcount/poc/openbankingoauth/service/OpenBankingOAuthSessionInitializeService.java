@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +42,12 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
      */
     @Autowired
     public OpenBankingOAuthSessionInitializeService(
+            UserDetailsService userDetailsService,
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
     ) {
-        super(userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
+        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
     }
 
     /**
@@ -58,6 +60,9 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     @Transactional
     public OpenBankingOAuthSessionEntity initializeOpenBankingOAuthSession(UUID userId, OpenBankingBankEnum bank) {
         AllcountUser user = userRepository.findById(userId).orElseThrow();
+
+        assertUserAuthenticatedToActOnBehalfOfUser(user);
+
         String baseUrl = openBankingBankToBaseUriMapper.getBaseUri(bank);
 
         UUID state = UUID.randomUUID();

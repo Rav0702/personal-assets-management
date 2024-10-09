@@ -1,7 +1,6 @@
 package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.credential.entity.UserCredential;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import jakarta.persistence.CascadeType;
@@ -78,7 +77,7 @@ public class AllcountUser extends AllcountEntity implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return userCredential.getPassword().toString();
+        return getUserCredential().getPassword().toString();
     }
 
     /**
@@ -88,7 +87,7 @@ public class AllcountUser extends AllcountEntity implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return userCredential.getUsername();
+        return getUserCredential().getUsername();
     }
 
     /**

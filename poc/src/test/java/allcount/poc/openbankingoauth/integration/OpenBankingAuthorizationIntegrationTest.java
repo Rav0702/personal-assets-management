@@ -1,10 +1,10 @@
 package allcount.poc.openbankingoauth.integration;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import allcount.poc.core.test.integration.IntegrationTest;
+import allcount.poc.core.test.integration.IntegrationTestLib;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
@@ -92,8 +92,10 @@ public class OpenBankingAuthorizationIntegrationTest extends IntegrationTest {
     @Test
     public void testOpenBankingOAuthAuthorizationHappyFlow() throws IOException {
         AllcountUser user = createUserForTesting();
+        String jwtToken = getJwtToken(user);
 
-        String sessionId = given().queryParam(PARAM_BANK, OpenBankingBankEnum.DEUTSCHE_BANK)
+        String sessionId = IntegrationTestLib.createAuthenticatedRequest(jwtToken)
+                .queryParam(PARAM_BANK, OpenBankingBankEnum.DEUTSCHE_BANK)
                 .get(ENDPOINT_USER_CREATE, user.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -119,7 +121,8 @@ public class OpenBankingAuthorizationIntegrationTest extends IntegrationTest {
                         .withStatusCode(HttpStatus.OK.value())
                         .withBody(mockResponse));
 
-        String accessTokenId = given().queryParam(PARAM_CODE, TEST_CODE)
+        String accessTokenId = IntegrationTestLib.createAuthenticatedRequest(jwtToken)
+                .queryParam(PARAM_CODE, TEST_CODE)
                 .queryParam(PARAM_STATE, session.getState())
                 .get(ENDPOINT_RETRIEVE_ACCESS_TOKEN)
                 .then()
