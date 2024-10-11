@@ -4,9 +4,11 @@ import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRepository;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
+import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.client.Entity;
@@ -148,12 +150,34 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         );
     }
 
+    /**
+     * Parses the OpenBankingOAuthRefreshTokenEntity from the OpenBanking response.
+     *
+     * @param response - the Response
+     * @param bank     - the bank
+     * @param user     - the user
+     * @return the OpenBankingOAuthAccessTokenEntity
+     * @throws JsonProcessingException - if the response cannot be processed
+     */
+    private OpenBankingOAuthAccessTokenEntity parseOpenBankingOAuthRefreshTokenFromOpenBankingResponse(
+            Response response,
+            OpenBankingBankEnum bank,
+            AllcountUser user
+    ) throws JsonProcessingException {
+        return openBankingOAuthAccessTokenRepository.save(
+                openBankingOAuthAccessTokenResponseMapper.mapToOpenBankingOAuthRefreshTokenEntity(response, bank, user)
+        );
+    }
+
     public String getAccessToken(UUID userId) throws JsonProcessingException {
         Optional<OpenBankingOAuthAccessTokenEntity> latestToken = openBankingOAuthAccessTokenRepository.findFirstByUserIdOrderByStartDateTimeDesc(userId);
 
         if (latestToken.isPresent()) {
             if (latestToken.get().getEndDateTime().isAfter(now().minusMinutes(1))) {
-                OpenBankingOAuthAccessTokenEntity refreshedToken = refreshAccessToken(latestToken.get());
+                AllcountUser user = userRepository.findById(userId).orElseThrow();
+                OpenBankingOAuthAccessTokenEntity refreshedToken = refreshAccessToken(latestToken.get(),
+                        latestToken.get().getBank(),
+                        user);
                 openBankingOAuthAccessTokenRepository.save(refreshedToken);
                 return refreshedToken.getAccessToken();
             } else {
@@ -164,7 +188,9 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         }
     }
 
-    private OpenBankingOAuthAccessTokenEntity refreshAccessToken(OpenBankingOAuthAccessTokenEntity token) throws JsonProcessingException {
+    private OpenBankingOAuthAccessTokenEntity refreshAccessToken(OpenBankingOAuthAccessTokenEntity token,
+                                                                 OpenBankingBankEnum bank,
+                                                                 AllcountUser user) throws JsonProcessingException {
         Form form = determineRefreshTokenRequestBodyForm(token.getRefreshToken());
 
         Response response = client
@@ -173,7 +199,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
                 .request()
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
-        return parseOpenBankingOAuthAccessTokenFromOpenBankingResponse(response, session???);
+        return parseOpenBankingOAuthRefreshTokenFromOpenBankingResponse(response, bank, user);
     }
 
     /**
@@ -186,7 +212,6 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         Form form = new Form();
         form.param(PARAM_GRANT_TYPE, GRAND_TYPE_REFRESH_TOKEN);
         form.param(PARAM_CODE, refreshToken);
-        form.param(PARAM_CODE_VERIFIER, codeVerifier);
         form.param(PARAM_CLIENT_ID, simulationClientId);
         form.param(PARAM_REDIRECT_URI, REDIRECT_URI);
         return form;
