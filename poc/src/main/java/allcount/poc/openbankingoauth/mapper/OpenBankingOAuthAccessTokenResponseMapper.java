@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 /**
  * Mapper for the OpenBankingOAuthAccessTokenEntity.
  */
@@ -37,7 +39,8 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
                 .accessToken(openBankingOAuthAccessToken.getAccessToken())
                 .refreshToken(openBankingOAuthAccessToken.getRefreshToken())
                 .tokenType(openBankingOAuthAccessToken.getTokenType())
-                .expiresIn(openBankingOAuthAccessToken.getExpiresIn())
+                .startDateTime(openBankingOAuthAccessToken.getStartDateTime())
+                .endDateTime(openBankingOAuthAccessToken.getEndDateTime())
                 .scope(openBankingOAuthAccessToken.getScope())
                 .build();
     }
@@ -62,14 +65,16 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
         assert jsonNode != null;
         String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
         String tokenType = jsonNode.get(FIELD_TOKEN_TYPE).textValue();
-        Long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
+        long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
         String refreshToken = jsonNode.get(FIELD_REFRESH_TOKEN).textValue();
         String scope = jsonNode.get(FIELD_SCOPE).textValue();
+        LocalDateTime now = LocalDateTime.now();
 
         return OpenBankingOAuthAccessTokenEntity.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .expiresIn(expiresIn)
+                .startDateTime(now)
+                .endDateTime(now.plusSeconds(expiresIn))
                 .tokenType(OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType))
                 .scope(scope)
                 .user(session.getUser())

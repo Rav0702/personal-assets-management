@@ -13,12 +13,18 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.time.LocalDateTime.now;
 
 /**
  * Service for retrieving the OpenBankingOAuthAccessTokenEntity.
@@ -27,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuthService {
     private static final String PARAM_GRANT_TYPE = "grant_type";
     private static final String PARAM_CODE = "code";
+    private static final String GRAND_TYPE_REFRESH_TOKEN = "refresh_token";
     private static final String PARAM_CODE_VERIFIER = "code_verifier";
     private static final String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
 
@@ -139,5 +146,49 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         return openBankingOAuthAccessTokenRepository.save(
                 openBankingOAuthAccessTokenResponseMapper.mapToOpenBankingOAuthAccessTokenEntity(response, session)
         );
+    }
+
+    public String getAccessToken(UUID userId) throws JsonProcessingException {
+        Optional<OpenBankingOAuthAccessTokenEntity> latestToken = openBankingOAuthAccessTokenRepository.findFirstByUserIdOrderByStartDateTimeDesc(userId);
+
+        if (latestToken.isPresent()) {
+            if (latestToken.get().getEndDateTime().isAfter(now().minusMinutes(1))) {
+                OpenBankingOAuthAccessTokenEntity refreshedToken = refreshAccessToken(latestToken.get());
+                openBankingOAuthAccessTokenRepository.save(refreshedToken);
+                return refreshedToken.getAccessToken();
+            } else {
+                return latestToken.get().getAccessToken();
+            }
+        } else {
+            throw new RuntimeException("No access token found for user with id: " + userId);
+        }
+    }
+
+    private OpenBankingOAuthAccessTokenEntity refreshAccessToken(OpenBankingOAuthAccessTokenEntity token) throws JsonProcessingException {
+        Form form = determineRefreshTokenRequestBodyForm(token.getRefreshToken());
+
+        Response response = client
+                .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
+                .target(openBankingBankToBaseUriMapper.getBaseUri(token.getBank()) + TOKEN_URL)
+                .request()
+                .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+        return parseOpenBankingOAuthAccessTokenFromOpenBankingResponse(response, session???);
+    }
+
+    /**
+     * Determines the access token request body form.
+     *
+     * @param refreshToken - the refresh token we use to refresh the access token
+     * @return the Form
+     */
+    private Form determineRefreshTokenRequestBodyForm(String refreshToken) {
+        Form form = new Form();
+        form.param(PARAM_GRANT_TYPE, GRAND_TYPE_REFRESH_TOKEN);
+        form.param(PARAM_CODE, refreshToken);
+        form.param(PARAM_CODE_VERIFIER, codeVerifier);
+        form.param(PARAM_CLIENT_ID, simulationClientId);
+        form.param(PARAM_REDIRECT_URI, REDIRECT_URI);
+        return form;
     }
 }

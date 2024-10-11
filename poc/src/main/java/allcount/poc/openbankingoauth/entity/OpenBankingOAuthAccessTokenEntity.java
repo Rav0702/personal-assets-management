@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 /**
  * Entity storing the access token retrieved from OpenBanking OAuth.
  */
@@ -36,7 +38,10 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
     private OpenBankingOAuthAccessTokenTypeEnum tokenType;
 
     @Column(nullable = false)
-    private Long expiresIn;
+    private LocalDateTime startDateTime;
+
+    @Column(nullable = false)
+    private LocalDateTime endDateTime;
 
     @Column(nullable = false)
     private String scope;
@@ -44,13 +49,14 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
     /**
      * Constructor.
      *
-     * @param bank         - the bank
-     * @param user         - the user
-     * @param accessToken  - the access token
-     * @param refreshToken - the refresh token
-     * @param tokenType    - the token type
-     * @param expiresIn    - the expiration time
-     * @param scope        - the scope
+     * @param bank          - the bank
+     * @param user          - the user
+     * @param accessToken   - the access token
+     * @param refreshToken  - the refresh token
+     * @param tokenType     - the token type
+     * @param startDateTime - the start date of the token
+     *                      (the end date is calculated based on the token type)
+     * @param scope         - the scope
      */
     @Builder
     public OpenBankingOAuthAccessTokenEntity(
@@ -59,14 +65,16 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
             String accessToken,
             String refreshToken,
             OpenBankingOAuthAccessTokenTypeEnum tokenType,
-            Long expiresIn,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime,
             String scope
     ) {
         super(bank, user);
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenType = tokenType;
-        this.expiresIn = expiresIn;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.scope = scope;
     }
 
