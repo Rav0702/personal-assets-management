@@ -1,11 +1,14 @@
 package allcount.poc.openbankingoauth.service;
 
+import static java.time.LocalDateTime.now;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
+import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRepository;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.entity.AllcountUser;
@@ -15,18 +18,14 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+import java.util.logging.Logger;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static java.time.LocalDateTime.now;
 
 /**
  * Service for retrieving the OpenBankingOAuthAccessTokenEntity.
@@ -43,6 +42,8 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
 
     private final transient OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository;
     private final transient OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper;
+    private final transient OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository;
+    private static final Logger LOG = Logger.getLogger(OpenBankingOAuthAccessTokenRetrieveService.class.getName());
 
     /**
      * Constructor.
@@ -57,6 +58,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
             UserDetailsService userDetailsService,
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
+            OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
             OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
@@ -64,6 +66,7 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
         this.openBankingOAuthAccessTokenRepository = openBankingOAuthAccessTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
+        this.openBankingOAuthAccessTokenRedisRepository = openBankingOAuthAccessTokenRedisRepository;
     }
 
     /**
@@ -85,7 +88,11 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
 
         updateOpenBankingOAuthSessionAccessTokenReceived(session);
 
-        return parseOpenBankingOAuthAccessTokenFromOpenBankingResponse(response, session);
+        OpenBankingOAuthAccessTokenEntity token =
+                parseOpenBankingOAuthAccessTokenFromOpenBankingResponse(response, session);
+        addOpenBankingOAuthAccessTokenToRedis(token);
+
+        return token;
     }
 
     /**
@@ -215,5 +222,18 @@ public class OpenBankingOAuthAccessTokenRetrieveService extends OpenBankingOAuth
         form.param(PARAM_CLIENT_ID, simulationClientId);
         form.param(PARAM_REDIRECT_URI, REDIRECT_URI);
         return form;
+    }
+
+    private void addOpenBankingOAuthAccessTokenToRedis(OpenBankingOAuthAccessTokenEntity token) {
+        OpenBankingOAuthAccessTokenRedisEntity redisToken = new OpenBankingOAuthAccessTokenRedisEntity();
+
+        String identifier = token.getBank().name() + "|" + token.getUser().getId().toString();
+        redisToken.setId(identifier);
+        redisToken.setAccessToken(token.getAccessToken());
+        redisToken.setExpiresIn(token.getExpiresIn());
+
+        LOG.info("Saving token to redis with key: " + redisToken.getId());
+
+        openBankingOAuthAccessTokenRedisRepository.save(redisToken);
     }
 }

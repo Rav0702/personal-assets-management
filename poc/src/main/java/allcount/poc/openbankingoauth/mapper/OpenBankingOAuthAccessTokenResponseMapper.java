@@ -10,9 +10,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.Response;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper for the OpenBankingOAuthAccessTokenEntity.
@@ -76,6 +75,7 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .startDateTime(now)
+                .expiresIn(expiresIn)
                 .endDateTime(now.plusSeconds(expiresIn))
                 .tokenType(OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType))
                 .scope(scope)

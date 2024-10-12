@@ -13,8 +13,11 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - SIMULATION_CLIENT_ID=${SIMULATION_CLIENT_ID}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - springboot-mysql-network
+      - springboot-redis-network
   mysqldb:
     image: mysql:8.0.33
     ports:
@@ -31,8 +34,22 @@ services:
       retries: 10
       interval: 3s
       timeout: 30s
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --port 6379
+    volumes:
+      - redis:/data
+    networks:
+      - springboot-redis-network
 volumes:
   mysql-data:
+  redis:
 networks:
   springboot-mysql-network:
     name: springboot-mysql-network
+  springboot-redis-network:
+    name: springboot-redis-network
+    driver: bridge

@@ -8,13 +8,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 /**
  * Entity storing the access token retrieved from OpenBanking OAuth.
@@ -36,6 +35,9 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OpenBankingOAuthAccessTokenTypeEnum tokenType;
+
+    @Column(nullable = false)
+    private Long expiresIn;
 
     @Column(nullable = false)
     private LocalDateTime startDateTime;
@@ -67,7 +69,8 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
             OpenBankingOAuthAccessTokenTypeEnum tokenType,
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            String scope
+            String scope,
+            Long expiresIn
     ) {
         super(bank, user);
         this.accessToken = accessToken;
@@ -76,6 +79,7 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.scope = scope;
+        this.expiresIn = expiresIn;
     }
 
     @Override
