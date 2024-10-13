@@ -1,12 +1,12 @@
 package allcount.poc.core.configuration;
 
+import com.redis.testcontainers.RedisContainer;
 import org.mockserver.client.MockServerClient;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -24,15 +24,14 @@ public class TestcontainersConfiguration {
     static MockServerClient mockServerClient;
 
     @Container
-    static GenericContainer redis =
-            new GenericContainer(DockerImageName.parse("redis:7"))
-                    .withExposedPorts(6379);
+    static RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:latest"))
+            .withExposedPorts(6379);
 
     @DynamicPropertySource
     static void redisProperties(DynamicPropertyRegistry registry) {
         redis.start();
-        registry.add("spring.redis.host", redis::getHost);
-        registry.add("spring.redis.port", redis::getFirstMappedPort);
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", redis::getFirstMappedPort);
     }
 
     /**
