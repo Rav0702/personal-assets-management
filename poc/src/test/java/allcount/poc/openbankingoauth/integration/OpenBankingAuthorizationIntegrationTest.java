@@ -9,7 +9,7 @@ import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
-import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRepository;
+import allcount.poc.openbankingoauth.repository.OpenBankingOAuthRefreshTokenRepository;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
 import allcount.poc.user.entity.AllcountUser;
 import java.io.File;
@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ public class OpenBankingAuthorizationIntegrationTest extends IntegrationTest {
             PATH_RELATIVE + File.separator + "response" + File.separator + "accessTokenMockResponse.json";
 
     private final transient OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository;
-    private final transient OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository;
+    private final transient OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository;
     private final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
 
     /**
@@ -63,10 +62,10 @@ public class OpenBankingAuthorizationIntegrationTest extends IntegrationTest {
      */
     @Autowired
     public OpenBankingAuthorizationIntegrationTest(OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
-                                                   OpenBankingOAuthAccessTokenRepository openBankingOAuthAccessTokenRepository,
+                                                   OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
                                                    OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper) {
         this.openBankingOAuthSessionRepository = openBankingOAuthSessionRepository;
-        this.openBankingOAuthAccessTokenRepository = openBankingOAuthAccessTokenRepository;
+        this.openBankingOAuthRefreshTokenRepository = openBankingOAuthRefreshTokenRepository;
         this.openBankingBankToBaseUriMapper = openBankingBankToBaseUriMapper;
     }
 
@@ -82,7 +81,7 @@ public class OpenBankingAuthorizationIntegrationTest extends IntegrationTest {
     @AfterEach
     public void afterEach() {
         openBankingOAuthSessionRepository.deleteAll();
-        openBankingOAuthAccessTokenRepository.deleteAll();
+        openBankingOAuthRefreshTokenRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -136,7 +135,6 @@ public class OpenBankingAuthorizationIntegrationTest extends IntegrationTest {
                 .findById(UUID.fromString(sessionId))
                 .orElseThrow();
 
-        Assertions.assertTrue(openBankingOAuthAccessTokenRepository.existsById(UUID.fromString(accessTokenId)));
         MatcherAssert.assertThat(updatedSession.getStatus(),
                 equalTo(OpenBankingOAuthSessionStatusEnum.ACCESS_TOKEN_RECEIVED));
     }

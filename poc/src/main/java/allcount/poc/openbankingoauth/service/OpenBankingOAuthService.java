@@ -6,7 +6,6 @@ import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepositor
 import allcount.poc.user.repository.AllcountUserRepository;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.NewCookie;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public abstract class OpenBankingOAuthService extends AllcountService {
+    protected static final String PARAM_SCOPE = "scope";
     protected static final String PARAM_CLIENT_ID = "client_id";
     protected static final String PARAM_REDIRECT_URI = "redirect_uri";
     protected static final String REDIRECT_URI =
@@ -26,14 +26,21 @@ public abstract class OpenBankingOAuthService extends AllcountService {
 
     protected static final String ERROR_SIMULATION_CLIENT_ID_NOT_FOUND = "Simulation client ID not found";
     protected static final String PLACEHOLDER_SIMULATION_CLIENT_ID = "simulation_client_id";
+    protected static final String PLACEHOLDER_SIMULATION_CLIENT_SECRET = "simulation_client_secret";
+
     private static final Logger LOG = Logger.getLogger(OpenBankingOAuthService.class.getName());
+
     protected final transient Client client;
     protected final transient AllcountUserRepository userRepository;
     protected final transient OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository;
     protected final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
+
     @Value("#{environment.SIMULATION_CLIENT_ID}")
     protected String simulationClientId;
-    protected transient NewCookie sessionId;
+
+    @Value("#{environment.SIMULATION_CLIENT_SECRET}")
+    protected String simulationClientSecret;
+
 
     /**
      * Constructor.
@@ -59,6 +66,13 @@ public abstract class OpenBankingOAuthService extends AllcountService {
 
             // TODO: try to refactor this and use env in tests as well.
             simulationClientId = PLACEHOLDER_SIMULATION_CLIENT_ID;
+        }
+
+        if (simulationClientSecret == null || simulationClientSecret.isEmpty()) {
+            LOG.log(Level.SEVERE, ERROR_SIMULATION_CLIENT_ID_NOT_FOUND);
+
+            // TODO: try to refactor this and use env in tests as well.
+            simulationClientSecret = PLACEHOLDER_SIMULATION_CLIENT_SECRET;
         }
     }
 

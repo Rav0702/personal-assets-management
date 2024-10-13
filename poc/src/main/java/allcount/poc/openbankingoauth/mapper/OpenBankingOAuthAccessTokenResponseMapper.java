@@ -1,20 +1,17 @@
 package allcount.poc.openbankingoauth.mapper;
 
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
 import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthAccessTokenResponseDto;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthAccessTokenTypeEnum;
 import allcount.poc.user.entity.AllcountUser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.ws.rs.core.Response;
-import java.time.LocalDateTime;
+import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper for the OpenBankingOAuthAccessTokenEntity.
+ * Mapper for the OpenBankingOAuthRefreshTokenEntity.
  */
 @Component
 public class OpenBankingOAuthAccessTokenResponseMapper {
@@ -25,100 +22,72 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
     private static final String FIELD_TOKEN_TYPE = "token_type";
 
     /**
-     * Maps the OpenBankingOAuthAccessTokenEntity to the OpenBankingOAuthAccessTokenResponseDto.
+     * Maps the OpenBankingOAuthRefreshTokenEntity to the OpenBankingOAuthAccessTokenResponseDto.
      *
-     * @param openBankingOAuthAccessToken - the OpenBankingOAuthAccessTokenEntity
+     * @param openBankingOAuthAccessToken - the OpenBankingOAuthRefreshTokenEntity
      * @return the OpenBankingOAuthAccessTokenResponseDto
      */
     public OpenBankingOAuthAccessTokenResponseDto mapToOpenBankingOAuthAccessTokenResponse(
-            OpenBankingOAuthAccessTokenEntity openBankingOAuthAccessToken) {
+            OpenBankingOAuthRefreshTokenEntity openBankingOAuthAccessToken) {
 
         return OpenBankingOAuthAccessTokenResponseDto.builder()
                 .id(openBankingOAuthAccessToken.getId())
                 .userId(openBankingOAuthAccessToken.getUser().getId())
                 .bank(openBankingOAuthAccessToken.getBank())
-                .accessToken(openBankingOAuthAccessToken.getAccessToken())
                 .refreshToken(openBankingOAuthAccessToken.getRefreshToken())
                 .tokenType(openBankingOAuthAccessToken.getTokenType())
-                .startDateTime(openBankingOAuthAccessToken.getStartDateTime())
-                .endDateTime(openBankingOAuthAccessToken.getEndDateTime())
                 .scope(openBankingOAuthAccessToken.getScope())
                 .build();
     }
 
     /**
-     * Maps the Response to the OpenBankingOAuthAccessTokenEntity.
+     * Maps the Response to the OpenBankingOAuthRefreshTokenEntity.
      *
-     * @param response - the Response
-     * @param session  - the OpenBankingOAuthSessionEntity
-     * @return the OpenBankingOAuthAccessTokenEntity
-     * @throws JsonProcessingException - if the response cannot be processed
+     * @param jsonNode - the jsonNode
+     * @param user     - the user
+     * @param bank     - the bank
+     * @return the OpenBankingOAuthRefreshTokenEntity
      */
-    public OpenBankingOAuthAccessTokenEntity mapToOpenBankingOAuthAccessTokenEntity(
-            Response response,
-            OpenBankingOAuthSessionEntity session
-    ) throws JsonProcessingException {
-        String responseWithAccessToken = response.readEntity(String.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
-
-        assert jsonNode != null;
-        String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
+    public OpenBankingOAuthRefreshTokenEntity mapResponseToOAuthRefreshToken(
+            @NonNull JsonNode jsonNode,
+            AllcountUser user,
+            OpenBankingBankEnum bank
+    ) {
         String tokenType = jsonNode.get(FIELD_TOKEN_TYPE).textValue();
-        long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
         String refreshToken = jsonNode.get(FIELD_REFRESH_TOKEN).textValue();
         String scope = jsonNode.get(FIELD_SCOPE).textValue();
-        LocalDateTime now = LocalDateTime.now();
 
-        return OpenBankingOAuthAccessTokenEntity.builder()
-                .accessToken(accessToken)
+        return OpenBankingOAuthRefreshTokenEntity.builder()
                 .refreshToken(refreshToken)
-                .startDateTime(now)
-                .expiresIn(expiresIn)
-                .endDateTime(now.plusSeconds(expiresIn))
-                .tokenType(OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType))
-                .scope(scope)
-                .user(session.getUser())
-                .bank(session.getBank())
-                .build();
-    }
-
-    /**
-     * Maps the Response to the OpenBankingOAuthAccessTokenEntity.
-     *
-     * @param response - the Response
-     * @param session  - the OpenBankingOAuthSessionEntity
-     * @return the OpenBankingOAuthAccessTokenEntity
-     * @throws JsonProcessingException - if the response cannot be processed
-     */
-    public OpenBankingOAuthAccessTokenEntity mapToOpenBankingOAuthRefreshTokenEntity(
-            Response response,
-            OpenBankingBankEnum bank,
-            AllcountUser user
-    ) throws JsonProcessingException {
-        String responseWithAccessToken = response.readEntity(String.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
-
-        assert jsonNode != null;
-        String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
-        String tokenType = jsonNode.get(FIELD_TOKEN_TYPE).textValue();
-        long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
-        String refreshToken = jsonNode.get(FIELD_REFRESH_TOKEN).textValue();
-        String scope = jsonNode.get(FIELD_SCOPE).textValue();
-        LocalDateTime now = LocalDateTime.now();
-
-        return OpenBankingOAuthAccessTokenEntity.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .startDateTime(now)
-                .endDateTime(now.plusSeconds(expiresIn))
                 .tokenType(OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType))
                 .scope(scope)
                 .user(user)
                 .bank(bank)
                 .build();
     }
+
+    /**
+     * Maps the Response to the OpenBankingOAuthAccessTokenRedisEntity.
+     *
+     * @param jsonNode    - the jsonNode
+     * @param refreshToken - the OpenBankingOAuthRefreshTokenEntity
+     * @return the OpenBankingOAuthAccessTokenRedisEntity
+     */
+    public OpenBankingOAuthAccessTokenRedisEntity mapResponseToOAuthAccessToken(
+            @NonNull JsonNode jsonNode,
+            OpenBankingOAuthRefreshTokenEntity refreshToken
+    ) {
+        String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
+        Long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();
+        String tokenType = jsonNode.get(FIELD_TOKEN_TYPE).textValue();
+
+        return new OpenBankingOAuthAccessTokenRedisEntity(
+                accessToken,
+                OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType),
+                refreshToken.getUser().getId(),
+                refreshToken.getBank(),
+                expiresIn
+        );
+    }
+
 }

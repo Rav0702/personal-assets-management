@@ -1,7 +1,5 @@
 package allcount.poc.openbankingoauth.object.enums;
 
-import java.time.LocalDateTime;
-
 /**
  * Enum for the OpenBankingOAuthAccessTokenType.
  */

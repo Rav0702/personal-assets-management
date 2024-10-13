@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,12 +22,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "open_banking_access_token")
-public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String accessToken;
-
+@Table(name = "open_banking_refresh_token")
+public class OpenBankingOAuthRefreshTokenEntity extends OpenBankingOAuthEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String refreshToken;
 
@@ -37,49 +32,29 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
     private OpenBankingOAuthAccessTokenTypeEnum tokenType;
 
     @Column(nullable = false)
-    private Long expiresIn;
-
-    @Column(nullable = false)
-    private LocalDateTime startDateTime;
-
-    @Column(nullable = false)
-    private LocalDateTime endDateTime;
-
-    @Column(nullable = false)
     private String scope;
 
     /**
      * Constructor.
      *
-     * @param bank          - the bank
-     * @param user          - the user
-     * @param accessToken   - the access token
-     * @param refreshToken  - the refresh token
-     * @param tokenType     - the token type
-     * @param startDateTime - the start date of the token
-     *                      (the end date is calculated based on the token type)
-     * @param scope         - the scope
+     * @param bank         - the bank
+     * @param user         - the user
+     * @param refreshToken - the refresh token
+     * @param tokenType    - the token type
+     * @param scope        - the scope
      */
     @Builder
-    public OpenBankingOAuthAccessTokenEntity(
+    public OpenBankingOAuthRefreshTokenEntity(
             OpenBankingBankEnum bank,
             AllcountUser user,
-            String accessToken,
             String refreshToken,
             OpenBankingOAuthAccessTokenTypeEnum tokenType,
-            LocalDateTime startDateTime,
-            LocalDateTime endDateTime,
-            String scope,
-            Long expiresIn
+            String scope
     ) {
         super(bank, user);
-        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenType = tokenType;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
         this.scope = scope;
-        this.expiresIn = expiresIn;
     }
 
     @Override
