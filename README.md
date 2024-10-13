@@ -15,6 +15,7 @@ To run the project the following steps need to be taken:
 MYSQL_DATABASE=database_name
 MYSQL_PASSWORD=database_password
 SIMULATION_CLIENT_ID=Simulation client ID of an app from https://developer.db.com/dashboard/developerapps
+SIMULATION_CLIENT_SECRET=Simulation client secret of an app from https://developer.db.com/dashboard/developerapps
 ```
 4. Run the following command in the `poc` directory of the project:
 ```bash

@@ -21,4 +21,13 @@ public interface OpenBankingOAuthRefreshTokenRepository
      */
     Optional<OpenBankingOAuthRefreshTokenEntity> findFirstByUserIdAndBankOrderByCreatedTimestampDesc(UUID userId,
                                                                                                      OpenBankingBankEnum bank);
+
+    /**
+     * Checks if the refresh token exists by user ID and bank.
+     *
+     * @param id                 - the user ID
+     * @param openBankingBankEnum - the bank
+     * @return true if the refresh token exists, false otherwise
+     */
+    boolean existsByUserIdAndBank(UUID id, OpenBankingBankEnum openBankingBankEnum);
 }
