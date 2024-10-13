@@ -194,8 +194,8 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
                 .findById(UUID.fromString(sessionId))
                 .orElseThrow();
 
-        Assertions.assertTrue(openBankingOAuthRefreshTokenRepository.existsByUserIdAndBank
-                (user.getId(), OpenBankingBankEnum.DEUTSCHE_BANK));
+        Assertions.assertTrue(openBankingOAuthRefreshTokenRepository.existsByUserIdAndBank(
+                user.getId(), OpenBankingBankEnum.DEUTSCHE_BANK));
         MatcherAssert.assertThat(updatedSession.getStatus(),
                 equalTo(OpenBankingOAuthSessionStatusEnum.ACCESS_TOKEN_RECEIVED));
     }
