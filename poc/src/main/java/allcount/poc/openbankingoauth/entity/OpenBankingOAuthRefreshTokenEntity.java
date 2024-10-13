@@ -22,21 +22,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "open_banking_access_token")
-public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String accessToken;
-
+@Table(name = "open_banking_refresh_token")
+public class OpenBankingOAuthRefreshTokenEntity extends OpenBankingOAuthEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OpenBankingOAuthAccessTokenTypeEnum tokenType;
-
-    @Column(nullable = false)
-    private Long expiresIn;
 
     @Column(nullable = false)
     private String scope;
@@ -46,27 +39,21 @@ public class OpenBankingOAuthAccessTokenEntity extends OpenBankingOAuthEntity {
      *
      * @param bank         - the bank
      * @param user         - the user
-     * @param accessToken  - the access token
      * @param refreshToken - the refresh token
      * @param tokenType    - the token type
-     * @param expiresIn    - the expiration time
      * @param scope        - the scope
      */
     @Builder
-    public OpenBankingOAuthAccessTokenEntity(
+    public OpenBankingOAuthRefreshTokenEntity(
             OpenBankingBankEnum bank,
             AllcountUser user,
-            String accessToken,
             String refreshToken,
             OpenBankingOAuthAccessTokenTypeEnum tokenType,
-            Long expiresIn,
             String scope
     ) {
         super(bank, user);
-        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenType = tokenType;
-        this.expiresIn = expiresIn;
         this.scope = scope;
     }
 

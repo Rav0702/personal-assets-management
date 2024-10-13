@@ -24,7 +24,6 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     private static final String AUTHORIZATION_URL = "/gw/oidc/authorize";
 
     private static final String PARAM_RESPONSE_TYPE = "response_type";
-    private static final String PARAM_SCOPE = "scope";
     private static final String PARAM_CODE_CHALLENGE_METHOD = "code_challenge_method";
     private static final String PARAM_CODE_CHALLENGE = "code_challenge";
     private static final String PARAM_STATE = "state";

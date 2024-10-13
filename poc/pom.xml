@@ -172,6 +172,23 @@
             <artifactId>hibernate-validator</artifactId>
             <version>8.0.0.Final</version>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>3.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>5.2.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.redis.testcontainers</groupId>
+			<artifactId>testcontainers-redis-junit-jupiter</artifactId>
+			<version>1.4.6</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

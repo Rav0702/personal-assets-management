@@ -4,6 +4,9 @@ import org.mockserver.client.MockServerClient;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -12,13 +15,25 @@ import org.testcontainers.utility.DockerImageName;
 /**
  * Configuration for the testcontainers.
  */
-@TestConfiguration(proxyBeanMethods = false)
+@TestConfiguration()
 public class TestcontainersConfiguration {
 
     @Container
     static MockServerContainer mockServerContainer =
             new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.15.0"));
     static MockServerClient mockServerClient;
+
+    @Container
+    static GenericContainer redis =
+            new GenericContainer(DockerImageName.parse("redis:7"))
+                    .withExposedPorts(6379);
+
+    @DynamicPropertySource
+    static void redisProperties(DynamicPropertyRegistry registry) {
+        redis.start();
+        registry.add("spring.redis.host", redis::getHost);
+        registry.add("spring.redis.port", redis::getFirstMappedPort);
+    }
 
     /**
      * Bean for the MySQL container.
@@ -65,4 +80,5 @@ public class TestcontainersConfiguration {
 
         return mockServerClient;
     }
+
 }
