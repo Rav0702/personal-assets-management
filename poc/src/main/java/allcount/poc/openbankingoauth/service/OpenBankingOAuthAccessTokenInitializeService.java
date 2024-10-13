@@ -68,7 +68,7 @@ public class OpenBankingOAuthAccessTokenInitializeService extends OpenBankingOAu
 
         updateOpenBankingOAuthSessionAccessTokenReceived(session);
 
-        return populateOpenBankingOAuthAccessTokenFromResponse(response, session.getUser(), session.getBank());
+        return generateAllOpenBankingOAuthAccessTokenEntity(response, session.getUser(), session.getBank());
     }
 
     /**

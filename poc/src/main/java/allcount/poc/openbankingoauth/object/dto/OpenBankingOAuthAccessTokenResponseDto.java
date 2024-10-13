@@ -2,7 +2,6 @@ package allcount.poc.openbankingoauth.object.dto;
 
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthAccessTokenTypeEnum;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +17,6 @@ import lombok.Setter;
 public class OpenBankingOAuthAccessTokenResponseDto extends OpenBankingOAuthDto {
     private String refreshToken;
     private OpenBankingOAuthAccessTokenTypeEnum tokenType;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
     private String scope;
 
     /**
