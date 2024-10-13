@@ -45,7 +45,7 @@ public abstract class AllcountService {
      *
      * @return the authenticated user
      */
-    private AllcountUser getAuthenticatedUser() {
+    protected AllcountUser getAuthenticatedUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         assert principal instanceof String;

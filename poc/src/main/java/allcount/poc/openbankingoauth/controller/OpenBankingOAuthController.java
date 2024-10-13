@@ -1,11 +1,10 @@
 package allcount.poc.openbankingoauth.controller;
 
-import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthSessionResponseMapper;
-import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthAccessTokenResponseDto;
 import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthSessionResponseDto;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
-import allcount.poc.openbankingoauth.service.OpenBankingOAuthAccessTokenRetrieveService;
+import allcount.poc.openbankingoauth.service.OpenBankingOAuthAccessTokenInitializeService;
 import allcount.poc.openbankingoauth.service.OpenBankingOAuthSessionInitializeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.UUID;
@@ -23,28 +22,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class OpenBankingOAuthController {
 
     private final transient OpenBankingOAuthSessionInitializeService openBankingOAuthSessionInitializeService;
-    private final transient OpenBankingOAuthAccessTokenRetrieveService openBankingOAuthAccessTokenRetrieveService;
-    private final transient OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper;
+    private final transient OpenBankingOAuthAccessTokenInitializeService openBankingOAuthAccessTokenInitializeService;
     private final transient OpenBankingOAuthSessionResponseMapper openBankingOAuthSessionResponseMapper;
 
     /**
      * Constructor.
      *
-     * @param openBankingOAuthSessionInitializeService   - the OpenBankingOAuthSessionInitializeService
-     * @param openBankingOAuthAccessTokenRetrieveService - the OpenBankingOAuthAccessTokenRetrieveService
-     * @param openBankingOAuthAccessTokenResponseMapper  - the OpenBankingOAuthAccessTokenResponseMapper
-     * @param openBankingOAuthSessionResponseMapper      - the OpenBankingOAuthSessionResponseMapper
+     * @param openBankingOAuthSessionInitializeService     - the OpenBankingOAuthSessionInitializeService
+     * @param openBankingOAuthAccessTokenInitializeService - the OpenBankingOAuthAccessTokenInitializeService
+     * @param openBankingOAuthSessionResponseMapper        - the OpenBankingOAuthSessionResponseMapper
      */
     @Autowired
     public OpenBankingOAuthController(
             OpenBankingOAuthSessionInitializeService openBankingOAuthSessionInitializeService,
-            OpenBankingOAuthAccessTokenRetrieveService openBankingOAuthAccessTokenRetrieveService,
-            OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
+            OpenBankingOAuthAccessTokenInitializeService openBankingOAuthAccessTokenInitializeService,
             OpenBankingOAuthSessionResponseMapper openBankingOAuthSessionResponseMapper
     ) {
         this.openBankingOAuthSessionInitializeService = openBankingOAuthSessionInitializeService;
-        this.openBankingOAuthAccessTokenRetrieveService = openBankingOAuthAccessTokenRetrieveService;
-        this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
+        this.openBankingOAuthAccessTokenInitializeService = openBankingOAuthAccessTokenInitializeService;
         this.openBankingOAuthSessionResponseMapper = openBankingOAuthSessionResponseMapper;
     }
 
@@ -74,12 +69,11 @@ public class OpenBankingOAuthController {
      * @throws JsonProcessingException - if an error occurs
      */
     @GetMapping("v1/open-banking-authorization/retrieve-access-token")
-    public OpenBankingOAuthAccessTokenResponseDto retrieveAccessToken(
+    public OpenBankingOAuthAccessTokenRedisEntity retrieveAccessToken(
             @NonNull @RequestParam String code,
             @NonNull @RequestParam UUID state
     ) throws JsonProcessingException {
-        return openBankingOAuthAccessTokenResponseMapper.mapToOpenBankingOAuthAccessTokenResponse(
-                openBankingOAuthAccessTokenRetrieveService.retrieveOpenBankingOAuthAccessToken(code, state)
-        );
+        return openBankingOAuthAccessTokenInitializeService.initializeOpenBankingOAuthAccessToken(code, state);
+
     }
 }
