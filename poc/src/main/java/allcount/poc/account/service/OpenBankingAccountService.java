@@ -21,6 +21,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.glassfish.jersey.client.ClientProperties;
@@ -92,8 +93,22 @@ public class OpenBankingAccountService {
             OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity = openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
             String accessToken = tokenRedisEntity.getAccessToken();
             Response response = requestAccountFromCode(accessToken, bank);
-            accounts.addAll(parseAccountFromOpenBankingResponse(response, user, bank));
+            List<AccountEntity> currentAccounts = parseAccountFromOpenBankingResponse(response, user, bank);
+            for (AccountEntity currentAccount : currentAccounts) {
+                Optional<AccountEntity> existingAccount = accountRepository.findByIban(currentAccount.getIban());
+                if (existingAccount.isEmpty()) {
+                    accounts.add(currentAccount);
+                } else {
+                    existingAccount.get().setAccountType(currentAccount.getAccountType());
+                    existingAccount.get().setBic(currentAccount.getBic());
+                    existingAccount.get().setCurrencyCode(currentAccount.getCurrencyCode());
+                    existingAccount.get().setCurrentBalance(currentAccount.getCurrentBalance());
+                    existingAccount.get().setProductDescription(currentAccount.getProductDescription());
+                    accounts.add(existingAccount.get());
+                }
+            }
         }
+        accountRepository.saveAll(accounts);
 
         return accounts;
     }
@@ -109,6 +124,6 @@ public class OpenBankingAccountService {
     }
 
     private List<AccountEntity> parseAccountFromOpenBankingResponse(Response response, AllcountUser user, OpenBankingBankEnum bank) throws JsonProcessingException {
-        return accountRepository.saveAll(accountResponseMapper.mapToAccountEntities(response, user, bank));
+        return accountResponseMapper.mapToAccountEntities(response, user, bank);
     }
 }
