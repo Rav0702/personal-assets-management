@@ -1,6 +1,7 @@
 services:
   - name: docker:dind
     command: ["--tls=false"]
+  - redis:latest
 
 variables:
   DOCKER_HOST: "tcp://docker:2375"
