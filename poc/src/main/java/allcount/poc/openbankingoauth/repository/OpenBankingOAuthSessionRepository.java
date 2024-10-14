@@ -1,7 +1,10 @@
 package allcount.poc.openbankingoauth.repository;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +21,7 @@ public interface OpenBankingOAuthSessionRepository extends JpaRepository<OpenBan
      * @param status - the status
      * @return the OpenBankingOAuthSessionEntity
      */
-    Optional<OpenBankingOAuthSessionEntity> findByStateAndStatus(UUID state,
-                                                                 OpenBankingOAuthSessionStatusEnum status);
+    Optional<OpenBankingOAuthSessionEntity> findByStateAndStatus(UUID state, OpenBankingOAuthSessionStatusEnum status);
+
+    List<OpenBankingOAuthSessionEntity> findByUserIdAndStatus(UUID userId, OpenBankingOAuthSessionStatusEnum status);
 }
