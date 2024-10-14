@@ -40,8 +40,6 @@ public class AccountResponseMapper {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
 
-
-        System.out.println("KURWA: " + jsonNode);
         JsonNode accountsArray = jsonNode.get("accounts");
         List<AccountEntity> accountEntities = new ArrayList<>();
 
