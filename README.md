@@ -1,5 +1,14 @@
 # Team 37
 
+## Motivation
+
+The goal of the project is to simplify personal financial management by providing real-time tracking, budgeting tools,
+and expense analysis, helping users stay organized and make informed financial decisions. By implementing this POC we aim
+to measure the feasibility of the project and integration with OpenBanking. Since we are not a certified TPP (Third Party Provider), we are using the
+Deutsche Bank API Program to simulate the OpenBanking API. The main architectural goal of the project is to create a scalable and extensible
+solution that can be easily integrated with other banks and financial institutions. The feasibility of the project will be measured by the
+usability of the API throughout the series of use scenarios mentioned in the R1 document.
+
 ## Running the project
 
 ### Prerequisites
@@ -14,103 +23,72 @@ To run the project the following steps need to be taken:
 ```
 MYSQL_DATABASE=database_name
 MYSQL_PASSWORD=database_password
+SIMULATION_CLIENT_ID=Simulation client ID of an app from https://developer.db.com/dashboard/developerapps
+SIMULATION_CLIENT_SECRET=Simulation client secret of an app from https://developer.db.com/dashboard/developerapps
 ```
-4. Use maven install to build the project
-5. Run the following command in the `poc` directory of the project:
+4. Run the following command in the `poc` directory of the project:
+```bash
+docker-compose up --build
+```
+5. The project should now be running and accessible at `http://localhost:8090`
+6. If any problems occur, you try running the build command:
 ```bash
 docker build .
 docker-compose up
 ```
-To run the project, execute the following command in the `poc` directory of the project:
 
+## OAuth2 Authorization Flow.
 
+In this project we are using the Authorization Code Flow with PKCE. Configured for the [Deutsche Bank API](https://developer.db.com)
+Prerequisites are as follows:
+1. You have an Simulation Client created in the [My Apps Dashboard](https://developer.db.com/dashboard/developerapps) with
+Datasource being `Client Account Data`, App Type `Confiden`,
+Grant type `Authorization Code` with `Enforce PKCE`, Redirect URI being `https://localhost:8090/v1/open-banking-authorization/retrieve-access-token`,
+2. You have a Test User created in the [Test Users Dashboard](https://developer.db.com/dashboard/testusers) with the Simulation Client created in the previous step.
 
-## Getting started
+The flow is as follows:
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+1. The POC application generates code verifier and code challenge.
+2. The POC application sends a request to the Deutsche Bank API Program authorisation service
+3. The user is redirected to the Deutsche Bank API Program authorisation service
+4. The user logs in and authorises the POC application
+5. The Deutsche Bank API Program authorisation service redirects the user back to the POC application with an authorization code
+6. The POC application sends a request to the Deutsche Bank API Program to retrieve the access token using the authorization code and the code verifier
+7. The Deutsche Bank API Program responds with the access token.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Since the POC application contains only the backend project the flow is implemented to be utilized with the browser handling the redirections.
 
-## Add your files
+1. The user calls `v1/open-banking-authorization/{userId}/initialize-session?bank={bank}` endpoint with queryParam bank being the bank they want to use
+   (can be DEUTSCHE_BANK, NORIS_BANK, POST_BANK)
+2. The response contains the url that can be copied and pasted into the browser
+3. The user is redirected to the Deutsche Bank API Program authorisation service and can log in using the credentials (FKN and PIN) of Test Users 
+that were provided in [Deutche Bank API program Dashboard](https://developer.db.com/dashboard/testusers)
+4. The browser is then redirected back to the POC application with the authorization code 
+5. Since the POC application is running on localhost, the browser will not be able to redirect back to the POC application using https,
+so the url needs to be copied and pasted into postman or curl to send the request to the POC application using http instead of https
+6. The POC application sends a request to the Deutsche Bank API Program to retrieve the access token using the authorization code and the code verifier
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Postman Collection
 
-```
-cd existing_repo
-git remote add origin https://gitlab.ewi.tudelft.nl/cs4505/2024-2025/teams/team-37.git
-git branch -M main
-git push -uf origin main
-```
+The postman collection can be found in the `POC.postman_collection` file in the root of the project.
+It contains the requests that can be used to test the flow of the application. The collection contains the following requests:
+- `Register User` - creates a user in the application, returns Id that should be used as userId in the following requests (add it as a variable in the collection)
+- `Authenticate` - logs in the user and returns the JWT token that should be used in the following requests (add it as a variable in the collection)
+- `Session Initialize` - initializes the session with the bank and returns the url that the user needs to be followed to login and authorize the application
+- `OAUTH Callback` - Paste the url that the user is redirected to after authorizing the application in the browser (change https to http)
+- `Retrieve Account` - Lists the accounts of the user
 
-## Integrate with your tools
+## Project Structure
 
-- [ ] [Set up project integrations](https://gitlab.ewi.tudelft.nl/cs4505/2024-2025/teams/team-37/-/settings/integrations)
+The POC is divided into main packages:
+- `core` - contains the configuration of the application and base classes used throughout the project.
+- `authentication` - contains the classes responsible for the Spring Security authentication to our app using JWT.
+- `openbankingoauth` - contains the classes responsible for the OAuth2 Authorization Code Flow with PKCE.
+- `user` - contains the classes responsible for the user management.
 
-## Collaborate with your team
+## Testing
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+(For now only the integration tests are implemented, unit tests will follow)
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+The project utilizes Testcontainers to run the integration tests. The tests spin off separate containers for the database,
+redis, api, and mock server (used for mocking openBanking responses). The tests can be run using the maven verify command.
