@@ -18,15 +18,12 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OpenBankingAccountService {
     private static final String ACCOUNT_URL = "/gw/dbapi/banking/cashAccounts/v2";
-    private static final String PARAM_REDIRECT_URI = "redirect_uri";
-    private static final String REDIRECT_URI = "https://localhost:8090/v1/account/retrieve-accounts";
-    private static final String PARAM_CLIENT_ID = "client_id";
-    private static final String PARAM_CODE = "code";
-    @Value("#{environment.SIMULATION_CLIENT_ID}")
-    private String simulationClientId;
-    private static final String PARAM_GRANT_TYPE = "grant_type";
-    private static final String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
     private final transient Client client;
 
     private final transient AccountRepository accountRepository;
@@ -87,6 +76,7 @@ public class OpenBankingAccountService {
                 .findByUserIdAndStatus(userId, OpenBankingOAuthSessionStatusEnum.ACCESS_TOKEN_RECEIVED)
                 .stream()
                 .map(OpenBankingOAuthEntity::getBank)
+                .distinct()
                 .toList();
         List<AccountEntity> accounts = new ArrayList<>();
         for (OpenBankingBankEnum bank : banks) {
