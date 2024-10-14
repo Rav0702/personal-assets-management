@@ -67,7 +67,7 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
     }
 
     /**
-     * Populates all entities based on AccessToken response.
+     * Generates all entities based on AccessToken response.
      *
      * @param response - the response
      * @param user - the user
@@ -76,7 +76,7 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
      * @throws JsonProcessingException - if the response cannot be processed
      */
     @Transactional
-    protected OpenBankingOAuthAccessTokenRedisEntity populateOpenBankingOAuthAccessTokenFromResponse(
+    protected OpenBankingOAuthAccessTokenRedisEntity generateAllOpenBankingOAuthAccessTokenEntity(
             Response response,
             AllcountUser user,
             OpenBankingBankEnum bank
@@ -88,6 +88,7 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
 
         OpenBankingOAuthRefreshTokenEntity refreshToken =
                 openBankingOAuthAccessTokenResponseMapper.mapResponseToOAuthRefreshToken(jsonNode, user, bank);
+
         openBankingOAuthRefreshTokenRepository.save(refreshToken);
 
         OpenBankingOAuthAccessTokenRedisEntity accessToken =

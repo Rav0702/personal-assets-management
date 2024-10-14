@@ -68,7 +68,7 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
 
         Response response = requestTokenRefresh(refreshToken);
 
-        return populateOpenBankingOAuthAccessTokenFromResponse(response, user, refreshToken.getBank());
+        return generateAllOpenBankingOAuthAccessTokenEntity(response, user, refreshToken.getBank());
     }
 
     /**
