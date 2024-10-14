@@ -1,7 +1,7 @@
 package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -48,7 +48,7 @@ public class AllcountUser extends AllcountEntity implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    private Set<OpenBankingOAuthAccessTokenEntity> openBankingOAuthAccessTokens;
+    private Set<OpenBankingOAuthRefreshTokenEntity> openBankingOAuthAccessTokens;
 
     /**
      * Returns a string representation of the object for hashing purposes.
