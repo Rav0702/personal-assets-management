@@ -68,10 +68,15 @@ that were provided in [Deutche Bank API program Dashboard](https://developer.db.
 so the url needs to be copied and pasted into postman or curl to send the request to the POC application using http instead of https
 6. The POC application sends a request to the Deutsche Bank API Program to retrieve the access token using the authorization code and the code verifier
 
-## Postman Collection (TODO)
+## Postman Collection
 
-The postman collection can be found in the `postman` directory of the project.
-It contains the requests that can be used to test the flow of the application.
+The postman collection can be found in the `POC.postman_collection` file in the root of the project.
+It contains the requests that can be used to test the flow of the application. The collection contains the following requests:
+- `Register User` - creates a user in the application, returns Id that should be used as userId in the following requests (add it as a variable in the collection)
+- `Authenticate` - logs in the user and returns the JWT token that should be used in the following requests (add it as a variable in the collection)
+- `Session Initialize` - initializes the session with the bank and returns the url that the user needs to be followed to login and authorize the application
+- `OAUTH Callback` - Paste the url that the user is redirected to after authorizing the application in the browser (change https to http)
+- `Retrieve Account` - Lists the accounts of the user
 
 ## Project Structure
 
