@@ -116,4 +116,14 @@ public class OpenBankingAccountService {
     private List<AccountEntity> parseAccountFromOpenBankingResponse(Response response, AllcountUser user, OpenBankingBankEnum bank) throws JsonProcessingException {
         return accountResponseMapper.mapToAccountEntities(response, user, bank);
     }
+
+    /**
+     * Updates the banking records.
+     *
+     * @param message - the message
+     */
+    public void updateBankingRecords(String message) {
+        // Process the message and call the OpenBanking API
+        System.out.println("Message received: " + message);
+    }
 }

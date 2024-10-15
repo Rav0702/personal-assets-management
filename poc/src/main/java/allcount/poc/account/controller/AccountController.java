@@ -5,6 +5,7 @@ import allcount.poc.account.mapper.AccountResponseMapper;
 import allcount.poc.account.service.AccountService;
 import allcount.poc.account.service.OpenBankingAccountService;
 import allcount.poc.account.object.dto.AccountResponseDto;
+import allcount.poc.kafka.KafkaProducerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -24,12 +25,15 @@ public class AccountController {
     private final transient AccountService accountService;
     private final transient OpenBankingAccountService openBankingAccountService;
     private final transient AccountResponseMapper accountResponseMapper;
+    private final transient KafkaProducerService kafkaProducerService;
 
     @Autowired
-    public AccountController(AccountService accountService, OpenBankingAccountService openBankingAccountService, AccountResponseMapper accountResponseMapper) {
+    public AccountController(AccountService accountService, OpenBankingAccountService openBankingAccountService, AccountResponseMapper accountResponseMapper,
+                             KafkaProducerService kafkaProducerService) {
         this.accountService = accountService;
         this.openBankingAccountService = openBankingAccountService;
         this.accountResponseMapper = accountResponseMapper;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @GetMapping("retrieve-accounts/{userId}")
@@ -40,5 +44,11 @@ public class AccountController {
             returnedAccounts.add(accountResponseMapper.mapToAccountResponse(account));
         }
         return returnedAccounts;
+    }
+
+    @PostMapping("update")
+    public void updateTransactions(@RequestBody String userId) throws JsonProcessingException {
+        // Send message to Kafka topic
+        kafkaProducerService.sendMessage("accountTransactionUpdate ", userId);
     }
 }
