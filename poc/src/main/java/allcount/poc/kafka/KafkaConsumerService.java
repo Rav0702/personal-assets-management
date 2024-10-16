@@ -13,8 +13,10 @@ public class KafkaConsumerService {
         this.openBankingAccountService = openBankingAccountService;
     }
 
-    @KafkaListener(topics = "banking-updates", groupId = "banking-group")
+    @KafkaListener(topics = "sync-job", groupId = "banking-group")
     public void consume(String message) {
+        System.out.println("Consumed message: " + message);
+
         // Process the message and call the OpenBanking API
         openBankingAccountService.updateBankingRecords(message);
     }

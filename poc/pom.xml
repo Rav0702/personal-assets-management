@@ -189,11 +189,10 @@
 			<version>1.4.6</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Spring Kafka -->
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
-			<version>3.2.4</version> <!-- Use the latest version -->
+			<version>3.2.4</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -250,13 +249,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>com.baeldung.spring.kafka.KafkaApplication</mainClass>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
