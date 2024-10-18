@@ -6,10 +6,9 @@ import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
-
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import lombok.*;
 
 @Getter
 @Setter
@@ -30,7 +29,7 @@ public class TransactionEntity extends AllcountEntity {
 
     @Column(name = "booking-date", nullable = false)
     @NonNull
-    private Date bookingDate;
+    private LocalDate bookingDate;
 
     @Column(name = "origin-iban", nullable = false)
     @ValidIBANCode
