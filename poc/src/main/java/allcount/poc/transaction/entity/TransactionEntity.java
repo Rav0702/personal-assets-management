@@ -8,6 +8,7 @@ import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 import org.springframework.lang.NonNull;
@@ -62,7 +63,7 @@ public class TransactionEntity extends AllcountEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "external_transaction_id")
-    private List<ExternalBankingIdEntity> externalBankingIds;
+    private List<ExternalBankingIdEntity> externalBankingIds = new ArrayList<>();
 
     @Override
     protected String toStringForHashOnly() {

@@ -6,6 +6,7 @@ import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.*;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 /**
@@ -18,14 +19,21 @@ import org.springframework.lang.Nullable;
 @Builder
 public class TransactionDto extends AllcountDto {
 
+    @NonNull
     private BigDecimal amount;
 
     @ValidISO4217Alpha3Code
+    @Nullable
     private String currencyCode;
 
+    @NonNull
     private LocalDate bookingDate;
 
+    @Nullable
+    private LocalDate valueDate;
+
     @ValidIBANCode
+    @NonNull
     private String originIban;
 
     @Nullable
@@ -35,4 +43,6 @@ public class TransactionDto extends AllcountDto {
     @Nullable
     private String counterPartyIban;
 
+    @Nullable
+    private String originBankId;
 }
