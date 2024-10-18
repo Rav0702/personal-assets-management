@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper for converting Deutsche Group list transactions response to a DTO.
  *
- * <p>
+ * <br>
  * Works with:
  * <ul>
  * <li>Deutsche Bank</li>
@@ -50,7 +50,7 @@ public class DeutscheGroupListTransactionResponseToDtoMapper implements OpenBank
                 .build();
 
         for (JsonNode transaction : transactions) {
-            transactionListDto.getTransactions().addLast(deutscheGroupGetTransactionResponseToDtoMapper.mapToDto(transaction));
+            transactionListDto.getTransactions().add(deutscheGroupGetTransactionResponseToDtoMapper.mapToDto(transaction));
         }
 
         return null;

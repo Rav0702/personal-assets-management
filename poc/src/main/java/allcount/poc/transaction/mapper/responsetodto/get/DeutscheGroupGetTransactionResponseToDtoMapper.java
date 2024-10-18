@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper for converting Deutsche Group transaction response to a DTO.
  *
- * <p>
+ * <br>
  * Works with:
  * <ul>
  * <li>Deutsche Bank</li>

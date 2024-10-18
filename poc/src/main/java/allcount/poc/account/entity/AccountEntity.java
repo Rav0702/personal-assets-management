@@ -6,9 +6,9 @@ import allcount.poc.shared.annotation.ValidIBANCode;
 import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import lombok.*;
 
-import java.math.BigDecimal;
 
 /**
  * Entity for the Account.
