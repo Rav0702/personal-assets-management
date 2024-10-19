@@ -5,9 +5,8 @@ import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.service.LoggingFilter;
 import allcount.poc.transaction.mapper.OpenBankingBankToTransactionUriMapper;
 import allcount.poc.transaction.object.dto.TransactionListDto;
-import allcount.poc.transaction.provider.OpenBankingGetTransactionResponseToDtoMapperProvider;
 import allcount.poc.transaction.provider.OpenBankingListTransactionResponseToDtoMapperProvider;
-import allcount.poc.transaction.service.TransactionRetrievalServiceImpl;
+import allcount.poc.transaction.service.OpenBankingTransactionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -27,11 +26,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionRetrievalClient {
 
-    private static final Logger LOG = Logger.getLogger(TransactionRetrievalServiceImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(OpenBankingTransactionService.class.getName());
     private final transient Client client;
     private final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
     private final transient OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper;
-    private final transient OpenBankingGetTransactionResponseToDtoMapperProvider getTransactionResponseToDtoMapperProvider;
     private final transient OpenBankingListTransactionResponseToDtoMapperProvider listTransactionResponseToDtoMapperProvider;
 
     /**
@@ -41,13 +39,11 @@ public class TransactionRetrievalClient {
     public TransactionRetrievalClient(
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
             OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper,
-            OpenBankingGetTransactionResponseToDtoMapperProvider getTransactionResponseToDtoMapperProvider,
             OpenBankingListTransactionResponseToDtoMapperProvider listTransactionResponseToDtoMapperProvider
     ) {
         this.client = ClientBuilder.newBuilder().build().register(new LoggingFilter());
         this.openBankingBankToBaseUriMapper = openBankingBankToBaseUriMapper;
         this.openBankingBankToTransactionUriMapper = openBankingBankToTransactionUriMapper;
-        this.getTransactionResponseToDtoMapperProvider = getTransactionResponseToDtoMapperProvider;
         this.listTransactionResponseToDtoMapperProvider = listTransactionResponseToDtoMapperProvider;
     }
 
@@ -109,6 +105,8 @@ public class TransactionRetrievalClient {
                 .get();
 
         JsonNode body = response.readEntity(JsonNode.class);
+
+        LOG.info("Received response of size " + body.size());
 
         return listTransactionResponseToDtoMapperProvider.getMapper(bank).mapToDto(body);
     }

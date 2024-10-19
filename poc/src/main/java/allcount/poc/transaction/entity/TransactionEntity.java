@@ -1,9 +1,8 @@
 package allcount.poc.transaction.entity;
 
+import allcount.poc.account.entity.AccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
 import allcount.poc.openbanking.entity.ExternalBankingIdEntity;
-import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
-import allcount.poc.shared.annotation.ValidIBANCode;
 import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -42,15 +41,10 @@ public class TransactionEntity extends AllcountEntity {
     @Nullable
     private LocalDate valueDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "origin_bank")
-    @Nullable
-    private OpenBankingBankEnum originBank;
-
-    @Column(name = "origin_iban", nullable = false)
-    @ValidIBANCode
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "origin_account_id")
     @NonNull
-    private String originIban;
+    private AccountEntity originAccount;
 
     @Column(name = "counter_party_name")
     @Nullable

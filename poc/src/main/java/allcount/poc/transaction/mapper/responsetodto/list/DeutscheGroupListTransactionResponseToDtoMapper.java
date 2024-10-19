@@ -53,6 +53,6 @@ public class DeutscheGroupListTransactionResponseToDtoMapper implements OpenBank
             transactionListDto.getTransactions().add(deutscheGroupGetTransactionResponseToDtoMapper.mapToDto(transaction));
         }
 
-        return null;
+        return transactionListDto;
     }
 }
