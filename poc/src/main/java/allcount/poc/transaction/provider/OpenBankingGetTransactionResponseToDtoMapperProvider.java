@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OpenBankingGetTransactionResponseToDtoMapperProvider {
-    private final Map<OpenBankingBankEnum, OpenBankingGetTransactionResponseToDtoMapper> bankToMapper;
+    private final Map<OpenBankingBankEnum, OpenBankingGetTransactionResponseToDtoMapper> mappingBankToTransactionResponseToDtoMapper;
 
     /**
      * Constructor.
@@ -21,7 +21,7 @@ public class OpenBankingGetTransactionResponseToDtoMapperProvider {
     public OpenBankingGetTransactionResponseToDtoMapperProvider(
             DeutscheGroupGetTransactionResponseToDtoMapper deutscheGroupGetTransactionResponseToDtoMapper
     ) {
-        this.bankToMapper = Map.of(
+        this.mappingBankToTransactionResponseToDtoMapper = Map.of(
             OpenBankingBankEnum.DEUTSCHE_BANK, deutscheGroupGetTransactionResponseToDtoMapper,
             OpenBankingBankEnum.NORIS_BANK, deutscheGroupGetTransactionResponseToDtoMapper
         );
@@ -34,7 +34,7 @@ public class OpenBankingGetTransactionResponseToDtoMapperProvider {
      * @return true if we have a mapper for the given bank.
      */
     public boolean doesBankSupportTransactionRetrieval(OpenBankingBankEnum bank) {
-        return bankToMapper.containsKey(bank);
+        return mappingBankToTransactionResponseToDtoMapper.containsKey(bank);
     }
 
     /**
@@ -44,7 +44,7 @@ public class OpenBankingGetTransactionResponseToDtoMapperProvider {
      * @return transaction response to DTO mapper for the given bank.
      */
     public OpenBankingGetTransactionResponseToDtoMapper getMapper(OpenBankingBankEnum bank) {
-        return bankToMapper.get(bank);
+        return mappingBankToTransactionResponseToDtoMapper.get(bank);
     }
 
 }
