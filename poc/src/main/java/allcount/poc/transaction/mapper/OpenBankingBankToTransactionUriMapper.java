@@ -20,6 +20,16 @@ public class OpenBankingBankToTransactionUriMapper {
     );
 
     /**
+     * Returns true if the given bank supports transaction retrieval. (i.e. we have a URI for listing transactions).
+     *
+     * @param bank the bank.
+     * @return true if the given bank supports transaction retrieval.
+     */
+    public boolean doesBankSupportTransactionRetrieval(OpenBankingBankEnum bank) {
+        return BANK_TO_LIST_TRANSACTIONS_URI.containsKey(bank);
+    }
+
+    /**
      * Returns uri for listing transactions for the given bank.
      * <i>complete uri = baseUri + uri.</i>
      *

@@ -7,8 +7,9 @@ import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.service.OpenBankingOAuthAccessTokenDetermineService;
 import allcount.poc.transaction.client.TransactionRetrievalClient;
 import allcount.poc.transaction.entity.TransactionEntity;
+import allcount.poc.transaction.mapper.OpenBankingBankToTransactionUriMapper;
 import allcount.poc.transaction.mapper.TransactionDtoToEntityMapper;
-import allcount.poc.transaction.object.dto.TransactionListDto;
+import allcount.poc.transaction.object.dto.TransactionDto;
 import allcount.poc.transaction.repository.TransactionRepository;
 import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
@@ -37,6 +38,7 @@ public class OpenBankingTransactionService {
     private final transient TransactionDtoToEntityMapper transactionDtoToEntityMapper;
     private final TransactionRepository transactionRepository;
     private final AllcountUserRepository allcountUserRepository;
+    private final OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper;
 
     /**
      * Constructor.
@@ -48,13 +50,14 @@ public class OpenBankingTransactionService {
             TransactionRetrievalClient transactionRetrievalClient,
             TransactionDtoToEntityMapper transactionDtoToEntityMapper,
             TransactionRepository transactionRepository,
-            AllcountUserRepository allcountUserRepository) {
+            AllcountUserRepository allcountUserRepository, OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper) {
         this.accountRepository = accountRepository;
         this.openBankingOAuthAccessTokenDetermineService = openBankingOAuthAccessTokenDetermineService;
         this.transactionRetrievalClient = transactionRetrievalClient;
         this.transactionDtoToEntityMapper = transactionDtoToEntityMapper;
         this.transactionRepository = transactionRepository;
         this.allcountUserRepository = allcountUserRepository;
+        this.openBankingBankToTransactionUriMapper = openBankingBankToTransactionUriMapper;
     }
 
     /**
@@ -106,20 +109,25 @@ public class OpenBankingTransactionService {
         AllcountUser user = account.getUser();
         OpenBankingBankEnum bank = account.getBank();
 
+        if (!openBankingBankToTransactionUriMapper.doesBankSupportTransactionRetrieval(bank)) {
+            LOG.info("Bank: " + bank + " does not support transaction retrieval.");
+            return;
+        }
+
         OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity = openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
         String accessToken = tokenRedisEntity.getAccessToken();
 
         int page = 0;
         boolean hasMore;
         do {
-            TransactionListDto transactions = transactionRetrievalClient
+            List<TransactionDto> transactions = transactionRetrievalClient
                     .listTransactions(bank, account.getIban(), accessToken, from, to, DEFAULT_PAGE_SIZE, page);
-            List<TransactionEntity> transactionEntities = transactionDtoToEntityMapper.mapToEntities(transactions.getTransactions(), List.of(account));
+            List<TransactionEntity> transactionEntities = transactionDtoToEntityMapper.mapToEntities(transactions, List.of(account));
 
             transactionEntities.forEach(this::saveOrUpdateTransaction);
             transactionRepository.flush();
 
-            hasMore = transactions.getTransactions().size() >= DEFAULT_PAGE_SIZE;
+            hasMore = transactions.size() >= DEFAULT_PAGE_SIZE;
             page++;
         } while (hasMore);
 

@@ -4,7 +4,7 @@ import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.service.LoggingFilter;
 import allcount.poc.transaction.mapper.OpenBankingBankToTransactionUriMapper;
-import allcount.poc.transaction.object.dto.TransactionListDto;
+import allcount.poc.transaction.object.dto.TransactionDto;
 import allcount.poc.transaction.provider.OpenBankingListTransactionResponseToDtoMapperProvider;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.ws.rs.client.Client;
@@ -13,6 +13,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -64,7 +65,7 @@ public class TransactionRetrievalClient {
      * @param offset          (optional) Offset of the transactions.
      * @return A list of transactions.
      */
-    public TransactionListDto listTransactions(
+    public List<TransactionDto> listTransactions(
             @NonNull OpenBankingBankEnum bank, @NonNull String iban, @NonNull String accessToken,
             @Nullable LocalDate bookingDateFrom, @Nullable LocalDate bookingDateTo, @Nullable Integer limit, @Nullable Integer offset
     ) {

@@ -1,15 +1,16 @@
 package allcount.poc.transaction.mapper.responsetodto.list;
 
 import allcount.poc.transaction.mapper.responsetodto.get.DeutscheGroupGetTransactionResponseToDtoMapper;
-import allcount.poc.transaction.object.dto.TransactionListDto;
+import allcount.poc.transaction.object.dto.TransactionDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 /**
- * Mapper for converting Deutsche Group list transactions response to a DTO.
+ * Mapper for converting Deutsche Group list transactions response to a DTO list.
  *
  * <br>
  * Works with:
@@ -33,26 +34,23 @@ public class DeutscheGroupListTransactionResponseToDtoMapper implements OpenBank
 
 
     /**
-     * Maps the response to the DTO.
+     * Maps the response to a list of DTOs.
      *
      * @param response the response.
-     * @return the DTO.
+     * @return list of mapped DTOs.
      */
     @Override
-    public TransactionListDto mapToDto(JsonNode response) {
+    public List<TransactionDto> mapToDto(JsonNode response) {
         JsonNode transactions = response.get("transactions");
         assert transactions != null;
         assert transactions.isArray();
 
-        TransactionListDto transactionListDto = TransactionListDto
-                .builder()
-                .transactions(new ArrayList<>(transactions.size()))
-                .build();
+        List<TransactionDto> transactionDtoList = new ArrayList<>();
 
         for (JsonNode transaction : transactions) {
-            transactionListDto.getTransactions().add(deutscheGroupGetTransactionResponseToDtoMapper.mapToDto(transaction));
+            transactionDtoList.add(deutscheGroupGetTransactionResponseToDtoMapper.mapToDto(transaction));
         }
 
-        return transactionListDto;
+        return transactionDtoList;
     }
 }
