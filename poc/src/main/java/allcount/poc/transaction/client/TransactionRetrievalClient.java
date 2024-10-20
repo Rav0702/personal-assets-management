@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionRetrievalClient {
 
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String AUTHORIZATION_AUTH_SCHEME = "Bearer";
     private static final String QUERY_PARAM_IBAN = "iban";
     private static final String QUERY_PARAM_BOOKING_DATE_FROM = "bookingDateFrom";
     private static final String QUERY_PARAM_BOOKING_DATE_TO = "bookingDateTo";
@@ -94,7 +96,7 @@ public class TransactionRetrievalClient {
 
         Response response = webTarget
                 .request()
-                .header("Authorization", "Bearer " + accessToken)
+                .header(AUTHORIZATION_HEADER, AUTHORIZATION_AUTH_SCHEME + " " + accessToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
 
