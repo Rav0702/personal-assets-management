@@ -2,19 +2,17 @@ package allcount.poc.transaction.entity;
 
 import allcount.poc.account.entity.AccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.openbanking.entity.ExternalBankingIdEntity;
+import allcount.poc.openbanking.entity.ExternalBankingIdEmbeddable;
 import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.*;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 /**
- * Javadoc todo.
+ * Entity representing a Bank Transaction.
  */
 @Getter
 @Setter
@@ -22,7 +20,15 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "transaction")
+@Table(
+        name = "transaction",
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"bank", "id_from_bank"}),
+        },
+        indexes = {
+            @Index(columnList = "bank, id_from_bank"),
+        }
+)
 public class TransactionEntity extends AllcountEntity {
     @Column(name = "amount", precision = 15, scale = 2, nullable = false)
     @NonNull
@@ -55,9 +61,9 @@ public class TransactionEntity extends AllcountEntity {
     @Nullable
     private String counterPartyIban;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "external_transaction_id")
-    private List<ExternalBankingIdEntity> externalBankingIds = new ArrayList<>();
+    @Embedded
+    @NonNull
+    private ExternalBankingIdEmbeddable externalBankingId;
 
     @Override
     protected String toStringForHashOnly() {

@@ -1,7 +1,7 @@
 package allcount.poc.transaction.mapper;
 
 import allcount.poc.account.entity.AccountEntity;
-import allcount.poc.openbanking.entity.ExternalBankingIdEntity;
+import allcount.poc.openbanking.entity.ExternalBankingIdEmbeddable;
 import allcount.poc.transaction.entity.TransactionEntity;
 import allcount.poc.transaction.object.dto.TransactionDto;
 import java.util.List;
@@ -18,8 +18,8 @@ public class TransactionDtoToEntityMapper {
     /**
      * Maps the DTO to the entity.
      *
-     * @param transactionDtoList List of DTOs to map
-     * @param accounts           List of accounts to resolve the IBANs
+     * @param transactionDtoList List of DTOs to map.
+     * @param accounts           List of accounts to resolve the IBANs.
      */
     public List<TransactionEntity> mapToEntities(List<TransactionDto> transactionDtoList, List<AccountEntity> accounts) {
         Map<String, AccountEntity> ibanToAccountMap = accounts.stream().collect(Collectors.toMap(AccountEntity::getIban, account -> account));
@@ -29,8 +29,8 @@ public class TransactionDtoToEntityMapper {
     /**
      * Maps the DTO to the entity.
      *
-     * @param transactionDto   DTO to map
-     * @param ibanToAccountMap Map of IBANs to accounts to resolve the IBAN in the transaction DTO
+     * @param transactionDto   DTO to map.
+     * @param ibanToAccountMap Map of IBANs to accounts to resolve the IBAN in the transaction DTO.
      */
     public TransactionEntity mapToEntity(TransactionDto transactionDto, Map<String, AccountEntity> ibanToAccountMap) {
         return TransactionEntity.builder()
@@ -42,11 +42,10 @@ public class TransactionDtoToEntityMapper {
                 .counterPartyName(transactionDto.getCounterPartyName())
                 .counterPartyIban(transactionDto.getCounterPartyIban())
                 .counterPartyName(transactionDto.getCounterPartyName())
-                .externalBankingIds(List.of(
-                        ExternalBankingIdEntity.builder()
-                                .externalId(String.valueOf(transactionDto.getId()))
-                                .bank(ibanToAccountMap.get(transactionDto.getOriginIban()).getBank())
-                                .build()))
+                .externalBankingId(ExternalBankingIdEmbeddable.builder()
+                        .externalId(String.valueOf(transactionDto.getOriginBankId()))
+                        .bank(ibanToAccountMap.get(transactionDto.getOriginIban()).getBank())
+                        .build())
                 .build();
     }
 

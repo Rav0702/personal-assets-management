@@ -42,7 +42,7 @@ public class DeutscheGroupGetTransactionResponseToDtoMapper implements OpenBanki
         }
 
         if (response.has("id")) {
-            dto.setOriginBankId(response.get("externalBankTransactionDomainCode").textValue());
+            dto.setOriginBankId(response.get("id").textValue());
         }
 
         return dto;

@@ -35,8 +35,8 @@ public class DeutscheGroupListTransactionResponseToDtoMapper implements OpenBank
     /**
      * Maps the response to the DTO.
      *
-     * @param response the response
-     * @return the DTO
+     * @param response the response.
+     * @return the DTO.
      */
     @Override
     public TransactionListDto mapToDto(JsonNode response) {

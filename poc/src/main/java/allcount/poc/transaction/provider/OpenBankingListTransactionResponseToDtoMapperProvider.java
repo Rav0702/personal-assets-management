@@ -31,8 +31,8 @@ public class OpenBankingListTransactionResponseToDtoMapperProvider {
     /**
      * Returns true if we have a mapper for the given bank.
      *
-     * @param bank enum representing the bank
-     * @return true if we have a mapper for the given bank
+     * @param bank enum representing the bank.
+     * @return true if we have a mapper for the given bank.
      */
     public boolean doesBankSupportTransactionRetrieval(OpenBankingBankEnum bank) {
         return bankToMapper.containsKey(bank);
@@ -41,8 +41,8 @@ public class OpenBankingListTransactionResponseToDtoMapperProvider {
     /**
      * Returns transaction response to DTO mapper for the given bank.
      *
-     * @param bank enum representing the bank
-     * @return transaction response to DTO mapper for the given bank
+     * @param bank enum representing the bank.
+     * @return transaction response to DTO mapper for the given bank.
      */
     public OpenBankingListTransactionResponseToDtoMapper getMapper(OpenBankingBankEnum bank) {
         return bankToMapper.get(bank);

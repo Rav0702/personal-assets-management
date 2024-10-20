@@ -11,8 +11,8 @@ public interface OpenBankingListTransactionResponseToDtoMapper {
     /**
      * Maps the response to the DTO.
      *
-     * @param response json body of the response
-     * @return the DTO
+     * @param response json body of the response.
+     * @return the DTO.
      */
     TransactionListDto mapToDto(JsonNode response);
 }

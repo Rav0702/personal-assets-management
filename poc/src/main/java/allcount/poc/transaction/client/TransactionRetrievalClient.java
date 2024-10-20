@@ -6,7 +6,6 @@ import allcount.poc.openbankingoauth.service.LoggingFilter;
 import allcount.poc.transaction.mapper.OpenBankingBankToTransactionUriMapper;
 import allcount.poc.transaction.object.dto.TransactionListDto;
 import allcount.poc.transaction.provider.OpenBankingListTransactionResponseToDtoMapperProvider;
-import allcount.poc.transaction.service.OpenBankingTransactionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -26,7 +25,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionRetrievalClient {
 
-    private static final Logger LOG = Logger.getLogger(OpenBankingTransactionService.class.getName());
+    private static final String QUERY_PARAM_IBAN = "iban";
+    private static final String QUERY_PARAM_BOOKING_DATE_FROM = "bookingDateFrom";
+    private static final String QUERY_PARAM_BOOKING_DATE_TO = "bookingDateTo";
+    private static final String QUERY_PARAM_LIMIT = "limit";
+    private static final String QUERY_PARAM_OFFSET = "offset";
+
+    private static final Logger LOG = Logger.getLogger(TransactionRetrievalClient.class.getName());
     private final transient Client client;
     private final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
     private final transient OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper;
@@ -50,18 +55,6 @@ public class TransactionRetrievalClient {
     /**
      * List transactions.
      *
-     * @param bank        (required) Enum representing the bank.
-     * @param iban        (required) IBAN of the account.
-     * @param accessToken (required) Access token.
-     * @return A list of transactions.
-     */
-    public TransactionListDto listTransactions(@NonNull OpenBankingBankEnum bank, @NonNull String iban, @NonNull String accessToken) {
-        return listTransactions(bank, iban, accessToken, null, null, null, null);
-    }
-
-    /**
-     * List transactions.
-     *
      * @param bank            (required) Enum representing the bank.
      * @param iban            (required) IBAN of the account.
      * @param accessToken     (required) Access token.
@@ -80,22 +73,22 @@ public class TransactionRetrievalClient {
 
         WebTarget webTarget = this.client
                 .target(openBankingBankToBaseUriMapper.getBaseUri(bank) + openBankingBankToTransactionUriMapper.getListTransactionsUri(bank))
-                .queryParam("iban", iban);
+                .queryParam(QUERY_PARAM_IBAN, iban);
 
         if (bookingDateFrom != null) {
-            webTarget = webTarget.queryParam("bookingDateFrom", bookingDateFrom.toString());
+            webTarget = webTarget.queryParam(QUERY_PARAM_BOOKING_DATE_FROM, bookingDateFrom.toString());
         }
 
         if (bookingDateTo != null) {
-            webTarget = webTarget.queryParam("bookingDateTo", bookingDateTo.toString());
+            webTarget = webTarget.queryParam(QUERY_PARAM_BOOKING_DATE_TO, bookingDateTo.toString());
         }
 
         if (limit != null) {
-            webTarget = webTarget.queryParam("limit", limit);
+            webTarget = webTarget.queryParam(QUERY_PARAM_LIMIT, limit);
         }
 
         if (offset != null) {
-            webTarget = webTarget.queryParam("offset", offset);
+            webTarget = webTarget.queryParam(QUERY_PARAM_OFFSET, offset);
         }
 
         Response response = webTarget
@@ -104,9 +97,9 @@ public class TransactionRetrievalClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
 
-        JsonNode body = response.readEntity(JsonNode.class);
+        LOG.info("Response status: " + response.getStatus());
 
-        LOG.info("Received response of size " + body.size());
+        JsonNode body = response.readEntity(JsonNode.class);
 
         return listTransactionResponseToDtoMapperProvider.getMapper(bank).mapToDto(body);
     }
