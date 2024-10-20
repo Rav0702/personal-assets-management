@@ -1,196 +1,311 @@
 {
-	"info": {
-		"_postman_id": "f877b55d-dcfe-4109-abb4-570ed7e3e86d",
-		"name": "POC APP",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "24641811",
-		"_collection_link": "https://gold-crater-43313.postman.co/workspace/New-Team-Workspace~391a9284-1940-47e6-9600-6604bd6c7816/collection/24641811-f877b55d-dcfe-4109-abb4-570ed7e3e86d?action=share&source=collection_link&creator=24641811"
-	},
-	"item": [
-		{
-			"name": "Session initialize",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/v1/open-banking-authorization/{{userId}}/initialize-session?bank=DEUTSCHE_BANK",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"v1",
-						"open-banking-authorization",
-						"{{userId}}",
-						"initialize-session"
-					],
-					"query": [
-						{
-							"key": "bank",
-							"value": "DEUTSCHE_BANK"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "OAUTH callback",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/v1/open-banking-authorization/retrieve-access-token?code=pR8QBQ&state=f5656093-3630-4406-b34c-cedcbccaf84c",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"v1",
-						"open-banking-authorization",
-						"retrieve-access-token"
-					],
-					"query": [
-						{
-							"key": "code",
-							"value": "pR8QBQ"
-						},
-						{
-							"key": "state",
-							"value": "f5656093-3630-4406-b34c-cedcbccaf84c"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "register user",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"testUsername192344\",\r\n    \"password\": \"password\",\r\n    \"email\": \"email@email.com\",\r\n    \"firstName\": \"FirstName\",\r\n    \"lastName\": \"lastName\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8090/v1/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"v1",
-						"auth",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Authenticate",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"testUsername192344\",\r\n    \"password\": \"password\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8090/v1/auth/authenticate",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"v1",
-						"auth",
-						"authenticate"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve account",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8090/v1/account/retrieve-accounts/{{userId}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8090",
-					"path": [
-						"v1",
-						"account",
-						"retrieve-accounts",
-						"{{userId}}"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0VXNlcm5hbWUxMjM0IiwiaWF0IjoxNzI4ODM2NDE1LCJleHAiOjE3Mjg5MjI4MTV9.8fmCtTmCysWtpXhrngBsckjIl3-GMX7lgFATmj7X-ydXbop-gjBsqIV2FLxGpldr5O_XkcBB5piNIrwoOYNTmw",
-				"type": "string"
-			}
-		]
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "userId",
-			"value": "UserId",
-			"type": "string"
-		},
-		{
-			"key": "accessToken",
-			"value": "accessToken",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "f877b55d-dcfe-4109-abb4-570ed7e3e86d",
+    "name": "POC APP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38938366",
+    "_collection_link": "https://gold-crater-43313.postman.co/workspace/New-Team-Workspace~391a9284-1940-47e6-9600-6604bd6c7816/collection/24641811-f877b55d-dcfe-4109-abb4-570ed7e3e86d?action=share&source=collection_link&creator=38938366"
+  },
+  "item": [
+    {
+      "name": "Session initialize",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8090/v1/open-banking-authorization/{{userId}}/initialize-session?bank=DEUTSCHE_BANK",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "open-banking-authorization",
+            "{{userId}}",
+            "initialize-session"
+          ],
+          "query": [
+            {
+              "key": "bank",
+              "value": "DEUTSCHE_BANK"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "OAUTH callback",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8090/v1/open-banking-authorization/retrieve-access-token?code=pR8QBQ&state=f5656093-3630-4406-b34c-cedcbccaf84c",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "open-banking-authorization",
+            "retrieve-access-token"
+          ],
+          "query": [
+            {
+              "key": "code",
+              "value": "pR8QBQ"
+            },
+            {
+              "key": "state",
+              "value": "f5656093-3630-4406-b34c-cedcbccaf84c"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "OAUTH callback Copy",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8090/v1/open-banking-authorization/retrieve-access-token?code=pR8QBQ&state=f5656093-3630-4406-b34c-cedcbccaf84c",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "open-banking-authorization",
+            "retrieve-access-token"
+          ],
+          "query": [
+            {
+              "key": "code",
+              "value": "pR8QBQ"
+            },
+            {
+              "key": "state",
+              "value": "f5656093-3630-4406-b34c-cedcbccaf84c"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "register user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "pm.collectionVariables.set(\"userId\", jsonData[\"userId\"]);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"randomInt\", Math.floor(Math.random() * 1000000));"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"testuser{{randomInt}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"email\": \"email@email.com\",\r\n    \"firstName\": \"FirstName\",\r\n    \"lastName\": \"lastName\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8090/v1/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Authenticate",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "pm.collectionVariables.set(\"accessToken\", jsonData[\"token\"]);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8090/v1/auth/authenticate",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "auth",
+            "authenticate"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Retrieve account",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8090/v1/account/retrieve-accounts/{{userId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "account",
+            "retrieve-accounts",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sync Transactions",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "aaaachuj",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8090/v1/transaction/sync/{{userId}}/all",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "v1",
+            "transaction",
+            "sync",
+            "{{userId}}",
+            "all"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "userId",
+      "value": "UserId",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "accessToken",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "username1",
+      "type": "default"
+    },
+    {
+      "key": "password",
+      "value": "password1",
+      "type": "default"
+    }
+  ]
 }
