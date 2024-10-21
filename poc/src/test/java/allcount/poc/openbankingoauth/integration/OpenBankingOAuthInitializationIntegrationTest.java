@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,6 +85,21 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
      */
     @BeforeEach
     public void beforeEach() {
+        cleanUp();
+    }
+
+    /**
+     * Clean up the database after each test.
+     */
+    @AfterEach
+    public void afterEach() {
+        cleanUp();
+    }
+
+    /**
+     * Clean up the database.
+     */
+    private void cleanUp() {
         openBankingOAuthSessionRepository.deleteAll();
         openBankingOAuthRefreshTokenRepository.deleteAll();
         openBankingOAuthAccessTokenRedisRepository.deleteAll();

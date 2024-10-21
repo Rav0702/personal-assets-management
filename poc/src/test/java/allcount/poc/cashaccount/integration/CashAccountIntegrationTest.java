@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -73,6 +74,21 @@ public class CashAccountIntegrationTest extends IntegrationTest {
      */
     @BeforeEach
     public void beforeEach() {
+        cleanUp();
+    }
+
+    /**
+     * Clean up the database after each test.
+     */
+    @AfterEach
+    public void afterEach() {
+        cleanUp();
+    }
+
+    /**
+     * Clean up the database.
+     */
+    private void cleanUp() {
         cashAccountRepository.deleteAll();
         openBankingOAuthAccessTokenRedisRepository.deleteAll();
         openBankingOAuthSessionRepository.deleteAll();
