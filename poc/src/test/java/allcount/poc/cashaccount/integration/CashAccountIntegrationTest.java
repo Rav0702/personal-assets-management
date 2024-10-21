@@ -73,10 +73,10 @@ public class CashAccountIntegrationTest extends IntegrationTest {
      */
     @BeforeEach
     public void beforeEach() {
-        userRepository.deleteAll();
+        cashAccountRepository.deleteAll();
         openBankingOAuthAccessTokenRedisRepository.deleteAll();
         openBankingOAuthSessionRepository.deleteAll();
-        cashAccountRepository.deleteAll();
+        userRepository.deleteAll();
         mockServerClient.reset();
     }
 
