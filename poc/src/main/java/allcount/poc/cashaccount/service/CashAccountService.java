@@ -1,10 +1,10 @@
-package allcount.poc.account.service;
+package allcount.poc.cashaccount.service;
 
-import allcount.poc.account.entity.AccountEntity;
-import allcount.poc.account.mapper.AccountResponseMapper;
-import allcount.poc.account.repository.AccountRepository;
+import allcount.poc.cashaccount.entity.CashAccountEntity;
+import allcount.poc.cashaccount.mapper.CashAccountResponseMapper;
+import allcount.poc.cashaccount.repository.CashAccountRepository;
+import allcount.poc.core.domain.entity.OpenBankingEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
@@ -31,13 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
  * Service for retrieving the Accounts.
  */
 @Service
-public class OpenBankingAccountService {
+public class CashAccountService {
     private static final String ACCOUNT_URL = "/gw/dbapi/banking/cashAccounts/v2";
     private final transient Client client;
 
-    private final transient AccountRepository accountRepository;
+    private final transient CashAccountRepository cashAccountRepository;
     private final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
-    private final transient AccountResponseMapper accountResponseMapper;
+    private final transient CashAccountResponseMapper cashAccountResponseMapper;
     private final transient OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository;
     private final transient OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService;
     private final transient AllcountUserRepository allcountUserRepository;
@@ -45,16 +45,17 @@ public class OpenBankingAccountService {
     /**
      * Constructor.
      *
-     * @param accountRepository - the AccountRepository
+     * @param cashAccountRepository - the CashAccountRepository
      */
     @Autowired
-    public OpenBankingAccountService(AccountRepository accountRepository,
-                                     OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
-                                     AccountResponseMapper accountResponseMapper,
-                                     OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
-                                     OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService, AllcountUserRepository allcountUserRepository) {
-        this.accountRepository = accountRepository;
-        this.accountResponseMapper = accountResponseMapper;
+    public CashAccountService(CashAccountRepository cashAccountRepository,
+                              OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+                              CashAccountResponseMapper cashAccountResponseMapper,
+                              OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
+                              OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService,
+                              AllcountUserRepository allcountUserRepository) {
+        this.cashAccountRepository = cashAccountRepository;
+        this.cashAccountResponseMapper = cashAccountResponseMapper;
         this.openBankingOAuthSessionRepository = openBankingOAuthSessionRepository;
         this.allcountUserRepository = allcountUserRepository;
         this.client = ClientBuilder.newBuilder().build().register(new LoggingFilter());
@@ -66,26 +67,28 @@ public class OpenBankingAccountService {
      * Retrieves a list of accounts for a specific user.
      *
      * @param userId - the UUID of the user
-     * @return a list of {@link AccountEntity}
+     * @return a list of {@link CashAccountEntity}
      * @throws JsonProcessingException if there is an issue processing the bank's JSON response
      */
     @Transactional
-    public List<AccountEntity> retrieveAccounts(UUID userId) throws JsonProcessingException {
+    public List<CashAccountEntity> retrieveAccounts(UUID userId) throws JsonProcessingException {
         AllcountUser user = allcountUserRepository.findById(userId).orElseThrow();
         List<OpenBankingBankEnum> banks = openBankingOAuthSessionRepository
                 .findByUserIdAndStatus(userId, OpenBankingOAuthSessionStatusEnum.ACCESS_TOKEN_RECEIVED)
                 .stream()
-                .map(OpenBankingOAuthEntity::getBank)
+                .map(OpenBankingEntity::getBank)
                 .distinct()
                 .toList();
-        List<AccountEntity> accounts = new ArrayList<>();
+        List<CashAccountEntity> accounts = new ArrayList<>();
         for (OpenBankingBankEnum bank : banks) {
-            OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity = openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
+            OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity =
+                    openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
             String accessToken = tokenRedisEntity.getAccessToken();
             Response response = requestAccountFromCode(accessToken, bank);
-            List<AccountEntity> currentAccounts = parseAccountFromOpenBankingResponse(response, user, bank);
-            for (AccountEntity currentAccount : currentAccounts) {
-                Optional<AccountEntity> existingAccount = accountRepository.findByIban(currentAccount.getIban());
+            List<CashAccountEntity> currentAccounts = parseAccountFromOpenBankingResponse(response, user, bank);
+            for (CashAccountEntity currentAccount : currentAccounts) {
+                Optional<CashAccountEntity> existingAccount =
+                        cashAccountRepository.findByIban(currentAccount.getIban());
                 if (existingAccount.isEmpty()) {
                     accounts.add(currentAccount);
                 } else {
@@ -98,7 +101,7 @@ public class OpenBankingAccountService {
                 }
             }
         }
-        accountRepository.saveAll(accounts);
+        cashAccountRepository.saveAll(accounts);
 
         return accounts;
     }
@@ -113,7 +116,9 @@ public class OpenBankingAccountService {
                 .get();
     }
 
-    private List<AccountEntity> parseAccountFromOpenBankingResponse(Response response, AllcountUser user, OpenBankingBankEnum bank) throws JsonProcessingException {
-        return accountResponseMapper.mapToAccountEntities(response, user, bank);
+    private List<CashAccountEntity> parseAccountFromOpenBankingResponse(Response response, AllcountUser user,
+                                                                        OpenBankingBankEnum bank)
+            throws JsonProcessingException {
+        return cashAccountResponseMapper.mapToAccountEntities(response, user, bank);
     }
 }

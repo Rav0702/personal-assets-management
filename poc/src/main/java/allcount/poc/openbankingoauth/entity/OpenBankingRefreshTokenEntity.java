@@ -1,5 +1,6 @@
 package allcount.poc.openbankingoauth.entity;
 
+import allcount.poc.core.domain.entity.OpenBankingEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthAccessTokenTypeEnum;
 import allcount.poc.user.entity.AllcountUser;
@@ -23,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "open_banking_refresh_token")
-public class OpenBankingOAuthRefreshTokenEntity extends OpenBankingOAuthEntity {
+public class OpenBankingRefreshTokenEntity extends OpenBankingEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String refreshToken;
 
@@ -44,7 +45,7 @@ public class OpenBankingOAuthRefreshTokenEntity extends OpenBankingOAuthEntity {
      * @param scope        - the scope
      */
     @Builder
-    public OpenBankingOAuthRefreshTokenEntity(
+    public OpenBankingRefreshTokenEntity(
             OpenBankingBankEnum bank,
             AllcountUser user,
             String refreshToken,

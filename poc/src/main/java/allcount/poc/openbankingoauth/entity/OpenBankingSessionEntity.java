@@ -1,5 +1,6 @@
 package allcount.poc.openbankingoauth.entity;
 
+import allcount.poc.core.domain.entity.OpenBankingEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.user.entity.AllcountUser;
@@ -24,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "open_banking_oauth_session")
-public class OpenBankingOAuthSessionEntity extends OpenBankingOAuthEntity {
+public class OpenBankingSessionEntity extends OpenBankingEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OpenBankingOAuthSessionStatusEnum status;
@@ -39,7 +40,7 @@ public class OpenBankingOAuthSessionEntity extends OpenBankingOAuthEntity {
     private String redirectLoginUri;
 
     /**
-     * Constructor for the OpenBankingOAuthSessionEntity.
+     * Constructor for the OpenBankingSessionEntity.
      *
      * @param bank             the bank
      * @param user             the user
@@ -49,7 +50,7 @@ public class OpenBankingOAuthSessionEntity extends OpenBankingOAuthEntity {
      * @param redirectLoginUri the redirect login uri
      */
     @Builder
-    public OpenBankingOAuthSessionEntity(
+    public OpenBankingSessionEntity(
             OpenBankingBankEnum bank,
             AllcountUser user,
             OpenBankingOAuthSessionStatusEnum status,

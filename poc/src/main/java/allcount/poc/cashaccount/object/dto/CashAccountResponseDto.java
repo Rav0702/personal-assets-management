@@ -1,14 +1,11 @@
-package allcount.poc.account.object.dto;
+package allcount.poc.cashaccount.object.dto;
 
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
-import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthAccessTokenTypeEnum;
-import allcount.poc.user.entity.AllcountUser;
+import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 /**
  * DTO for the AccountResponse.
@@ -16,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @NoArgsConstructor
-public class AccountResponseDto {
+public class CashAccountResponseDto {
     private OpenBankingBankEnum bank;
     private String accountType;
     private String bic;
@@ -25,8 +22,19 @@ public class AccountResponseDto {
     private String iban;
     private String productDescription;
 
+    /**
+     * Constructor.
+     *
+     * @param bank              the bank
+     * @param accountType       the account type
+     * @param bic               the BIC
+     * @param currencyCode      the currency code
+     * @param currentBalance    the current balance
+     * @param iban              the IBAN
+     * @param productDescription the product description
+     */
     @Builder(toBuilder = true)
-    public AccountResponseDto(
+    public CashAccountResponseDto(
             OpenBankingBankEnum bank,
             String accountType,
             String bic,

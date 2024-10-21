@@ -22,7 +22,7 @@ public class OpenBankingOAuthAccessTokenDetermineService {
      * Constructor.
      *
      * @param openBankingOAuthAccessTokenRedisRepository - the OpenBankingOAuthAccessTokenRedisRepository
-     * @param openBankingOAuthAccessTokenRefreshService - the OpenBankingOAuthAccessTokenRefreshService
+     * @param openBankingOAuthAccessTokenRefreshService  - the OpenBankingOAuthAccessTokenRefreshService
      */
     @Autowired
     public OpenBankingOAuthAccessTokenDetermineService(

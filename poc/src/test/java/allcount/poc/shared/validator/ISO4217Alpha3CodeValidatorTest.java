@@ -1,11 +1,11 @@
 package allcount.poc.shared.validator;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ISO4217Alpha3CodeValidatorTest {
     private ISO4217Alpha3CodeValidator validator;
@@ -58,7 +58,6 @@ class ISO4217Alpha3CodeValidatorTest {
         assertFalse(ISO4217Alpha3CodeValidator.isValid("eur"));
         assertFalse(validator.isValid("eur", context));
     }
-
 
     @Test
     void testValidValueReturnsTrue() {

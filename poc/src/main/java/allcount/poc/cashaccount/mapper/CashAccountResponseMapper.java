@@ -1,20 +1,23 @@
-package allcount.poc.account.mapper;
+package allcount.poc.cashaccount.mapper;
 
-import allcount.poc.account.entity.AccountEntity;
-import allcount.poc.account.object.dto.AccountResponseDto;
+import allcount.poc.cashaccount.entity.CashAccountEntity;
+import allcount.poc.cashaccount.object.dto.CashAccountResponseDto;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.user.entity.AllcountUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.Response;
-import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+/**
+ * Mapper for the AccountResponse.
+ */
 @Component
-public class AccountResponseMapper {
+public class CashAccountResponseMapper {
     private static final String ACCOUNT_TYPE = "accountType";
     private static final String BIC = "bic";
     private static final String CURRENCY_CODE = "currencyCode";
@@ -22,26 +25,42 @@ public class AccountResponseMapper {
     private static final String IBAN = "iban";
     private static final String PRODUCT_DESCRIPTION = "productDescription";
 
-    public AccountResponseDto mapToAccountResponse(AccountEntity accountEntity) {
-        return AccountResponseDto.builder()
-                .bank(accountEntity.getBank())
-                .accountType(accountEntity.getAccountType())
-                .bic(accountEntity.getBic())
-                .currencyCode(accountEntity.getCurrencyCode())
-                .currentBalance(accountEntity.getCurrentBalance())
-                .iban(accountEntity.getIban())
-                .productDescription(accountEntity.getProductDescription())
+    /**
+     * Map the account to the response.
+     *
+     * @param cashAccountEntity the account
+     * @return the response
+     */
+    public CashAccountResponseDto mapToAccountResponse(CashAccountEntity cashAccountEntity) {
+        return CashAccountResponseDto.builder()
+                .bank(cashAccountEntity.getBank())
+                .accountType(cashAccountEntity.getAccountType())
+                .bic(cashAccountEntity.getBic())
+                .currencyCode(cashAccountEntity.getCurrencyCode())
+                .currentBalance(cashAccountEntity.getCurrentBalance())
+                .iban(cashAccountEntity.getIban())
+                .productDescription(cashAccountEntity.getProductDescription())
                 .build();
     }
 
-    public List<AccountEntity> mapToAccountEntities(Response response, AllcountUser user, OpenBankingBankEnum bank) throws JsonProcessingException {
+    /**
+     * Map the response to the account entities.
+     *
+     * @param response the response
+     * @param user the user
+     * @param bank the bank
+     * @return the account entities
+     * @throws JsonProcessingException if there is an error
+     */
+    public List<CashAccountEntity> mapToAccountEntities(Response response, AllcountUser user, OpenBankingBankEnum bank)
+            throws JsonProcessingException {
         String responseWithAccessToken = response.readEntity(String.class);
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
 
         JsonNode accountsArray = jsonNode.get("accounts");
-        List<AccountEntity> accountEntities = new ArrayList<>();
+        List<CashAccountEntity> accountEntities = new ArrayList<>();
 
         if (accountsArray != null && accountsArray.isArray()) {
             for (JsonNode accountNode : accountsArray) {
@@ -52,7 +71,7 @@ public class AccountResponseMapper {
                 String iban = accountNode.get(IBAN).textValue();
                 String productDescription = accountNode.get(PRODUCT_DESCRIPTION).textValue();
 
-                AccountEntity accountEntity = AccountEntity.builder()
+                CashAccountEntity cashAccountEntity = CashAccountEntity.builder()
                         .bank(bank)
                         .user(user)
                         .accountType(accountType)
@@ -63,7 +82,7 @@ public class AccountResponseMapper {
                         .productDescription(productDescription)
                         .build();
 
-                accountEntities.add(accountEntity);
+                accountEntities.add(cashAccountEntity);
             }
         }
 

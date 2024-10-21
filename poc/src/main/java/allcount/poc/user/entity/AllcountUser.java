@@ -1,8 +1,8 @@
 package allcount.poc.user.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -44,11 +44,11 @@ public class AllcountUser extends AllcountEntity implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    private Set<OpenBankingOAuthSessionEntity> openBankingOAuthSessions;
+    private Set<OpenBankingSessionEntity> openBankingOAuthSessions;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    private Set<OpenBankingOAuthRefreshTokenEntity> openBankingOAuthAccessTokens;
+    private Set<OpenBankingRefreshTokenEntity> openBankingOAuthAccessTokens;
 
     /**
      * Returns a string representation of the object for hashing purposes.
@@ -91,9 +91,9 @@ public class AllcountUser extends AllcountEntity implements UserDetails {
     }
 
     /**
-     * Returns whether the account is not expired.
+     * Returns whether the cashaccount is not expired.
      *
-     * @return whether the account is not expired.
+     * @return whether the cashaccount is not expired.
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -101,9 +101,9 @@ public class AllcountUser extends AllcountEntity implements UserDetails {
     }
 
     /**
-     * Returns whether the account is not locked.
+     * Returns whether the cashaccount is not locked.
      *
-     * @return whether the account is not locked.
+     * @return whether the cashaccount is not locked.
      */
     @Override
     public boolean isAccountNonLocked() {

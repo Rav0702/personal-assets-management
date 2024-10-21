@@ -1,16 +1,23 @@
 package allcount.poc.transaction.entity;
 
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.shared.annotation.ValidIBANCode;
 import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
+import allcount.poc.shared.annotation.ValidIbanCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
+/**
+ * Entity for the transaction.
+ */
 @Getter
 @Setter
 @Builder
@@ -33,7 +40,7 @@ public class TransactionEntity extends AllcountEntity {
     private Date bookingDate;
 
     @Column(name = "origin-iban", nullable = false)
-    @ValidIBANCode
+    @ValidIbanCode
     private String originIban;
 
     @Override
