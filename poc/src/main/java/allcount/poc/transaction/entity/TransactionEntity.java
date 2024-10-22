@@ -2,7 +2,7 @@ package allcount.poc.transaction.entity;
 
 import allcount.poc.account.entity.AccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.openbanking.entity.ExternalBankingIdEmbeddable;
+import allcount.poc.openbanking.embeddable.ExternalBankingIdEmbeddable;
 import allcount.poc.shared.annotation.ValidCurrencyCode;
 import jakarta.persistence.*;
 import java.math.BigDecimal;

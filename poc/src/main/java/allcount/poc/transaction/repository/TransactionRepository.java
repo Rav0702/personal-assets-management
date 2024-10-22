@@ -1,6 +1,6 @@
 package allcount.poc.transaction.repository;
 
-import allcount.poc.openbanking.entity.ExternalBankingIdEmbeddable;
+import allcount.poc.openbanking.embeddable.ExternalBankingIdEmbeddable;
 import allcount.poc.transaction.entity.TransactionEntity;
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package allcount.poc.openbanking.entity;
+package allcount.poc.openbanking.embeddable;
 
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import jakarta.persistence.*;
@@ -19,7 +19,7 @@ public class ExternalBankingIdEmbeddable {
     @NonNull
     private OpenBankingBankEnum bank;
 
-    @Column(name = "id_from_bank", nullable = false)
+    @Column(name = "external_id", nullable = false)
     @NonNull
     private String externalId;
 }
