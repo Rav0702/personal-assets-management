@@ -1,5 +1,6 @@
 package allcount.poc.transaction.mapper.responsetodto.list;
 
+import allcount.poc.shared.mapper.JsonResponseToDtoMapper;
 import allcount.poc.transaction.mapper.responsetodto.get.DeutscheGroupGetTransactionResponseToDtoMapper;
 import allcount.poc.transaction.object.dto.TransactionDto;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
  * </ul>
  */
 @Component
-public class DeutscheGroupListTransactionResponseToDtoMapper implements OpenBankingListTransactionResponseToDtoMapper {
+public class DeutscheGroupListTransactionResponseToDtoMapper implements JsonResponseToDtoMapper<List<TransactionDto>> {
 
     private final transient DeutscheGroupGetTransactionResponseToDtoMapper deutscheGroupGetTransactionResponseToDtoMapper;
 

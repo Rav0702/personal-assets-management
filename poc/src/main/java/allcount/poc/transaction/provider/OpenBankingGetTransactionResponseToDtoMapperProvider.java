@@ -1,8 +1,9 @@
 package allcount.poc.transaction.provider;
 
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
+import allcount.poc.shared.mapper.JsonResponseToDtoMapper;
 import allcount.poc.transaction.mapper.responsetodto.get.DeutscheGroupGetTransactionResponseToDtoMapper;
-import allcount.poc.transaction.mapper.responsetodto.get.OpenBankingGetTransactionResponseToDtoMapper;
+import allcount.poc.transaction.object.dto.TransactionDto;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OpenBankingGetTransactionResponseToDtoMapperProvider {
-    private final Map<OpenBankingBankEnum, OpenBankingGetTransactionResponseToDtoMapper> mappingBankToTransactionResponseToDtoMapper;
+    private final Map<OpenBankingBankEnum, JsonResponseToDtoMapper<TransactionDto>> mappingBankToTransactionResponseToDtoMapper;
 
     /**
      * Constructor.
@@ -43,7 +44,7 @@ public class OpenBankingGetTransactionResponseToDtoMapperProvider {
      * @param bank enum representing the bank.
      * @return transaction response to DTO mapper for the given bank.
      */
-    public OpenBankingGetTransactionResponseToDtoMapper getMapper(OpenBankingBankEnum bank) {
+    public JsonResponseToDtoMapper<TransactionDto> getMapper(OpenBankingBankEnum bank) {
         return mappingBankToTransactionResponseToDtoMapper.get(bank);
     }
 

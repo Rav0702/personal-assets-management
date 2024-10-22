@@ -1,5 +1,6 @@
 package allcount.poc.transaction.mapper.responsetodto.get;
 
+import allcount.poc.shared.mapper.JsonResponseToDtoMapper;
 import allcount.poc.transaction.object.dto.TransactionDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
  * </ul>
  */
 @Component
-public class DeutscheGroupGetTransactionResponseToDtoMapper implements OpenBankingGetTransactionResponseToDtoMapper {
+public class DeutscheGroupGetTransactionResponseToDtoMapper implements JsonResponseToDtoMapper<TransactionDto> {
     @Override
     public TransactionDto mapToDto(JsonNode response) {
         TransactionDto dto = TransactionDto.builder()
