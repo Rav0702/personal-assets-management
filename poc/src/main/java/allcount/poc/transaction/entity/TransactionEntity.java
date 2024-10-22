@@ -3,7 +3,7 @@ package allcount.poc.transaction.entity;
 import allcount.poc.account.entity.AccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
 import allcount.poc.openbanking.entity.ExternalBankingIdEmbeddable;
-import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
+import allcount.poc.shared.annotation.ValidCurrencyCode;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public class TransactionEntity extends AllcountEntity {
     private BigDecimal amount;
 
     @Column(name = "currency", length = 3, nullable = false)
-    @ValidISO4217Alpha3Code
+    @ValidCurrencyCode
     @NonNull
     private String currencyCode;
 

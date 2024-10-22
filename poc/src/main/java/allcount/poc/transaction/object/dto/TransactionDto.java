@@ -1,8 +1,8 @@
 package allcount.poc.transaction.object.dto;
 
 import allcount.poc.core.domain.object.dto.AllcountDto;
+import allcount.poc.shared.annotation.ValidCurrencyCode;
 import allcount.poc.shared.annotation.ValidIBANCode;
-import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.*;
@@ -22,7 +22,7 @@ public class TransactionDto extends AllcountDto {
     @NonNull
     private BigDecimal amount;
 
-    @ValidISO4217Alpha3Code
+    @ValidCurrencyCode
     @Nullable
     private String currencyCode;
 

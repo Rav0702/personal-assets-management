@@ -2,8 +2,8 @@ package allcount.poc.account.entity;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
+import allcount.poc.shared.annotation.ValidCurrencyCode;
 import allcount.poc.shared.annotation.ValidIBANCode;
-import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public class AccountEntity extends OpenBankingOAuthEntity {
     private String bic;
 
     @Column(name = "currency", length = 3, nullable = false)
-    @ValidISO4217Alpha3Code
+    @ValidCurrencyCode
     private String currencyCode;
 
     @Column(name = "current_balance", precision = 15, scale = 2, nullable = false)
