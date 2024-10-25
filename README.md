@@ -77,6 +77,7 @@ It contains the requests that can be used to test the flow of the application. T
 - `Session Initialize` - initializes the session with the bank and returns the url that the user needs to be followed to login and authorize the application
 - `OAUTH Callback` - Paste the url that the user is redirected to after authorizing the application in the browser (change https to http)
 - `Retrieve Account` - Lists the accounts of the user
+- `Sync Transactions` - Syncs transactions for the user
 
 ## Project Structure
 
@@ -85,6 +86,7 @@ The POC is divided into main packages:
 - `authentication` - contains the classes responsible for the Spring Security authentication to our app using JWT.
 - `openbankingoauth` - contains the classes responsible for the OAuth2 Authorization Code Flow with PKCE.
 - `user` - contains the classes responsible for the user management.
+- `transaction` - contains the classes responsible for the transaction management.
 
 ## Testing
 
