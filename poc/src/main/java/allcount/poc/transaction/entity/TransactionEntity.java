@@ -37,7 +37,7 @@ import org.springframework.lang.Nullable;
 @Table(
         name = "transaction",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"bank", "id_from_bank"}),
+            @UniqueConstraint(columnNames = {"bank", "external_id"}),
         },
         indexes = {
             @Index(columnList = "bank, id_from_bank"),
