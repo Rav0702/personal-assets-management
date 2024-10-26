@@ -1,16 +1,16 @@
 package allcount.poc.kafka;
 
-import allcount.poc.account.service.OpenBankingAccountService;
+import allcount.poc.cashaccount.service.CashAccountService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaConsumerService {
 
-    private final OpenBankingAccountService openBankingAccountService;
+    private final CashAccountService cashAccountService;
 
-    public KafkaConsumerService(OpenBankingAccountService openBankingAccountService) {
-        this.openBankingAccountService = openBankingAccountService;
+    public KafkaConsumerService(CashAccountService cashAccountService) {
+        this.cashAccountService = cashAccountService;
     }
 
     @KafkaListener(topics = "sync-job", groupId = "banking-group")
@@ -18,6 +18,6 @@ public class KafkaConsumerService {
         System.out.println("Consumed message: " + message);
 
         // Process the message and call the OpenBanking API
-        openBankingAccountService.updateBankingRecords(message);
+        cashAccountService.updateBankingRecords(message);
     }
 }
