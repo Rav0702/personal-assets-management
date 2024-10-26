@@ -23,13 +23,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeutscheGroupListTransactionResponseToDtoMapper implements JsonResponseToDtoMapper<List<TransactionDto>> {
 
-    private final transient DeutscheGroupGetTransactionResponseToDtoMapper deutscheGroupGetTransactionResponseToDtoMapper;
+    private final transient DeutscheGroupGetTransactionResponseToDtoMapper
+            deutscheGroupGetTransactionResponseToDtoMapper;
 
     /**
      * Constructor.
      */
     @Autowired
-    public DeutscheGroupListTransactionResponseToDtoMapper(DeutscheGroupGetTransactionResponseToDtoMapper deutscheGroupGetTransactionResponseToDtoMapper) {
+    public DeutscheGroupListTransactionResponseToDtoMapper(
+            DeutscheGroupGetTransactionResponseToDtoMapper deutscheGroupGetTransactionResponseToDtoMapper) {
         this.deutscheGroupGetTransactionResponseToDtoMapper = deutscheGroupGetTransactionResponseToDtoMapper;
     }
 

@@ -16,8 +16,7 @@ public class OpenBankingBankToTransactionUriMapper {
     private static final Map<OpenBankingBankEnum, String> BANK_TO_LIST_TRANSACTIONS_URI = Map.of(
             OpenBankingBankEnum.DEUTSCHE_BANK, "/gw/dbapi/banking/transactions/v2",
             OpenBankingBankEnum.NORIS_BANK, "/gw/dbapi/banking/transactions/v2"
-    //        OpenBankingBankEnum.POST_BANK, "todo POSTBANK DOES NOT SUPPORT LISTING TRANSACTIONS"
-    );
+    ); // OpenBankingBankEnum.POST_BANK, "todo POSTBANK DOES NOT SUPPORT LISTING TRANSACTIONS"
 
     /**
      * Returns true if the given bank supports transaction retrieval. (i.e. we have a URI for listing transactions).

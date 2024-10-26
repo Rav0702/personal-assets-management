@@ -1,7 +1,7 @@
 package allcount.poc.transaction.service;
 
-import allcount.poc.account.entity.AccountEntity;
-import allcount.poc.account.repository.AccountRepository;
+import allcount.poc.cashaccount.entity.CashAccountEntity;
+import allcount.poc.cashaccount.repository.CashAccountRepository;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.service.OpenBankingOAuthAccessTokenDetermineService;
@@ -15,7 +15,9 @@ import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OpenBankingTransactionService {
     private static final int DEFAULT_PAGE_SIZE = 100;
     private static final Logger LOG = Logger.getLogger(OpenBankingTransactionService.class.getName());
-    private final transient AccountRepository accountRepository;
+    private final transient CashAccountRepository cashAccountRepository;
     private final transient OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService;
     private final transient TransactionRetrievalClient transactionRetrievalClient;
     private final transient TransactionDtoToEntityMapper transactionDtoToEntityMapper;
@@ -45,13 +47,14 @@ public class OpenBankingTransactionService {
      */
     @Autowired
     public OpenBankingTransactionService(
-            AccountRepository accountRepository,
+            CashAccountRepository cashAccountRepository,
             OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService,
             TransactionRetrievalClient transactionRetrievalClient,
             TransactionDtoToEntityMapper transactionDtoToEntityMapper,
             TransactionRepository transactionRepository,
-            AllcountUserRepository allcountUserRepository, OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper) {
-        this.accountRepository = accountRepository;
+            AllcountUserRepository allcountUserRepository,
+            OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper) {
+        this.cashAccountRepository = cashAccountRepository;
         this.openBankingOAuthAccessTokenDetermineService = openBankingOAuthAccessTokenDetermineService;
         this.transactionRetrievalClient = transactionRetrievalClient;
         this.transactionDtoToEntityMapper = transactionDtoToEntityMapper;
@@ -65,8 +68,8 @@ public class OpenBankingTransactionService {
      * Fetches users transactions from the bank API and saves/updates them to/in the database.
      *
      * @param userId User ID to sync transactions for.
-     * @param from From date to sync transactions from. If null, syncs from epoch 0.
-     * @param to To date to sync transactions to. If null, syncs till now.
+     * @param from   From date to sync transactions from. If null, syncs from epoch 0.
+     * @param to     To date to sync transactions to. If null, syncs till now.
      */
     @Transactional
     public void syncTransactionsForUser(@NonNull UUID userId, @Nullable LocalDate from, @Nullable LocalDate to) {
@@ -79,16 +82,17 @@ public class OpenBankingTransactionService {
         }
         LOG.info("Syncing transactions for user: " + userId + " from: " + from + " till" + to);
         AllcountUser user = this.allcountUserRepository.findById(userId).orElseThrow();
-        List<AccountEntity> accounts = accountRepository.findAllByUser(user);
+        List<CashAccountEntity> accounts = cashAccountRepository.findAllByUser(user);
         LOG.info("Found " + accounts.size() + " accounts for user: " + userId);
 
         // todo: make the function return a list of statuses (number of synced transactions/failure) for each account
-        for (AccountEntity account : accounts) {
+        for (CashAccountEntity account : accounts) {
             try {
                 syncTransactionsForAccount(account.getId(), from, to);
                 LOG.info("Successfully synced transactions for account: " + account.getId());
             } catch (Exception e) {
-                LOG.severe("Failed to sync transactions for account: " + account.getId() + " due to: " + e.getMessage());
+                LOG.severe(
+                        "Failed to sync transactions for account: " + account.getId() + " due to: " + e.getMessage());
             }
         }
     }
@@ -98,14 +102,16 @@ public class OpenBankingTransactionService {
      * Fetches transactions from the bank API and saves/updates them to/in the database.
      *
      * @param accountId Account ID to sync transactions for.
-     * @param from From date to sync transactions from. If null, syncs from epoch 0.
-     * @param to To date to sync transactions to. If null, syncs till now.
+     * @param from      From date to sync transactions from. If null, syncs from epoch 0.
+     * @param to        To date to sync transactions to. If null, syncs till now.
      * @throws JsonProcessingException If the transactions cannot be parsed.
      */
     @Transactional
-    void syncTransactionsForAccount(@NonNull UUID accountId, @Nullable LocalDate from, @Nullable LocalDate to) throws JsonProcessingException {
-        LOG.info("Syncing transactions for account: " + accountId + (from != null ? " from: " + from : "") + (to != null ? " to: " + to : ""));
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow();
+    void syncTransactionsForAccount(@NonNull UUID accountId, @Nullable LocalDate from, @Nullable LocalDate to)
+            throws JsonProcessingException {
+        LOG.info("Syncing transactions for account: " + accountId + (from != null ? " from: " + from : "")
+                + (to != null ? " to: " + to : ""));
+        CashAccountEntity account = cashAccountRepository.findById(accountId).orElseThrow();
         AllcountUser user = account.getUser();
         OpenBankingBankEnum bank = account.getBank();
 
@@ -114,7 +120,8 @@ public class OpenBankingTransactionService {
             return;
         }
 
-        OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity = openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
+        OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity =
+                openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
         String accessToken = tokenRedisEntity.getAccessToken();
 
         int page = 0;
@@ -122,7 +129,8 @@ public class OpenBankingTransactionService {
         do {
             List<TransactionDto> transactions = transactionRetrievalClient
                     .listTransactions(bank, account.getIban(), accessToken, from, to, DEFAULT_PAGE_SIZE, page);
-            List<TransactionEntity> transactionEntities = transactionDtoToEntityMapper.mapToEntities(transactions, List.of(account));
+            List<TransactionEntity> transactionEntities =
+                    transactionDtoToEntityMapper.mapToEntities(transactions, List.of(account));
 
             transactionEntities.forEach(this::saveOrUpdateTransaction);
             transactionRepository.flush();
@@ -143,7 +151,8 @@ public class OpenBankingTransactionService {
      */
     @Transactional
     void saveOrUpdateTransaction(@NonNull TransactionEntity newTransaction) {
-        Optional<TransactionEntity> existingTransactionOpt = transactionRepository.findByExternalBankingId(newTransaction.getExternalBankingId());
+        Optional<TransactionEntity> existingTransactionOpt =
+                transactionRepository.findByExternalBankingId(newTransaction.getExternalBankingId());
 
         if (existingTransactionOpt.isPresent()) {
             TransactionEntity existingTransaction = existingTransactionOpt.get();

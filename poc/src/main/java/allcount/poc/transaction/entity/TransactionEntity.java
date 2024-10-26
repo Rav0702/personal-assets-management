@@ -1,14 +1,28 @@
 package allcount.poc.transaction.entity;
 
-import allcount.poc.account.entity.AccountEntity;
+import allcount.poc.cashaccount.entity.CashAccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
 import allcount.poc.openbanking.embeddable.ExternalBankingIdEmbeddable;
 import allcount.poc.shared.annotation.ValidCurrencyCode;
-import jakarta.persistence.*;
+import allcount.poc.shared.annotation.ValidIbanCode;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import lombok.*;
-import org.springframework.lang.NonNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 /**
@@ -23,7 +37,7 @@ import org.springframework.lang.Nullable;
 @Table(
         name = "transaction",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"bank", "id_from_bank"}),
+            @UniqueConstraint(columnNames = {"bank", "external_id"}),
         },
         indexes = {
             @Index(columnList = "bank, id_from_bank"),
@@ -50,15 +64,14 @@ public class TransactionEntity extends AllcountEntity {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "origin_account_id")
     @NonNull
-    private AccountEntity originAccount;
+    private CashAccountEntity originAccount;
 
     @Column(name = "counter_party_name")
     @Nullable
     private String counterPartyName;
 
-    // todo: add iban validation (allow null)
     @Column(name = "counter_party_iban")
-    @Nullable
+    @ValidIbanCode
     private String counterPartyIban;
 
     @Embedded

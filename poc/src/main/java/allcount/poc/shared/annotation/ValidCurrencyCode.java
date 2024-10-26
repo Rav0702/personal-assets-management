@@ -17,7 +17,24 @@ import java.lang.annotation.Target;
 public @interface ValidCurrencyCode {
     String INVALID_MESSAGE = "Invalid ISO-4217 Alpha-3 Code";
 
+    /**
+     * Message.
+     *
+     * @return the message
+     */
     String message() default INVALID_MESSAGE;
+
+    /**
+     * Groups.
+     *
+     * @return the groups
+     */
     Class<?>[] groups() default {};
+
+    /**
+     * Payload.
+     *
+     * @return the payload
+     */
     Class<? extends Payload>[] payload() default {};
 }

@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OpenBankingGetTransactionResponseToDtoMapperProvider {
-    private final Map<OpenBankingBankEnum, JsonResponseToDtoMapper<TransactionDto>> mappingBankToTransactionResponseToDtoMapper;
+    private final Map<OpenBankingBankEnum, JsonResponseToDtoMapper<TransactionDto>>
+            mappingBankToTransactionResponseToDtoMapper;
 
     /**
      * Constructor.
@@ -23,8 +24,8 @@ public class OpenBankingGetTransactionResponseToDtoMapperProvider {
             DeutscheGroupGetTransactionResponseToDtoMapper deutscheGroupGetTransactionResponseToDtoMapper
     ) {
         this.mappingBankToTransactionResponseToDtoMapper = Map.of(
-            OpenBankingBankEnum.DEUTSCHE_BANK, deutscheGroupGetTransactionResponseToDtoMapper,
-            OpenBankingBankEnum.NORIS_BANK, deutscheGroupGetTransactionResponseToDtoMapper
+                OpenBankingBankEnum.DEUTSCHE_BANK, deutscheGroupGetTransactionResponseToDtoMapper,
+                OpenBankingBankEnum.NORIS_BANK, deutscheGroupGetTransactionResponseToDtoMapper
         );
     }
 

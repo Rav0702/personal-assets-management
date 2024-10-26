@@ -1,27 +1,32 @@
 package allcount.poc.openbankingoauth.repository;
 
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
-import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
+import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Repository for OpenBankingOAuthSessionEntity.
+ * Repository for OpenBankingSessionEntity.
  */
-public interface OpenBankingOAuthSessionRepository extends JpaRepository<OpenBankingOAuthSessionEntity, UUID> {
+public interface OpenBankingOAuthSessionRepository extends JpaRepository<OpenBankingSessionEntity, UUID> {
 
     /**
-     * Finds the OpenBankingOAuthSessionEntity by the state and status.
+     * Finds the OpenBankingSessionEntity by the state and status.
      *
      * @param state  - the state
      * @param status - the status
-     * @return the OpenBankingOAuthSessionEntity
+     * @return the OpenBankingSessionEntity
      */
-    Optional<OpenBankingOAuthSessionEntity> findByStateAndStatus(UUID state, OpenBankingOAuthSessionStatusEnum status);
+    Optional<OpenBankingSessionEntity> findByStateAndStatus(UUID state, OpenBankingOAuthSessionStatusEnum status);
 
-    List<OpenBankingOAuthSessionEntity> findByUserIdAndStatus(UUID userId, OpenBankingOAuthSessionStatusEnum status);
+    /**
+     * Finds the OpenBankingSessionEntity by the user id and status.
+     *
+     * @param userId - the user id
+     * @param status - the status
+     * @return the OpenBankingSessionEntity
+     */
+    List<OpenBankingSessionEntity> findByUserIdAndStatus(UUID userId, OpenBankingOAuthSessionStatusEnum status);
 }

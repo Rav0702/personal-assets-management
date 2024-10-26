@@ -1,4 +1,4 @@
-package allcount.poc.openbankingoauth.integration.configuration;
+package allcount.poc.core.configuration;
 
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import org.mockito.Mockito;
@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Profile;
 /**
  * Configuration for the Open Banking Authorization integration tests.
  */
-@Profile("open-banking-authorization-integration-test")
+@Profile("open-banking-integration-test")
 @Configuration
-public class OpenBankingAuthorizationIntegrationTestConfiguration {
+public class OpenBankingIntegrationTestConfiguration {
 
     /**
      * Creates a mock of the OpenBankingBankToBaseUriMapper.

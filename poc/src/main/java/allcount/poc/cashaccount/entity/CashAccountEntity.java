@@ -1,14 +1,20 @@
-package allcount.poc.account.entity;
+package allcount.poc.cashaccount.entity;
 
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthEntity;
+import allcount.poc.core.domain.entity.OpenBankingEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.shared.annotation.ValidCurrencyCode;
-import allcount.poc.shared.annotation.ValidIBANCode;
+import allcount.poc.shared.annotation.ValidIbanCode;
 import allcount.poc.user.entity.AllcountUser;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Entity for the Account.
@@ -18,8 +24,8 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "account")
-public class AccountEntity extends OpenBankingOAuthEntity {
+@Table(name = "cash_account")
+public class CashAccountEntity extends OpenBankingEntity {
     @Column(name = "account_type")
     private String accountType;
 
@@ -35,21 +41,33 @@ public class AccountEntity extends OpenBankingOAuthEntity {
     private BigDecimal currentBalance;
 
     @Column(name = "iban", nullable = false)
-    @ValidIBANCode
+    @ValidIbanCode
     private String iban;
 
     @Column(name = "product_description")
     private String productDescription;
 
+    /**
+     * Constructor.
+     *
+     * @param bank               the bank
+     * @param user               the user
+     * @param accountType        the account type
+     * @param bic                the BIC
+     * @param currencyCode       the currency code
+     * @param currentBalance     the current balance
+     * @param iban               the IBAN
+     * @param productDescription the product description
+     */
     @Builder
-    public AccountEntity(OpenBankingBankEnum bank,
-                         AllcountUser user,
-                         String accountType,
-                         String bic,
-                         String currencyCode,
-                         BigDecimal currentBalance,
-                         String iban,
-                         String productDescription) {
+    public CashAccountEntity(OpenBankingBankEnum bank,
+                             AllcountUser user,
+                             String accountType,
+                             String bic,
+                             String currencyCode,
+                             @NonNull BigDecimal currentBalance,
+                             String iban,
+                             String productDescription) {
         super(bank, user);
         this.accountType = accountType;
         this.bic = bic;

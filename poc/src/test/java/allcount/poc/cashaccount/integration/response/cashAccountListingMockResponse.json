@@ -1,0 +1,15 @@
+{
+  "totalItems": 0,
+  "limit": 0,
+  "offset": 0,
+  "accounts": [
+    {
+      "iban": "NL45ABBA9003576416",
+      "currencyCode": "EUR",
+      "bic": "ABNANL2A",
+      "accountType": "TEST",
+      "currentBalance": 1000,
+      "productDescription": "TEST"
+    }
+  ]
+}
