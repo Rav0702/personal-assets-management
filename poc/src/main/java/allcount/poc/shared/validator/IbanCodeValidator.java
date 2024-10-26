@@ -17,13 +17,13 @@ public class IbanCodeValidator implements ConstraintValidator<ValidIbanCode, Str
      * @return true if the string is a valid IBAN code, false otherwise
      */
     public static boolean isValid(String string) {
-        return string != null && string.matches(IBAN_PATTERN);
+        return string == null || string.matches(IBAN_PATTERN);
     }
 
     /**
      * Checks if the string is a valid IBAN code.
      *
-     * @param string the string
+     * @param string                     the string
      * @param constraintValidatorContext the constraint validator context
      * @return true if the string is a valid IBAN code, false otherwise
      */

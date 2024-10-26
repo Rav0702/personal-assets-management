@@ -1,8 +1,15 @@
 package allcount.poc.openbanking.embeddable;
 
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * Embeddable representing an Entity ID from an external banking system. <br>

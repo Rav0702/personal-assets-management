@@ -1,20 +1,29 @@
 package allcount.poc.transaction.entity;
 
-import allcount.poc.account.entity.AccountEntity;
+import allcount.poc.cashaccount.entity.CashAccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
+import allcount.poc.openbanking.embeddable.ExternalBankingIdEmbeddable;
+import allcount.poc.shared.annotation.ValidCurrencyCode;
 import allcount.poc.shared.annotation.ValidIbanCode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 /**
  * Entity representing a Bank Transaction.
@@ -55,7 +64,7 @@ public class TransactionEntity extends AllcountEntity {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "origin_account_id")
     @NonNull
-    private AccountEntity originAccount;
+    private CashAccountEntity originAccount;
 
     @Column(name = "counter_party_name")
     @Nullable

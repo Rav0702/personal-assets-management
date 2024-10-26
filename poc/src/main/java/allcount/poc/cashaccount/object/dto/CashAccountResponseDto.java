@@ -25,12 +25,12 @@ public class CashAccountResponseDto {
     /**
      * Constructor.
      *
-     * @param bank              the bank
-     * @param accountType       the account type
-     * @param bic               the BIC
-     * @param currencyCode      the currency code
-     * @param currentBalance    the current balance
-     * @param iban              the IBAN
+     * @param bank               the bank
+     * @param accountType        the account type
+     * @param bic                the BIC
+     * @param currencyCode       the currency code
+     * @param currentBalance     the current balance
+     * @param iban               the IBAN
      * @param productDescription the product description
      */
     @Builder(toBuilder = true)

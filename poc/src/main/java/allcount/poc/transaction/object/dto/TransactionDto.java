@@ -2,10 +2,14 @@ package allcount.poc.transaction.object.dto;
 
 import allcount.poc.core.domain.object.dto.AllcountDto;
 import allcount.poc.shared.annotation.ValidCurrencyCode;
-import allcount.poc.shared.annotation.ValidIBANCode;
+import allcount.poc.shared.annotation.ValidIbanCode;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -32,14 +36,14 @@ public class TransactionDto extends AllcountDto {
     @Nullable
     private LocalDate valueDate;
 
-    @ValidIBANCode
+    @ValidIbanCode
     @NonNull
     private String originIban;
 
     @Nullable
     private String counterPartyName;
 
-    //todo: add validation
+    @ValidIbanCode
     @Nullable
     private String counterPartyIban;
 

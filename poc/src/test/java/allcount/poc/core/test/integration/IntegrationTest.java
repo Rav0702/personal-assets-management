@@ -1,6 +1,7 @@
 package allcount.poc.core.test.integration;
 
 import static io.restassured.RestAssured.given;
+
 import allcount.poc.authentication.object.dto.AuthenticationRequestDto;
 import allcount.poc.authentication.object.dto.RegistrationRequestDto;
 import allcount.poc.core.configuration.TestcontainersConfiguration;

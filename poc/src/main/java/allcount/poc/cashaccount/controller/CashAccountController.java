@@ -28,7 +28,7 @@ public class CashAccountController {
     /**
      * Constructor.
      *
-     * @param cashAccountService the service
+     * @param cashAccountService        the service
      * @param cashAccountResponseMapper the mapper
      */
     @Autowired

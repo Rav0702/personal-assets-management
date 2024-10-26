@@ -25,8 +25,8 @@ public class OpenBankingListTransactionResponseToDtoMapperProvider {
             DeutscheGroupListTransactionResponseToDtoMapper deutscheGroupListTransactionResponseToDtoMapper
     ) {
         this.bankToMapper = Map.of(
-            OpenBankingBankEnum.DEUTSCHE_BANK, deutscheGroupListTransactionResponseToDtoMapper,
-            OpenBankingBankEnum.NORIS_BANK, deutscheGroupListTransactionResponseToDtoMapper
+                OpenBankingBankEnum.DEUTSCHE_BANK, deutscheGroupListTransactionResponseToDtoMapper,
+                OpenBankingBankEnum.NORIS_BANK, deutscheGroupListTransactionResponseToDtoMapper
         );
     }
 

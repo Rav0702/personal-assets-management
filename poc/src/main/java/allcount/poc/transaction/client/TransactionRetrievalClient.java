@@ -38,7 +38,8 @@ public class TransactionRetrievalClient {
     private final transient Client client;
     private final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
     private final transient OpenBankingBankToTransactionUriMapper openBankingBankToTransactionUriMapper;
-    private final transient OpenBankingListTransactionResponseToDtoMapperProvider listTransactionResponseToDtoMapperProvider;
+    private final transient OpenBankingListTransactionResponseToDtoMapperProvider
+            listTransactionResponseToDtoMapperProvider;
 
     /**
      * Constructor.
@@ -69,13 +70,16 @@ public class TransactionRetrievalClient {
      */
     public List<TransactionDto> listTransactions(
             @NonNull OpenBankingBankEnum bank, @NonNull String iban, @NonNull String accessToken,
-            @Nullable LocalDate bookingDateFrom, @Nullable LocalDate bookingDateTo, @Nullable Integer limit, @Nullable Integer offset
+            @Nullable LocalDate bookingDateFrom, @Nullable LocalDate bookingDateTo, @Nullable Integer limit,
+            @Nullable Integer offset
     ) {
         LOG.info("Listing transactions from iban: " + iban + " for bank: " + bank
-                + " parameters: bookingDateFrom=" + bookingDateFrom + ", bookingDateTo=" + bookingDateTo + ", limit=" + limit + ", offset=" + offset);
+                + " parameters: bookingDateFrom=" + bookingDateFrom + ", bookingDateTo=" + bookingDateTo + ", limit="
+                + limit + ", offset=" + offset);
 
         WebTarget webTarget = this.client
-                .target(openBankingBankToBaseUriMapper.getBaseUri(bank) + openBankingBankToTransactionUriMapper.getListTransactionsUri(bank))
+                .target(openBankingBankToBaseUriMapper.getBaseUri(bank)
+                        + openBankingBankToTransactionUriMapper.getListTransactionsUri(bank))
                 .queryParam(QUERY_PARAM_IBAN, iban);
 
         if (bookingDateFrom != null) {

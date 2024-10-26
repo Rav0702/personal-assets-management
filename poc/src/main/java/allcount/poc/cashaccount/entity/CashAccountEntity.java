@@ -3,7 +3,7 @@ package allcount.poc.cashaccount.entity;
 import allcount.poc.core.domain.entity.OpenBankingEntity;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.shared.annotation.ValidCurrencyCode;
-import allcount.poc.shared.annotation.ValidIBANCode;
+import allcount.poc.shared.annotation.ValidIbanCode;
 import allcount.poc.user.entity.AllcountUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,13 +50,13 @@ public class CashAccountEntity extends OpenBankingEntity {
     /**
      * Constructor.
      *
-     * @param bank              the bank
-     * @param user              the user
-     * @param accountType       the account type
-     * @param bic               the BIC
-     * @param currencyCode      the currency code
-     * @param currentBalance    the current balance
-     * @param iban              the IBAN
+     * @param bank               the bank
+     * @param user               the user
+     * @param accountType        the account type
+     * @param bic                the BIC
+     * @param currencyCode       the currency code
+     * @param currentBalance     the current balance
+     * @param iban               the IBAN
      * @param productDescription the product description
      */
     @Builder
@@ -65,7 +65,7 @@ public class CashAccountEntity extends OpenBankingEntity {
                              String accountType,
                              String bic,
                              String currencyCode,
-                             BigDecimal currentBalance,
+                             @NonNull BigDecimal currentBalance,
                              String iban,
                              String productDescription) {
         super(bank, user);

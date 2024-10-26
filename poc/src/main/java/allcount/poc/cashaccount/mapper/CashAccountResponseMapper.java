@@ -47,8 +47,8 @@ public class CashAccountResponseMapper {
      * Map the response to the account entities.
      *
      * @param response the response
-     * @param user the user
-     * @param bank the bank
+     * @param user     the user
+     * @param bank     the bank
      * @return the account entities
      * @throws JsonProcessingException if there is an error
      */

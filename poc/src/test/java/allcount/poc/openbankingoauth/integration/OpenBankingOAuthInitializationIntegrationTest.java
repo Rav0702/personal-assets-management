@@ -3,6 +3,7 @@ package allcount.poc.openbankingoauth.integration;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
+
 import allcount.poc.core.test.integration.IntegrationTest;
 import allcount.poc.core.test.integration.IntegrationTestLib;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;

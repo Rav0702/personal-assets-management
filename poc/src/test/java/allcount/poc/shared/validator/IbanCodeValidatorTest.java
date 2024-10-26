@@ -2,6 +2,7 @@ package allcount.poc.shared.validator;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +19,9 @@ class IbanCodeValidatorTest {
     }
 
     @Test
-    void testNullValueReturnsFalse() {
-        assertFalse(IbanCodeValidator.isValid(null));
-        assertFalse(validator.isValid(null, context));
+    void testNullValueReturnsTrue() {
+        assertTrue(IbanCodeValidator.isValid(null));
+        assertTrue(validator.isValid(null, context));
     }
 
     @Test

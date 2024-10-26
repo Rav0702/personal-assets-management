@@ -3,6 +3,7 @@ package allcount.poc.cashaccount.integration;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
+
 import allcount.poc.cashaccount.entity.CashAccountEntity;
 import allcount.poc.cashaccount.repository.CashAccountRepository;
 import allcount.poc.cashaccount.service.CashAccountService;
@@ -50,11 +51,11 @@ public class CashAccountIntegrationTest extends IntegrationTest {
     /**
      * Constructor.
      *
-     * @param cashAccountService the service
-     * @param openBankingOAuthSessionRepository the repository
+     * @param cashAccountService                         the service
+     * @param openBankingOAuthSessionRepository          the repository
      * @param openBankingOAuthAccessTokenRedisRepository the repository
-     * @param openBankingBankToBaseUriMapper the mapper
-     * @param cashAccountRepository the repository
+     * @param openBankingBankToBaseUriMapper             the mapper
+     * @param cashAccountRepository                      the repository
      */
     @Autowired
     public CashAccountIntegrationTest(CashAccountService cashAccountService,

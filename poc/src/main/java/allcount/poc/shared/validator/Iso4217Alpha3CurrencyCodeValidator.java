@@ -23,7 +23,7 @@ public class Iso4217Alpha3CurrencyCodeValidator implements ConstraintValidator<V
     /**
      * Checks if the string is a valid ISO-4217 Alpha-3 code.
      *
-     * @param string the string
+     * @param string                     the string
      * @param constraintValidatorContext the constraint validator context
      * @return true if the string is a valid ISO-4217 Alpha-3 code, false otherwise
      */
@@ -38,6 +38,6 @@ public class Iso4217Alpha3CurrencyCodeValidator implements ConstraintValidator<V
      * @param constraintAnnotation the constraint annotation
      */
     @Override
-    public void initialize(ValidISO4217Alpha3Code constraintAnnotation) {
+    public void initialize(ValidCurrencyCode constraintAnnotation) {
     }
 }
