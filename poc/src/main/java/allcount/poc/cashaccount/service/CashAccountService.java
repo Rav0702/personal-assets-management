@@ -121,4 +121,14 @@ public class CashAccountService {
             throws JsonProcessingException {
         return cashAccountResponseMapper.mapToAccountEntities(response, user, bank);
     }
+
+    /**
+     * Updates the banking records.
+     *
+     * @param message - the message
+     */
+    public void updateBankingRecords(String message) {
+        // Process the message and call the OpenBanking API
+        System.out.println("Message received: " + message);
+    }
 }
