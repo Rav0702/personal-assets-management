@@ -1,13 +1,13 @@
 package allcount.poc.shared.validator;
 
-import allcount.poc.shared.annotation.ValidISO4217Alpha3Code;
+import allcount.poc.shared.annotation.ValidCurrencyCode;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Validator for the ISO-4217 Alpha-3 code.
  */
-public class ISO4217Alpha3CodeValidator implements ConstraintValidator<ValidISO4217Alpha3Code, String> {
+public class Iso4217Alpha3CurrencyCodeValidator implements ConstraintValidator<ValidCurrencyCode, String> {
     private static final String ISO4217_PATTERN = "^[A-Z]{3}$";
 
     /**
