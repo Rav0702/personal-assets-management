@@ -1,7 +1,7 @@
 package allcount.poc.openbankingoauth.mapper;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthAccessTokenResponseDto;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthAccessTokenTypeEnum;
@@ -11,7 +11,7 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper for the OpenBankingOAuthRefreshTokenEntity.
+ * Mapper for the OpenBankingRefreshTokenEntity.
  */
 @Component
 public class OpenBankingOAuthAccessTokenResponseMapper {
@@ -22,13 +22,13 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
     private static final String FIELD_TOKEN_TYPE = "token_type";
 
     /**
-     * Maps the OpenBankingOAuthRefreshTokenEntity to the OpenBankingOAuthAccessTokenResponseDto.
+     * Maps the OpenBankingRefreshTokenEntity to the OpenBankingOAuthAccessTokenResponseDto.
      *
-     * @param openBankingOAuthAccessToken - the OpenBankingOAuthRefreshTokenEntity
+     * @param openBankingOAuthAccessToken - the OpenBankingRefreshTokenEntity
      * @return the OpenBankingOAuthAccessTokenResponseDto
      */
     public OpenBankingOAuthAccessTokenResponseDto mapToOpenBankingOAuthAccessTokenResponse(
-            OpenBankingOAuthRefreshTokenEntity openBankingOAuthAccessToken) {
+            OpenBankingRefreshTokenEntity openBankingOAuthAccessToken) {
 
         return OpenBankingOAuthAccessTokenResponseDto.builder()
                 .id(openBankingOAuthAccessToken.getId())
@@ -41,14 +41,14 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
     }
 
     /**
-     * Maps the Response to the OpenBankingOAuthRefreshTokenEntity.
+     * Maps the Response to the OpenBankingRefreshTokenEntity.
      *
      * @param jsonNode - the jsonNode
      * @param user     - the user
      * @param bank     - the bank
-     * @return the OpenBankingOAuthRefreshTokenEntity
+     * @return the OpenBankingRefreshTokenEntity
      */
-    public OpenBankingOAuthRefreshTokenEntity mapResponseToOAuthRefreshToken(
+    public OpenBankingRefreshTokenEntity mapResponseToOAuthRefreshToken(
             @NonNull JsonNode jsonNode,
             AllcountUser user,
             OpenBankingBankEnum bank
@@ -57,7 +57,7 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
         String refreshToken = jsonNode.get(FIELD_REFRESH_TOKEN).textValue();
         String scope = jsonNode.get(FIELD_SCOPE).textValue();
 
-        return OpenBankingOAuthRefreshTokenEntity.builder()
+        return OpenBankingRefreshTokenEntity.builder()
                 .refreshToken(refreshToken)
                 .tokenType(OpenBankingOAuthAccessTokenTypeEnum.fromValue(tokenType))
                 .scope(scope)
@@ -69,13 +69,13 @@ public class OpenBankingOAuthAccessTokenResponseMapper {
     /**
      * Maps the Response to the OpenBankingOAuthAccessTokenRedisEntity.
      *
-     * @param jsonNode    - the jsonNode
-     * @param refreshToken - the OpenBankingOAuthRefreshTokenEntity
+     * @param jsonNode     - the jsonNode
+     * @param refreshToken - the OpenBankingRefreshTokenEntity
      * @return the OpenBankingOAuthAccessTokenRedisEntity
      */
     public OpenBankingOAuthAccessTokenRedisEntity mapResponseToOAuthAccessToken(
             @NonNull JsonNode jsonNode,
-            OpenBankingOAuthRefreshTokenEntity refreshToken
+            OpenBankingRefreshTokenEntity refreshToken
     ) {
         String accessToken = jsonNode.get(FIELD_ACCESS_TOKEN).textValue();
         Long expiresIn = jsonNode.get(FIELD_EXPIRES_IN).longValue();

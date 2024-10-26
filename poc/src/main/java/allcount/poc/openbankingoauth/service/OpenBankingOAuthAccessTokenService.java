@@ -1,7 +1,7 @@
 package allcount.poc.openbankingoauth.service;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
@@ -70,8 +70,8 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
      * Generates all entities based on AccessToken response.
      *
      * @param response - the response
-     * @param user - the user
-     * @param bank - the bank
+     * @param user     - the user
+     * @param bank     - the bank
      * @return the OpenBankingOAuthAccessTokenEntity
      * @throws JsonProcessingException - if the response cannot be processed
      */
@@ -86,7 +86,7 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
 
-        OpenBankingOAuthRefreshTokenEntity refreshToken =
+        OpenBankingRefreshTokenEntity refreshToken =
                 openBankingOAuthAccessTokenResponseMapper.mapResponseToOAuthRefreshToken(jsonNode, user, bank);
 
         openBankingOAuthRefreshTokenRepository.save(refreshToken);

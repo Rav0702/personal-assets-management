@@ -1,7 +1,7 @@
 package allcount.poc.openbankingoauth.service;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
@@ -62,7 +62,7 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
     @Transactional
     public OpenBankingOAuthAccessTokenRedisEntity refreshAccessToken(AllcountUser user, OpenBankingBankEnum bank)
             throws JsonProcessingException {
-        OpenBankingOAuthRefreshTokenEntity refreshToken = openBankingOAuthRefreshTokenRepository
+        OpenBankingRefreshTokenEntity refreshToken = openBankingOAuthRefreshTokenRepository
                 .findFirstByUserIdAndBankOrderByCreatedTimestampDesc(user.getId(), bank)
                 .orElseThrow();
 
@@ -74,10 +74,10 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
     /**
      * Gets the refresh token response from api.
      *
-     * @param refreshToken - the OpenBankingOAuthRefreshTokenEntity
+     * @param refreshToken - the OpenBankingRefreshTokenEntity
      * @return response
      */
-    private Response requestTokenRefresh(OpenBankingOAuthRefreshTokenEntity refreshToken) {
+    private Response requestTokenRefresh(OpenBankingRefreshTokenEntity refreshToken) {
         Form form = determineRefreshTokenRequestBodyForm(refreshToken);
 
         return client
@@ -91,10 +91,10 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
     /**
      * Determines the access token request body form.
      *
-     * @param token - the initial OpenBankingOAuthRefreshTokenEntity
+     * @param token - the initial OpenBankingRefreshTokenEntity
      * @return the Form
      */
-    private Form determineRefreshTokenRequestBodyForm(OpenBankingOAuthRefreshTokenEntity token) {
+    private Form determineRefreshTokenRequestBodyForm(OpenBankingRefreshTokenEntity token) {
         Form form = new Form();
         form.param(PARAM_GRANT_TYPE, GRANT_TYPE_REFRESH_TOKEN);
         form.param(PARAM_REFRESH_TOKEN, token.getRefreshToken());
