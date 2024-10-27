@@ -7,11 +7,12 @@ import allcount.poc.user.repository.AllcountUserRepository;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Component
 public class UserSyncSchedulerService {
 
     private final AllcountUserRepository allcountUserRepository;
@@ -26,13 +27,17 @@ public class UserSyncSchedulerService {
         this.kafkaProducerService = kafkaProducerService;
     }
 
-    @Scheduled(fixedRate = 60000) // 1 minute in milliseconds
-    public void scheduleUserSync() {
+//    @Scheduled(fixedRate = 60000) // 1 minute in milliseconds
+//    public void scheduleUserSync() {
+//        System.out.println("Syncing users...");
+//        List<UUID> userIds = allcountUserRepository.findAllUserIds();
+//        for (UUID userId : userIds) {
+//            KafkaSyncMessageDto syncMessageDto = new KafkaSyncMessageDto(userId, true, true, null, null);
+//            kafkaProducerService.sendMessage(TOPIC, syncMessageDto);
+//        }
+//    }
+    @Scheduled(fixedRate = 3000)
+    public void testScheduleUserSync() {
         System.out.println("Syncing users...");
-        List<UUID> userIds = allcountUserRepository.findAllUserIds();
-        for (UUID userId : userIds) {
-            KafkaSyncMessageDto syncMessageDto = new KafkaSyncMessageDto(userId, true, true, null, null);
-            kafkaProducerService.sendMessage(TOPIC, syncMessageDto);
-        }
     }
 }
