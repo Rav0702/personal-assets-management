@@ -4,6 +4,8 @@ import allcount.poc.cashaccount.entity.CashAccountEntity;
 import allcount.poc.cashaccount.mapper.CashAccountResponseMapper;
 import allcount.poc.cashaccount.object.dto.CashAccountResponseDto;
 import allcount.poc.cashaccount.service.CashAccountService;
+import allcount.poc.kafka.KafkaProducerService;
+import allcount.poc.kafka.KafkaSyncMessageDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,8 @@ public class CashAccountController {
 
     private final transient CashAccountService cashAccountService;
     private final transient CashAccountResponseMapper cashAccountResponseMapper;
+    private final transient KafkaProducerService kafkaProducerService;
+    private static final String TOPIC = "sync-job";
 
     /**
      * Constructor.
@@ -33,9 +37,11 @@ public class CashAccountController {
      */
     @Autowired
     public CashAccountController(CashAccountService cashAccountService,
-                                 CashAccountResponseMapper cashAccountResponseMapper) {
+                                 CashAccountResponseMapper cashAccountResponseMapper,
+                                 KafkaProducerService kafkaProducerService) {
         this.cashAccountService = cashAccountService;
         this.cashAccountResponseMapper = cashAccountResponseMapper;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     /**
@@ -54,5 +60,16 @@ public class CashAccountController {
             returnedAccounts.add(cashAccountResponseMapper.mapToAccountResponse(account));
         }
         return returnedAccounts;
+    }
+
+    /**
+     * Send a request to Kafka to retrieve the accounts.
+     *
+     * @param userId the user id
+     */
+    @GetMapping("/kafka/{userId}")
+    public void retrieveAccountsByKafka(@NonNull @PathVariable UUID userId) {
+        KafkaSyncMessageDto message = new KafkaSyncMessageDto(userId, true, false, null, null);
+        kafkaProducerService.sendMessage(TOPIC, message);
     }
 }
