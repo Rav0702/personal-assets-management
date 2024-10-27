@@ -5,6 +5,7 @@ import allcount.poc.transaction.service.OpenBankingTransactionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class KafkaConsumerService {
      * @param cashAccountService the cash account service
      * @param transactionService the transaction service
      */
+    @Autowired
     public KafkaConsumerService(CashAccountService cashAccountService, OpenBankingTransactionService transactionService) {
         this.cashAccountService = cashAccountService;
         this.transactionService = transactionService;
