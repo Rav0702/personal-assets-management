@@ -45,16 +45,32 @@ public class CashAccountController {
     }
 
     /**
-     * Retrieve the accounts.
+     * Retrieve the accounts by syncing them in request.
      *
      * @param userId the user id
      * @return the list of accounts
      * @throws JsonProcessingException if there is an error
      */
-    @GetMapping("{userId}")
-    public List<CashAccountResponseDto> retrieveAccounts(@NonNull @PathVariable UUID userId)
+    @GetMapping("/sync/{userId}")
+    public List<CashAccountResponseDto> retrieveAccountsWithSync(@NonNull @PathVariable UUID userId)
             throws JsonProcessingException {
         List<CashAccountEntity> accounts = cashAccountService.retrieveAccounts(userId);
+        List<CashAccountResponseDto> returnedAccounts = new ArrayList<>();
+        for (CashAccountEntity account : accounts) {
+            returnedAccounts.add(cashAccountResponseMapper.mapToAccountResponse(account));
+        }
+        return returnedAccounts;
+    }
+
+    /**
+     * Retrieve the accounts by syncing them in request.
+     *
+     * @param userId the user id
+     * @return the list of accounts
+     */
+    @GetMapping("/{userId}")
+    public List<CashAccountResponseDto> retrieveAccounts(@NonNull @PathVariable UUID userId)  {
+        List<CashAccountEntity> accounts = cashAccountService.getAllCashAccount(userId);
         List<CashAccountResponseDto> returnedAccounts = new ArrayList<>();
         for (CashAccountEntity account : accounts) {
             returnedAccounts.add(cashAccountResponseMapper.mapToAccountResponse(account));

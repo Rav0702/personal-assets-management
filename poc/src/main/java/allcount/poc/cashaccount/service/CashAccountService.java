@@ -84,7 +84,7 @@ public class CashAccountService {
             OpenBankingOAuthAccessTokenRedisEntity tokenRedisEntity =
                     openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, bank);
             String accessToken = tokenRedisEntity.getAccessToken();
-            Response response = requestAccountFromCode(accessToken, bank);
+            Response response = requestAccountFromBank(accessToken, bank);
             List<CashAccountEntity> currentAccounts = parseAccountFromOpenBankingResponse(response, user, bank);
             for (CashAccountEntity currentAccount : currentAccounts) {
                 Optional<CashAccountEntity> existingAccount =
@@ -106,7 +106,26 @@ public class CashAccountService {
         return accounts;
     }
 
-    private Response requestAccountFromCode(String accessToken, OpenBankingBankEnum bank) {
+    /**
+     * Retrieves all cash accounts for a specific user.
+     *
+     * @param userId - the UUID of the user
+     * @return a list of {@link CashAccountEntity}
+     */
+    public List<CashAccountEntity> getAllCashAccount(UUID userId) {
+        AllcountUser user = allcountUserRepository.findById(userId).orElseThrow();
+
+        return cashAccountRepository.findAllByUser(user);
+    }
+
+    /**
+     * Requests the account from the bank.
+     *
+     * @param accessToken - the access token
+     * @param bank        - the bank
+     * @return the response
+     */
+    private Response requestAccountFromBank(String accessToken, OpenBankingBankEnum bank) {
         return client
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
                 .target(openBankingBankToBaseUriMapper.getBaseUri(bank) + ACCOUNT_URL)
@@ -116,19 +135,18 @@ public class CashAccountService {
                 .get();
     }
 
+    /**
+     * Parses the account from the Open Banking response.
+     *
+     * @param response - the response
+     * @param user     - the user
+     * @param bank     - the bank
+     * @return a list of {@link CashAccountEntity}
+     * @throws JsonProcessingException if there is an issue processing the bank's JSON response
+     */
     private List<CashAccountEntity> parseAccountFromOpenBankingResponse(Response response, AllcountUser user,
                                                                         OpenBankingBankEnum bank)
             throws JsonProcessingException {
         return cashAccountResponseMapper.mapToAccountEntities(response, user, bank);
-    }
-
-    /**
-     * Updates the banking records.
-     *
-     * @param message - the message
-     */
-    public void updateBankingRecords(String message) {
-        // Process the message and call the OpenBanking API
-        System.out.println("Message received: " + message);
     }
 }

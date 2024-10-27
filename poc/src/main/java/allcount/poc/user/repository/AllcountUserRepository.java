@@ -34,6 +34,7 @@ public interface AllcountUserRepository extends JpaRepository<AllcountUser, UUID
     /**
      * get all users.
      */
+    @Query("SELECT u.id FROM AllcountUser u")
     List<UUID> findAllUserIds();
 
 }

@@ -40,7 +40,7 @@ import org.springframework.lang.Nullable;
             @UniqueConstraint(columnNames = {"bank", "external_id"}),
         },
         indexes = {
-            @Index(columnList = "bank, id_from_bank"),
+            @Index(columnList = "bank, external_id"),
         }
 )
 public class TransactionEntity extends AllcountEntity {

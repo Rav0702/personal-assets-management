@@ -98,6 +98,17 @@ public class OpenBankingTransactionService {
     }
 
     /**
+     * Retrieve all transactions for the user.
+     *
+     * @param userId user id to sync transactions for.
+     */
+    public List<TransactionEntity> getAllTransactionByUser(UUID userId) {
+        AllcountUser user = this.allcountUserRepository.findById(userId).orElseThrow();
+
+        return transactionRepository.findAllByUser(user);
+    }
+
+    /**
      * Syncs transactions for an account. <br>
      * Fetches transactions from the bank API and saves/updates them to/in the database.
      *
