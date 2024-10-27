@@ -36,6 +36,6 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
      * @param user User
      * @return List of transaction entities with their user in the list.
      */
-    @Query("SELECT t FROM TransactionEntity t JOIN CashAccountEntity ca WHERE ca.user = :user AND t.originAccount = ca")
+    @Query("SELECT t FROM TransactionEntity t JOIN CashAccountEntity ca ON t.originAccount = ca WHERE ca.user = :user")
     List<TransactionEntity> findAllByUser(AllcountUser user);
 }
