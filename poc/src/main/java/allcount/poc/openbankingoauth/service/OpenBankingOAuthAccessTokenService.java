@@ -3,6 +3,7 @@ package allcount.poc.openbankingoauth.service;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToRefreshTokenPathUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
@@ -33,14 +34,13 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
     protected static final String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
     protected static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 
-    protected static final String TOKEN_URL = "/gw/oidc/token";
-
     private static final String CREDENTIAL_SEPARATOR = ":";
     private static final String AUTHENTICATION_TYPE_BASIC = "Basic ";
 
     protected final transient OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository;
     protected final transient OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper;
     protected final transient OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository;
+    protected final transient OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper;
 
     /**
      * Constructor.
@@ -58,12 +58,14 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
             OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
             OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
-            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper
     ) {
         super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
         this.openBankingOAuthRefreshTokenRepository = openBankingOAuthRefreshTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
         this.openBankingOAuthAccessTokenRedisRepository = openBankingOAuthAccessTokenRedisRepository;
+        this.openBankingBankToRefreshTokenPathUriMapper = openBankingBankToRefreshTokenPathUriMapper;
     }
 
     /**
