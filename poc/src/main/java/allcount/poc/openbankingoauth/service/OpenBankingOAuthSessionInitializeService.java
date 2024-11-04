@@ -2,7 +2,9 @@ package allcount.poc.openbankingoauth.service;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import allcount.poc.openbankingoauth.library.CodeVerifierLibrary;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToAuthorisationPathUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
@@ -21,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthService {
-    private static final String AUTHORIZATION_URL = "/gw/oidc/authorize";
-
     private static final String PARAM_RESPONSE_TYPE = "response_type";
     private static final String PARAM_CODE_CHALLENGE_METHOD = "code_challenge_method";
     private static final String PARAM_CODE_CHALLENGE = "code_challenge";
@@ -32,6 +32,7 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     private static final String SCOPE_READ_TRANSACTIONS = "read_transactions";
     private static final String SCOPE_OFFLINE_ACCESS = "offline_access";
     private static final String CODE_CHALLENGE_METHOD = "S256";
+    private final OpenBankingBankToAuthorisationPathUriMapper openBankingBankToAuthorisationPathUriMapper;
 
     /**
      * Constructor.
@@ -44,9 +45,12 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
             UserDetailsService userDetailsService,
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
-            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+            OpenBankingBankToAuthorisationPathUriMapper openBankingBankToAuthorisationPathUriMapper,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
     ) {
-        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
+        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper,  openBankingBankToSimulationMapper);
+        this.openBankingBankToAuthorisationPathUriMapper = openBankingBankToAuthorisationPathUriMapper;
     }
 
     /**
@@ -62,12 +66,10 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
 
         assertUserAuthenticatedToActOnBehalfOfUser(user);
 
-        String baseUrl = openBankingBankToBaseUriMapper.getBaseUri(bank);
-
         UUID state = UUID.randomUUID();
         String codeVerifier = CodeVerifierLibrary.generateRandomCodeVerifier();
         String codeChallenge = CodeVerifierLibrary.generateCodeChallenge(codeVerifier);
-        String redirectLoginUri = generateOauthLoginUri(baseUrl, codeChallenge, state);
+        String redirectLoginUri = generateOauthLoginUri(bank, codeChallenge, state);
 
         return createOpenBankingOAuthSession(bank, codeVerifier, state, user, redirectLoginUri);
     }
@@ -75,13 +77,17 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     /**
      * Generates the OAuth login URI.
      *
-     * @param baseUrl       - the baseUrl
+     * @param bank          - the bank
      * @param codeChallenge - the codeChallenge
      * @param state         - the state
      * @return the OAuth login URI
      */
-    private String generateOauthLoginUri(String baseUrl, String codeChallenge, UUID state) {
-        return UriBuilder.fromUri(baseUrl + AUTHORIZATION_URL)
+    private String generateOauthLoginUri(OpenBankingBankEnum bank, String codeChallenge, UUID state) {
+        String baseUrl = openBankingBankToBaseUriMapper.getBaseUri(bank);
+        String authorizationPath = openBankingBankToAuthorisationPathUriMapper.getAuthorisationPathUri(bank);
+        String simulationClientId = openBankingBankToSimulationMapper.mapToSimulationId(bank);
+
+        return UriBuilder.fromUri(baseUrl + authorizationPath)
                 .queryParam(PARAM_RESPONSE_TYPE, RESPONSE_TYPE_CODE)
                 .queryParam(PARAM_CLIENT_ID, simulationClientId)
                 .queryParam(PARAM_REDIRECT_URI, REDIRECT_URI)

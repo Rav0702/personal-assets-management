@@ -59,7 +59,7 @@ The flow is as follows:
 Since the POC application contains only the backend project the flow is implemented to be utilized with the browser handling the redirections.
 
 1. The user calls `v1/open-banking-authorization/{userId}/initialize-session?bank={bank}` endpoint with queryParam bank being the bank they want to use
-   (can be DEUTSCHE_BANK, NORIS_BANK, POST_BANK)
+   (can be DEUTSCHE_BANK or NORIS_BANK)
 2. The response contains the url that can be copied and pasted into the browser
 3. The user is redirected to the Deutsche Bank API Program authorisation service and can log in using the credentials (FKN and PIN) of Test Users 
 that were provided in [Deutche Bank API program Dashboard](https://developer.db.com/dashboard/testusers)

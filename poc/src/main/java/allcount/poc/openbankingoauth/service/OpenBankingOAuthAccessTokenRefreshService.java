@@ -3,6 +3,8 @@ package allcount.poc.openbankingoauth.service;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToRefreshTokenPathUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
@@ -45,10 +47,15 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
             OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
             OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
-            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper) {
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
+    ) {
         super(userDetailsService, userRepository, openBankingOAuthSessionRepository,
                 openBankingOAuthAccessTokenRedisRepository, openBankingOAuthRefreshTokenRepository,
-                openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper);
+                openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper,
+                openBankingBankToRefreshTokenPathUriMapper, openBankingBankToSimulationMapper
+        );
     }
 
     /**
@@ -66,7 +73,7 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
                 .findFirstByUserIdAndBankOrderByCreatedTimestampDesc(user.getId(), bank)
                 .orElseThrow();
 
-        Response response = requestTokenRefresh(refreshToken);
+        Response response = requestTokenRefresh(refreshToken, bank);
 
         return generateAllOpenBankingOAuthAccessTokenEntity(response, user, refreshToken.getBank());
     }
@@ -77,14 +84,15 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
      * @param refreshToken - the OpenBankingRefreshTokenEntity
      * @return response
      */
-    private Response requestTokenRefresh(OpenBankingRefreshTokenEntity refreshToken) {
+    private Response requestTokenRefresh(OpenBankingRefreshTokenEntity refreshToken, OpenBankingBankEnum bank) {
         Form form = determineRefreshTokenRequestBodyForm(refreshToken);
 
         return client
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
-                .target(openBankingBankToBaseUriMapper.getBaseUri(refreshToken.getBank()) + TOKEN_URL)
+                .target(openBankingBankToBaseUriMapper.getBaseUri(refreshToken.getBank())
+                       + openBankingBankToRefreshTokenPathUriMapper.getTokenRefreshPathUri(bank))
                 .request()
-                .header(HEADER_AUTHORIZATION, determineAuthorizationHeader())
+                .header(HEADER_AUTHORIZATION, determineAuthorizationHeader(bank))
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
     }
 
