@@ -3,7 +3,6 @@ package allcount.poc.openbankingoauth.service;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
 import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
-import allcount.poc.openbankingoauth.mapper.OpenBankingBankToRefreshTokenPathUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
@@ -46,11 +45,10 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
             OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
             OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
-            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
-            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper) {
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper) {
         super(userDetailsService, userRepository, openBankingOAuthSessionRepository,
                 openBankingOAuthAccessTokenRedisRepository, openBankingOAuthRefreshTokenRepository,
-                openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper, openBankingBankToRefreshTokenPathUriMapper);
+                openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper);
     }
 
     /**
@@ -82,13 +80,9 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
     private Response requestTokenRefresh(OpenBankingRefreshTokenEntity refreshToken) {
         Form form = determineRefreshTokenRequestBodyForm(refreshToken);
 
-        OpenBankingBankEnum bank = refreshToken.getBank();
-        String requestUri = openBankingBankToBaseUriMapper.getBaseUri(bank)
-                + super.openBankingBankToRefreshTokenPathUriMapper.getTokenRefreshPathUri(bank);
-
         return client
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
-                .target(requestUri)
+                .target(openBankingBankToBaseUriMapper.getBaseUri(refreshToken.getBank()) + TOKEN_URL)
                 .request()
                 .header(HEADER_AUTHORIZATION, determineAuthorizationHeader(bank))
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
