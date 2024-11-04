@@ -50,11 +50,12 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
             OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper,
             OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
-            ) {
+    ) {
         super(userDetailsService, userRepository, openBankingOAuthSessionRepository,
                 openBankingOAuthAccessTokenRedisRepository, openBankingOAuthRefreshTokenRepository,
                 openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper,
-                openBankingBankToRefreshTokenPathUriMapper ,openBankingBankToSimulationMapper);
+                openBankingBankToRefreshTokenPathUriMapper, openBankingBankToSimulationMapper
+        );
     }
 
     /**
@@ -88,7 +89,8 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
 
         return client
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
-                .target(openBankingBankToBaseUriMapper.getBaseUri(refreshToken.getBank()) + openBankingBankToRefreshTokenPathUriMapper.getTokenRefreshPathUri(bank))
+                .target(openBankingBankToBaseUriMapper.getBaseUri(refreshToken.getBank())
+                       + openBankingBankToRefreshTokenPathUriMapper.getTokenRefreshPathUri(bank))
                 .request()
                 .header(HEADER_AUTHORIZATION, determineAuthorizationHeader(bank))
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
