@@ -2,7 +2,7 @@ package allcount.poc.transaction.entity;
 
 import allcount.poc.cashaccount.entity.CashAccountEntity;
 import allcount.poc.core.domain.entity.AllcountEntity;
-import allcount.poc.openbanking.embeddable.ExternalBankingIdEmbeddable;
+import allcount.poc.openbankingoauth.object.embeddable.ExternalBankingIdEmbeddable;
 import allcount.poc.shared.annotation.ValidCurrencyCode;
 import allcount.poc.shared.annotation.ValidIbanCode;
 import jakarta.persistence.CascadeType;

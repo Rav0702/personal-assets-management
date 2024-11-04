@@ -1,7 +1,7 @@
 package allcount.poc.transaction.mapper;
 
 import allcount.poc.cashaccount.entity.CashAccountEntity;
-import allcount.poc.openbanking.embeddable.ExternalBankingIdEmbeddable;
+import allcount.poc.openbankingoauth.object.embeddable.ExternalBankingIdEmbeddable;
 import allcount.poc.transaction.entity.TransactionEntity;
 import allcount.poc.transaction.object.dto.TransactionDto;
 import java.util.List;
