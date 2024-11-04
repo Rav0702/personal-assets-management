@@ -1,8 +1,10 @@
 package allcount.poc.openbankingoauth.service;
 
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthRefreshTokenEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToRefreshTokenPathUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
@@ -33,14 +35,13 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
     protected static final String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
     protected static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 
-    protected static final String TOKEN_URL = "/gw/oidc/token";
-
     private static final String CREDENTIAL_SEPARATOR = ":";
     private static final String AUTHENTICATION_TYPE_BASIC = "Basic ";
 
     protected final transient OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository;
     protected final transient OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper;
     protected final transient OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository;
+    protected final transient OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper;
 
     /**
      * Constructor.
@@ -58,20 +59,23 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
             OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
             OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
-            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
     ) {
-        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
+        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper, openBankingBankToSimulationMapper);
         this.openBankingOAuthRefreshTokenRepository = openBankingOAuthRefreshTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
         this.openBankingOAuthAccessTokenRedisRepository = openBankingOAuthAccessTokenRedisRepository;
+        this.openBankingBankToRefreshTokenPathUriMapper = openBankingBankToRefreshTokenPathUriMapper;
     }
 
     /**
      * Generates all entities based on AccessToken response.
      *
      * @param response - the response
-     * @param user - the user
-     * @param bank - the bank
+     * @param user     - the user
+     * @param bank     - the bank
      * @return the OpenBankingOAuthAccessTokenEntity
      * @throws JsonProcessingException - if the response cannot be processed
      */
@@ -86,7 +90,7 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(responseWithAccessToken);
 
-        OpenBankingOAuthRefreshTokenEntity refreshToken =
+        OpenBankingRefreshTokenEntity refreshToken =
                 openBankingOAuthAccessTokenResponseMapper.mapResponseToOAuthRefreshToken(jsonNode, user, bank);
 
         openBankingOAuthRefreshTokenRepository.save(refreshToken);
@@ -104,7 +108,10 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
      *
      * @return the authorization header value.
      */
-    protected String determineAuthorizationHeader() {
+    protected String determineAuthorizationHeader(OpenBankingBankEnum bank) {
+        String simulationClientId = openBankingBankToSimulationMapper.mapToSimulationId(bank);
+        String simulationClientSecret = openBankingBankToSimulationMapper.mapToSimulationSecret(bank);
+
         String credentials = simulationClientId + CREDENTIAL_SEPARATOR + simulationClientSecret;
 
         String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));

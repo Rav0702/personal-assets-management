@@ -1,23 +1,23 @@
 package allcount.poc.openbankingoauth.mapper;
 
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import allcount.poc.openbankingoauth.object.dto.OpenBankingOAuthSessionResponseDto;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper for the OpenBankingOAuthSessionEntity.
+ * Mapper for the OpenBankingSessionEntity.
  */
 @Component
 public class OpenBankingOAuthSessionResponseMapper {
 
     /**
-     * Maps the OpenBankingOAuthSessionEntity to the OpenBankingOAuthSessionResponseDto.
+     * Maps the OpenBankingSessionEntity to the OpenBankingOAuthSessionResponseDto.
      *
-     * @param openBankingOAuthSession - the OpenBankingOAuthSessionEntity
+     * @param openBankingOAuthSession - the OpenBankingSessionEntity
      * @return the OpenBankingOAuthSessionResponseDto
      */
     public OpenBankingOAuthSessionResponseDto mapToOpenBankingOAuthSessionResponse(
-            OpenBankingOAuthSessionEntity openBankingOAuthSession) {
+            OpenBankingSessionEntity openBankingOAuthSession) {
         return OpenBankingOAuthSessionResponseDto.builder()
                 .id(openBankingOAuthSession.getId())
                 .userId(openBankingOAuthSession.getUser().getId())

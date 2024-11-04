@@ -14,7 +14,7 @@ public class OpenBankingBankToBaseUriMapper {
      */
     private static final Map<OpenBankingBankEnum, String> BANK_TO_BASE_URI = Map.of(
             OpenBankingBankEnum.DEUTSCHE_BANK, "https://simulator-api.db.com",
-            OpenBankingBankEnum.NORIS_BANK, " https://simulator-api.norisbank.de",
+            OpenBankingBankEnum.NORIS_BANK, "https://simulator-api.norisbank.de",
             OpenBankingBankEnum.POST_BANK, "https://simulator-api.postbank.de"
     );
 

@@ -1,6 +1,7 @@
 package allcount.poc.core.test.integration;
 
 import static io.restassured.RestAssured.given;
+
 import allcount.poc.authentication.object.dto.AuthenticationRequestDto;
 import allcount.poc.authentication.object.dto.RegistrationRequestDto;
 import allcount.poc.core.configuration.TestcontainersConfiguration;
@@ -8,7 +9,11 @@ import allcount.poc.user.entity.AllcountUser;
 import allcount.poc.user.repository.AllcountUserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockserver.client.MockServerClient;
@@ -34,9 +39,7 @@ public abstract class IntegrationTest {
     protected static final String ENDPOINT_AUTHENTICATE = "/v1/auth/authenticate";
     protected static final String FIELD_TOKEN = "token";
     protected static final String SUFFIX_EMAIL_DOMAIN = "@example.com";
-
-    protected String accessToken;
-
+    private static final String USER_DIR = "user.dir";
     @Autowired
     protected transient AllcountUserRepository userRepository;
 
@@ -47,6 +50,19 @@ public abstract class IntegrationTest {
     protected int port;
 
     protected String testPassword;
+
+    /**
+     * Get the mock response.
+     *
+     * @param path the path
+     * @return the mock response
+     * @throws IOException if there is an issue reading the file
+     */
+    protected static String getMockResponse(String path) throws IOException {
+        return FileUtils.readFileToString(
+                new File(System.getProperty(USER_DIR) + File.separator + path),
+                StandardCharsets.UTF_8);
+    }
 
     /**
      * Set up the base URI.

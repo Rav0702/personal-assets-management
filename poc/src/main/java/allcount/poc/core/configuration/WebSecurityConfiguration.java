@@ -29,6 +29,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfiguration {
     private static final String AUTHORIZATION_ENDPOINT = "/v1/auth/**";
+    public static final String SWAGGER_UI_ENDPOINT = "/swagger-ui/**";
+    public static final String V_3_API_DOCS_SWAGGER_CONFIG_ENDPOINT = "v3/api-docs/swagger-config";
+    public static final String SWAGGER_API_DOCS_ENDPOINT = "/v3/api-docs";
 
     private final transient JwtRequestFilter jwtRequestFilter;
 
@@ -94,6 +97,9 @@ public class WebSecurityConfiguration {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(AUTHORIZATION_ENDPOINT).permitAll()
+                        .requestMatchers(SWAGGER_UI_ENDPOINT).permitAll()
+                        .requestMatchers(V_3_API_DOCS_SWAGGER_CONFIG_ENDPOINT).permitAll()
+                        .requestMatchers(SWAGGER_API_DOCS_ENDPOINT).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

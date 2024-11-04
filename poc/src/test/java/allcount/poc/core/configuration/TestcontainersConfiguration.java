@@ -35,17 +35,6 @@ public class TestcontainersConfiguration {
     }
 
     /**
-     * Bean for the MySQL container.
-     *
-     * @return the MySQL container.
-     */
-    @Bean
-    @ServiceConnection
-    MySQLContainer<?> mysqlContainer() {
-        return new MySQLContainer<>(DockerImageName.parse("mysql:latest"));
-    }
-
-    /**
      * Gets the mock server container.
      *
      * @return the mock server container.
@@ -78,6 +67,17 @@ public class TestcontainersConfiguration {
         }
 
         return mockServerClient;
+    }
+
+    /**
+     * Bean for the MySQL container.
+     *
+     * @return the MySQL container.
+     */
+    @Bean
+    @ServiceConnection
+    MySQLContainer<?> mysqlContainer() {
+        return new MySQLContainer<>(DockerImageName.parse("mysql:latest"));
     }
 
 }
