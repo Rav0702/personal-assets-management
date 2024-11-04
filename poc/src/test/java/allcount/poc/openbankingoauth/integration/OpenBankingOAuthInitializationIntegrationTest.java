@@ -3,11 +3,13 @@ package allcount.poc.openbankingoauth.integration;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
+
 import allcount.poc.core.test.integration.IntegrationTest;
 import allcount.poc.core.test.integration.IntegrationTestLib;
 import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEntity;
-import allcount.poc.openbankingoauth.entity.OpenBankingOAuthSessionEntity;
+import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
@@ -17,12 +19,11 @@ import allcount.poc.openbankingoauth.service.OpenBankingOAuthAccessTokenDetermin
 import allcount.poc.user.entity.AllcountUser;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.io.FileUtils;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * Integration test for initializing the OpenBankingOAuthSession.
  */
-@ActiveProfiles("open-banking-authorization-integration-test")
+@ActiveProfiles("open-banking-integration-test")
 public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTest {
     private static final String ENDPOINT_USER_CREATE = "v1/open-banking-authorization/{userId}/initialize-session";
     private static final String ENDPOINT_RETRIEVE_ACCESS_TOKEN = "v1/open-banking-authorization/retrieve-access-token";
@@ -48,8 +49,6 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
     private static final String FIELD_STATUS = "status";
 
     private static final String TEST_CODE = "testCode";
-
-    private static final String USER_DIR = "user.dir";
     private static final String PATH_RELATIVE =
             String.join(File.separator,
                     List.of("src", "test", "java", "allcount", "poc", "openbankingoauth", "integration"));
@@ -57,12 +56,15 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
             PATH_RELATIVE + File.separator + "response" + File.separator + "accessTokenMockResponse.json";
     private static final String FILE_ACCESS_TOKEN_MOCK_RESPONSE_EXPIRY_INSTANT =
             PATH_RELATIVE + File.separator + "response" + File.separator + "accessTokenMockResponseExpiryInstant.json";
+    public static final String TEST_SIMULATION_CLIENT_ID = "testSimulationClientId";
+    public static final String TEST_SIMULATION_CLIENT_SECRET = "testSimulationClientSecret";
 
     private final transient OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository;
     private final transient OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository;
     private final transient OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper;
     private final transient OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository;
     private final transient OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService;
+    private final transient OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper;
 
     /**
      * Constructor.
@@ -70,22 +72,19 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
      * @param openBankingOAuthSessionRepository the repository
      */
     @Autowired
-    public OpenBankingOAuthInitializationIntegrationTest(OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
-                                                         OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
-                                                         OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
-                                                         OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
-                                                         OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService) {
+    public OpenBankingOAuthInitializationIntegrationTest(
+            OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
+            OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+            OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
+            OpenBankingOAuthAccessTokenDetermineService openBankingOAuthAccessTokenDetermineService,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper) {
         this.openBankingOAuthSessionRepository = openBankingOAuthSessionRepository;
         this.openBankingOAuthRefreshTokenRepository = openBankingOAuthRefreshTokenRepository;
         this.openBankingBankToBaseUriMapper = openBankingBankToBaseUriMapper;
         this.openBankingOAuthAccessTokenRedisRepository = openBankingOAuthAccessTokenRedisRepository;
         this.openBankingOAuthAccessTokenDetermineService = openBankingOAuthAccessTokenDetermineService;
-    }
-
-    private static String getMockResponse(String path) throws IOException {
-        return FileUtils.readFileToString(
-                new File(System.getProperty(USER_DIR) + File.separator + path),
-                StandardCharsets.UTF_8);
+        this.openBankingBankToSimulationMapper = openBankingBankToSimulationMapper;
     }
 
     /**
@@ -93,6 +92,21 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
      */
     @BeforeEach
     public void beforeEach() {
+        cleanUp();
+    }
+
+    /**
+     * Clean up the database after each test.
+     */
+    @AfterEach
+    public void afterEach() {
+        cleanUp();
+    }
+
+    /**
+     * Clean up the database.
+     */
+    private void cleanUp() {
         openBankingOAuthSessionRepository.deleteAll();
         openBankingOAuthRefreshTokenRepository.deleteAll();
         openBankingOAuthAccessTokenRedisRepository.deleteAll();
@@ -110,7 +124,8 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
 
         initializeOpenBankingOAuthSession(jwtToken, user, FILE_ACCESS_TOKEN_MOCK_RESPONSE_SUCCESSFUL);
 
-        Assertions.assertNotNull(openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, OpenBankingBankEnum.DEUTSCHE_BANK));
+        Assertions.assertNotNull(openBankingOAuthAccessTokenDetermineService.determineAccessToken(user,
+                OpenBankingBankEnum.DEUTSCHE_BANK));
         Assertions.assertTrue(openBankingOAuthAccessTokenRedisRepository.existsById(
                 OpenBankingOAuthAccessTokenRedisEntity.generateRedisId(OpenBankingBankEnum.DEUTSCHE_BANK, user.getId()))
         );
@@ -142,7 +157,8 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
                         .withStatusCode(HttpStatus.OK.value())
                         .withBody(mockResponse));
 
-        Assertions.assertNotNull(openBankingOAuthAccessTokenDetermineService.determineAccessToken(user, OpenBankingBankEnum.DEUTSCHE_BANK));
+        Assertions.assertNotNull(openBankingOAuthAccessTokenDetermineService.determineAccessToken(user,
+                OpenBankingBankEnum.DEUTSCHE_BANK));
         Assertions.assertTrue(openBankingOAuthAccessTokenRedisRepository.existsById(
                 OpenBankingOAuthAccessTokenRedisEntity.generateRedisId(OpenBankingBankEnum.DEUTSCHE_BANK, user.getId()))
         );
@@ -154,6 +170,11 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
             AllcountUser user,
             String scenarioMockResponsePath
     ) throws IOException {
+        Mockito.when(openBankingBankToSimulationMapper.mapToSimulationId(OpenBankingBankEnum.DEUTSCHE_BANK))
+                .thenReturn(TEST_SIMULATION_CLIENT_ID);
+        Mockito.when(openBankingBankToSimulationMapper.mapToSimulationSecret(OpenBankingBankEnum.DEUTSCHE_BANK))
+                .thenReturn(TEST_SIMULATION_CLIENT_SECRET);
+
         String sessionId = IntegrationTestLib.createAuthenticatedRequest(jwtToken)
                 .queryParam(PARAM_BANK, OpenBankingBankEnum.DEUTSCHE_BANK)
                 .get(ENDPOINT_USER_CREATE, user.getId())
@@ -165,7 +186,7 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
                 .extract()
                 .path(FIELD_ID);
 
-        OpenBankingOAuthSessionEntity session = openBankingOAuthSessionRepository
+        OpenBankingSessionEntity session = openBankingOAuthSessionRepository
                 .findById(UUID.fromString(sessionId))
                 .orElseThrow();
 
@@ -190,7 +211,7 @@ public class OpenBankingOAuthInitializationIntegrationTest extends IntegrationTe
                 .assertThat()
                 .body(FIELD_USER_ID, equalTo(user.getId().toString()));
 
-        OpenBankingOAuthSessionEntity updatedSession = openBankingOAuthSessionRepository
+        OpenBankingSessionEntity updatedSession = openBankingOAuthSessionRepository
                 .findById(UUID.fromString(sessionId))
                 .orElseThrow();
 

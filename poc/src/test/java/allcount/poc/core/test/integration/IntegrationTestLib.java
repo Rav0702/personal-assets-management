@@ -1,6 +1,7 @@
 package allcount.poc.core.test.integration;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.specification.RequestSpecification;
 
 /**
