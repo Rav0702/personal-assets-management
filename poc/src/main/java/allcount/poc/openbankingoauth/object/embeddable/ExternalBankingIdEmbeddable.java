@@ -1,4 +1,4 @@
-package allcount.poc.openbanking.embeddable;
+package allcount.poc.openbankingoauth.object.embeddable;
 
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import jakarta.persistence.Column;
