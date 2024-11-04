@@ -4,6 +4,7 @@ import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEnti
 import allcount.poc.openbankingoauth.entity.OpenBankingRefreshTokenEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToRefreshTokenPathUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthAccessTokenRedisRepository;
@@ -59,9 +60,10 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
             OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
             OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
-            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper
+            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
     ) {
-        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
+        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper, openBankingBankToSimulationMapper);
         this.openBankingOAuthRefreshTokenRepository = openBankingOAuthRefreshTokenRepository;
         this.openBankingOAuthAccessTokenResponseMapper = openBankingOAuthAccessTokenResponseMapper;
         this.openBankingOAuthAccessTokenRedisRepository = openBankingOAuthAccessTokenRedisRepository;
@@ -106,7 +108,10 @@ public class OpenBankingOAuthAccessTokenService extends OpenBankingOAuthService 
      *
      * @return the authorization header value.
      */
-    protected String determineAuthorizationHeader() {
+    protected String determineAuthorizationHeader(OpenBankingBankEnum bank) {
+        String simulationClientId = openBankingBankToSimulationMapper.mapToSimulationId(bank);
+        String simulationClientSecret = openBankingBankToSimulationMapper.mapToSimulationSecret(bank);
+
         String credentials = simulationClientId + CREDENTIAL_SEPARATOR + simulationClientSecret;
 
         String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));

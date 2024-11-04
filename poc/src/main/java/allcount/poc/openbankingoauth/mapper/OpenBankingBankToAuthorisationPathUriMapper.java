@@ -12,7 +12,7 @@ public class OpenBankingBankToAuthorisationPathUriMapper {
 
     private static final Map<OpenBankingBankEnum, String> BANK_TO_AUTHORISATION_PATH_URI = Map.of(
             OpenBankingBankEnum.DEUTSCHE_BANK, "/gw/oidc/authorize",
-            OpenBankingBankEnum.NORIS_BANK, "/gw/oidc/nb/login"
+            OpenBankingBankEnum.NORIS_BANK, "/gw/oidc/nb/authorize"
     );
 
     /**

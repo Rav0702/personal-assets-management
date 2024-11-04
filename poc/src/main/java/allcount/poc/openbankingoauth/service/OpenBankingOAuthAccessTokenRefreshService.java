@@ -90,7 +90,7 @@ public class OpenBankingOAuthAccessTokenRefreshService extends OpenBankingOAuthA
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
                 .target(requestUri)
                 .request()
-                .header(HEADER_AUTHORIZATION, determineAuthorizationHeader())
+                .header(HEADER_AUTHORIZATION, determineAuthorizationHeader(bank))
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
     }
 

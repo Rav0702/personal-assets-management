@@ -12,7 +12,7 @@ public class OpenBankingBankToRefreshTokenPathUriMapper {
 
     private static final Map<OpenBankingBankEnum, String> BANK_TO_TOKEN_REFRESH_PATH_URI = Map.of(
             OpenBankingBankEnum.DEUTSCHE_BANK, "/gw/oidc/token",
-            OpenBankingBankEnum.NORIS_BANK, "/gw/oidc/nb/token"
+            OpenBankingBankEnum.NORIS_BANK, "/gw/oidc/token"
     );
 
     /**

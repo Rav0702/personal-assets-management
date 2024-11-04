@@ -4,6 +4,7 @@ import allcount.poc.openbankingoauth.entity.OpenBankingOAuthAccessTokenRedisEnti
 import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToRefreshTokenPathUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingOAuthAccessTokenResponseMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
@@ -38,17 +39,21 @@ public class OpenBankingOAuthAccessTokenInitializeService extends OpenBankingOAu
      * @param openBankingOAuthAccessTokenResponseMapper  - the OpenBankingOAuthAccessTokenResponseMapper
      * @param openBankingBankToBaseUriMapper             - the OpenBankingBankToBaseUriMapper
      */
-    public OpenBankingOAuthAccessTokenInitializeService(UserDetailsService userDetailsService,
-                                                        AllcountUserRepository userRepository,
-                                                        OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
-                                                        OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
-                                                        OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
-                                                        OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
-                                                        OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
-                                                        OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper) {
+    public OpenBankingOAuthAccessTokenInitializeService(
+            UserDetailsService userDetailsService,
+            AllcountUserRepository userRepository,
+            OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
+            OpenBankingOAuthAccessTokenRedisRepository openBankingOAuthAccessTokenRedisRepository,
+            OpenBankingOAuthRefreshTokenRepository openBankingOAuthRefreshTokenRepository,
+            OpenBankingOAuthAccessTokenResponseMapper openBankingOAuthAccessTokenResponseMapper,
+            OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
+            OpenBankingBankToRefreshTokenPathUriMapper openBankingBankToRefreshTokenPathUriMapper,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
+    ) {
         super(userDetailsService, userRepository, openBankingOAuthSessionRepository,
                 openBankingOAuthAccessTokenRedisRepository, openBankingOAuthRefreshTokenRepository,
-                openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper, openBankingBankToRefreshTokenPathUriMapper);
+                openBankingOAuthAccessTokenResponseMapper, openBankingBankToBaseUriMapper, openBankingBankToRefreshTokenPathUriMapper,
+                openBankingBankToSimulationMapper);
     }
 
 
@@ -82,8 +87,9 @@ public class OpenBankingOAuthAccessTokenInitializeService extends OpenBankingOAu
      * @return the Response
      */
     private Response requestAccessTokenFromCode(String code, OpenBankingSessionEntity session) {
-        Form form = determineAccessTokenRequestBodyForm(code, session.getCodeVerifier());
         OpenBankingBankEnum bank = session.getBank();
+
+        Form form = determineAccessTokenRequestBodyForm(code, session.getCodeVerifier(), bank);
         String requestUri = openBankingBankToBaseUriMapper.getBaseUri(bank)
                 + super.openBankingBankToRefreshTokenPathUriMapper.getTokenRefreshPathUri(bank);
 
@@ -91,7 +97,7 @@ public class OpenBankingOAuthAccessTokenInitializeService extends OpenBankingOAu
                 .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE)
                 .target(requestUri)
                 .request()
-                .header(HEADER_AUTHORIZATION, determineAuthorizationHeader())
+                .header(HEADER_AUTHORIZATION, determineAuthorizationHeader(bank))
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
     }
 
@@ -102,12 +108,12 @@ public class OpenBankingOAuthAccessTokenInitializeService extends OpenBankingOAu
      * @param codeVerifier - the code verifier
      * @return the Form
      */
-    private Form determineAccessTokenRequestBodyForm(String code, String codeVerifier) {
+    private Form determineAccessTokenRequestBodyForm(String code, String codeVerifier, OpenBankingBankEnum bank) {
         Form form = new Form();
         form.param(PARAM_GRANT_TYPE, GRANT_TYPE_AUTHORIZATION_CODE);
         form.param(PARAM_CODE, code);
         form.param(PARAM_CODE_VERIFIER, codeVerifier);
-        form.param(PARAM_CLIENT_ID, simulationClientId);
+        form.param(PARAM_CLIENT_ID, openBankingBankToSimulationMapper.mapToSimulationId(bank));
         form.param(PARAM_REDIRECT_URI, REDIRECT_URI);
 
         return form;

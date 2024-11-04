@@ -4,6 +4,7 @@ import allcount.poc.openbankingoauth.entity.OpenBankingSessionEntity;
 import allcount.poc.openbankingoauth.library.CodeVerifierLibrary;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToAuthorisationPathUriMapper;
 import allcount.poc.openbankingoauth.mapper.OpenBankingBankToBaseUriMapper;
+import allcount.poc.openbankingoauth.mapper.OpenBankingBankToSimulationMapper;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingBankEnum;
 import allcount.poc.openbankingoauth.object.enums.OpenBankingOAuthSessionStatusEnum;
 import allcount.poc.openbankingoauth.repository.OpenBankingOAuthSessionRepository;
@@ -45,8 +46,10 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
             AllcountUserRepository userRepository,
             OpenBankingOAuthSessionRepository openBankingOAuthSessionRepository,
             OpenBankingBankToBaseUriMapper openBankingBankToBaseUriMapper,
-            OpenBankingBankToAuthorisationPathUriMapper openBankingBankToAuthorisationPathUriMapper) {
-        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper);
+            OpenBankingBankToAuthorisationPathUriMapper openBankingBankToAuthorisationPathUriMapper,
+            OpenBankingBankToSimulationMapper openBankingBankToSimulationMapper
+    ) {
+        super(userDetailsService, userRepository, openBankingOAuthSessionRepository, openBankingBankToBaseUriMapper,  openBankingBankToSimulationMapper);
         this.openBankingBankToAuthorisationPathUriMapper = openBankingBankToAuthorisationPathUriMapper;
     }
 
@@ -82,6 +85,7 @@ public class OpenBankingOAuthSessionInitializeService extends OpenBankingOAuthSe
     private String generateOauthLoginUri(OpenBankingBankEnum bank, String codeChallenge, UUID state) {
         String baseUrl = openBankingBankToBaseUriMapper.getBaseUri(bank);
         String authorizationPath = openBankingBankToAuthorisationPathUriMapper.getAuthorisationPathUri(bank);
+        String simulationClientId = openBankingBankToSimulationMapper.mapToSimulationId(bank);
 
         return UriBuilder.fromUri(baseUrl + authorizationPath)
                 .queryParam(PARAM_RESPONSE_TYPE, RESPONSE_TYPE_CODE)
